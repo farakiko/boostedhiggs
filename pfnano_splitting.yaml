@@ -36,14 +36,15 @@ v2_2:
     EGamma_Run2018B: 20
     EGamma_Run2018C: 20
     EGamma_Run2018D: 20
+    GluGluHToWWToLNuQQ_M-125_TuneCP5_13TeV_powheg_jhugen751_pythia8: 2
     GluGluHToWWToLNuQQ: 15
     GluGluHToWW_Pt-200ToInf_M-125: 2
-    VBFHToWWToAny_M-125_TuneCP5_withDipoleRecoil: 10
+    VBFHToWWToAny_M-125_TuneCP5_withDipoleRecoil: 2
     VBFHToWWToLNuQQ_M-125_withDipoleRecoil: 10
-    HWminusJ_HToWW_M-125: 10
-    HWplusJ_HToWW_M-125: 10
-    GluGluZH_HToWW_ZTo2L_M-125: 10
-    GluGluZH_HToWW_M-125_TuneCP5_13TeV-powheg-pythia8: 10
+    HWminusJ_HToWW_M-125: 2
+    HWplusJ_HToWW_M-125: 2
+    GluGluZH_HToWW_ZTo2L_M-125: 2
+    GluGluZH_HToWW_M-125_TuneCP5_13TeV-powheg-pythia8: 2
     HZJ_HToWWToLNuQQ_2LFilter_M-125: 5
     HZJ_HToWWToLNuQQ_M-125: 5
     HZJ_HToWW_M-125: 5

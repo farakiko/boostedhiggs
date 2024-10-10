@@ -61,6 +61,49 @@ def to_label(array: ak.Array) -> ak.Array:
     return ak.values_astype(array, np.int32)
 
 
+def match_H_alljets(
+    genparts: GenParticleArray,
+    fatjets: FatJetArray,
+):
+    genVars = {}
+
+    higgs = genparts[get_pid_mask(genparts, HIGGS_PDGID, byall=False) * genparts.hasFlags(GEN_FLAGS)]
+
+    all_daus = higgs.children.distinctChildrenDeep
+    all_daus = ak.flatten(all_daus, axis=2)
+    all_daus_flat = ak.flatten(all_daus, axis=2)
+    all_daus_flat_pdgId = abs(all_daus_flat.pdgId)
+    leptons = (all_daus_flat_pdgId == ELE_PDGID) | (all_daus_flat_pdgId == MU_PDGID) | (all_daus_flat_pdgId == TAU_PDGID)
+    lep_daughters = all_daus_flat[leptons]
+    Ws_children_pdgid = abs(higgs.children.children.pdgId)
+    msk_isVlep = (Ws_children_pdgid == ELE_PDGID) | (Ws_children_pdgid == MU_PDGID) | (Ws_children_pdgid == TAU_PDGID)
+    msk_isVhad = ~msk_isVlep
+
+    gen_lepton = ak.firsts(lep_daughters)
+    genVhad = ak.flatten(ak.firsts(higgs.children[ak.singletons(ak.argmax(ak.sum(msk_isVhad, axis=-1), axis=-1))]))
+
+    # fatjet matched to W(qq)
+    fj_vhad = fatjets[fatjets.delta_r(genVhad) < 0.8]
+    fj_vhad = fj_vhad[ak.argmin(fj_vhad.delta_r(genVhad), axis=1, keepdims=True)]
+    genVars["dr_fjgenW_genW"] = fj_vhad.delta_r(genVhad)
+
+    # get AK8 genjet matched to higgs, get gen lepton matched to LHE lepton, get dR between gen lepton and the AK8 genjet
+    genAK8_matched_to_higgs = fatjets.matched_gen[
+        ak.argmin(fatjets.matched_gen.delta_r(ak.flatten(higgs)), axis=1, keepdims=True)
+    ]
+    genAK8_matched_to_higgs = ak.firsts(genAK8_matched_to_higgs[genAK8_matched_to_higgs.delta_r(ak.flatten(higgs)) < 0.8])
+    genVars["dr_genAK8H"] = genAK8_matched_to_higgs.delta_r(ak.flatten(higgs))
+    genVars["dr_genLep_genAK8H"] = gen_lepton.delta_r(genAK8_matched_to_higgs)
+
+    # get AK8 genjet matched to W
+    # genAK8_matched_to_W = fatjets.matched_gen[ak.argmin(fatjets.matched_gen.delta_r(genVhad), axis=1, keepdims=True)]
+    # genAK8_matched_to_W = ak.firsts(genAK8_matched_to_W[genAK8_matched_to_W.delta_r(genVhad) < 0.8])
+    # genVars["dr_genAK8W"] = genAK8_matched_to_W.delta_r(genVhad)
+    # genVars["dr_genLep_genAK8W"] = gen_lepton.delta_r(genAK8_matched_to_W)
+
+    return genVars
+
+
 def match_H(
     genparts: GenParticleArray,
     fatjet: FatJetArray,

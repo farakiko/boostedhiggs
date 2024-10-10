@@ -36,6 +36,8 @@ from boostedhiggs.corrections import (
 )
 from boostedhiggs.utils import VScore, get_pid_mask, match_H, match_Top, match_V, sigs
 
+# from boostedhiggs.utils import match_H_alljets
+
 from .run_tagger_inference import runInferenceTriton
 
 warnings.filterwarnings("ignore", message="Found duplicate branch ")
@@ -611,8 +613,16 @@ class HwwProcessor(processor.ProcessorABC):
         if self.isMC:
             if self.isSignal:
                 genVars, signal_mask = match_H(events.GenPart, candidatefj, fatjet_pt=FirstFatjet)
+                # genVars = {**genVars, **match_H_alljets(events.GenPart, fatjets)}
                 # add signal mask and modify sum of genweights to only consider those events that pass the mask
                 self.add_selection(name="Signal", sel=signal_mask)
+                lhehpt = events.LHEPart[events.LHEPart.pdgId == 25].pt
+                if ak.any(lhehpt):
+                    genVars["LHE_Hpt"] = lhehpt
+                if "HTXS" in events.fields:
+                    genVars["STXS_Higgs_pt"] = events.HTXS.Higgs_pt
+                    genVars["STXS_cat"] = events.HTXS.stage1_2_cat_pTjet30GeV
+
             elif "HToTauTau" in dataset:
                 genVars, signal_mask = match_H(events.GenPart, candidatefj, dau_pdgid=15)
                 self.add_selection(name="Signal", sel=signal_mask)
@@ -693,7 +703,9 @@ class HwwProcessor(processor.ProcessorABC):
                     variables["top_reweighting"] = add_TopPtReweighting(self.weights[ch], tops.pt)
 
                 if self.isSignal:
-                    add_HiggsEW_kFactors(self.weights[ch], events.GenPart, dataset)
+                    ew_weight = add_HiggsEW_kFactors(events.GenPart, dataset)
+                    # save EW weights but do not apply by default
+                    variables["EW_weight"] = ew_weight
 
                 if self._systematics:
                     if self.isSignal or "TT" in dataset or "WJets" in dataset or "ST_" in dataset:
@@ -741,6 +753,11 @@ class HwwProcessor(processor.ProcessorABC):
 
                 # store the final weight per ch
                 variables[f"weight_{ch}"] = self.weights[ch].weight()
+
+                # store each weight (for debug)
+                # for key in self.weights[ch]._weights:
+                #    variables[f"{ch}_single_weight_{key}"] = self.weights[ch].partial_weight([key])
+
                 if self._systematics:
                     for systematic in self.weights[ch].variations:
                         variables[f"weight_{ch}_{systematic}"] = self.weights[ch].weight(modifier=systematic)

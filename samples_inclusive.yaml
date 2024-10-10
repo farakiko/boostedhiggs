@@ -1,5 +1,6 @@
 # SAMPLES to run (assume same names for all years 2016,2016APV,2017,2018)
 mc:
+  - GluGluHToWWToLNuQQ_M-125_TuneCP5_13TeV_powheg_jhugen751_pythia8
   - GluGluHToWW_Pt-200ToInf_M-125
   - VBFHToWWToAny_M-125_TuneCP5_withDipoleRecoil
   - HWminusJ_HToWW_M-125
@@ -93,13 +94,11 @@ mc_s_over_b:
   - QCD_Pt_1800to2400
   - QCD_Pt_2400to3200
   - QCD_Pt_3200toInf
-sig:
+sigincl:
+  - GluGluHToWWToLNuQQ_M-125_TuneCP5_13TeV_powheg_jhugen751_pythia8
   - GluGluHToWW_Pt-200ToInf_M-125
+sig:
   - VBFHToWWToAny_M-125_TuneCP5_withDipoleRecoil
-  - HWminusJ_HToWW_M-125
-  - HWplusJ_HToWW_M-125
-  - HZJ_HToWW_M-125
-  - ttHToNonbb_M125
 ggF:
   - GluGluHToWW_Pt-200ToInf_M-125
 data:

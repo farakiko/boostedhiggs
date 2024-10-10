@@ -223,30 +223,39 @@ with importlib.resources.path("boostedhiggs.data", "EWHiggsCorrections.json") as
     hew_kfactors = correctionlib.CorrectionSet.from_file(str(filename))
 
 
-def add_HiggsEW_kFactors(weights, genpart, dataset):
+def add_HiggsEW_kFactors(genpart, dataset):
     """EW Higgs corrections"""
 
     def get_hpt():
         boson = ak.firsts(genpart[(genpart.pdgId == 25) & genpart.hasFlags(["fromHardProcess", "isLastCopy"])])
         return np.array(ak.fill_none(boson.pt, 0.0))
 
+    hpt = get_hpt()
+    ewknominal = np.ones_like(hpt)
+
     if "VBF" in dataset:
-        hpt = get_hpt()
         ewkcorr = hew_kfactors["VBF_EW"]
         ewknom = ewkcorr.evaluate(hpt)
-        weights.add("VBF_EW", ewknom)
+        ewknominal[hpt >= 400] = ewknom[hpt >= 400]
 
-    if "WplusH" in dataset or "WminusH" in dataset or "ZH" in dataset:
-        hpt = get_hpt()
+    if (
+        "WplusH" in dataset
+        or "WminusH" in dataset
+        or "ZH" in dataset
+        or "HWminus" in dataset
+        or "HWplus" in dataset
+        or "HZ" in dataset
+    ):
         ewkcorr = hew_kfactors["VH_EW"]
         ewknom = ewkcorr.evaluate(hpt)
-        weights.add("VH_EW", ewknom)
+        ewknominal[hpt >= 400] = ewknom[hpt >= 400]
 
     if "ttH" in dataset:
-        hpt = get_hpt()
         ewkcorr = hew_kfactors["ttH_EW"]
         ewknom = ewkcorr.evaluate(hpt)
-        weights.add("ttH_EW", ewknom)
+        ewknominal[hpt >= 400] = ewknom[hpt >= 400]
+
+    return ewknom
 
 
 def build_lumimask(filename):

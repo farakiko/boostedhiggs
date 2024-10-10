@@ -18,6 +18,8 @@ BR_HWW = 0.2137
 BR_WW_lnuqq = (0.1046 + 0.1050 + 0.1075) * (0.6832) * 2
 # Branching ratio of WW to 4Q (0.46676224)
 BR_WW_qqqq = 0.6832**2
+# Branching ratio of WW to LNuLNu (0.1005)
+BR_WW_lnulnu = (0.1046 + 0.1050 + 0.1075) ** 2
 
 BR_THadronic = 0.667
 BR_TLeptonic = 1 - BR_THadronic
@@ -44,14 +46,21 @@ xs["GluGluHToWW_Pt-200ToInf_M-125"] = 0.4716 * BR_HWW
 
 # GluGluHToWWToLNuQQ
 # - From GenXsecAnalyzer: 28.87 pb
-#    - Times BR: 28.87*0.2137*0.21664272 = 1.336 pb
+#    - Times BR: 28.87*0.2137*0.4332 = 2.67 pb
 #  - From LHC-XS-WG:
 #    - ggF: 48.58 pb (N3LO)
 #           44.14 pb (NNLO + NNLL)
-#      - Times BR: 48.58*0.2137*0.21664272 = 2.2491 pb
+#      - Times BR: 48.58*0.2137*0.4332 = 4.497 pb
 #  - From PKU:
 #    - ggF: 48.61 pb
 xs["GluGluHToWWToLNuQQ"] = 48.58 * BR_HWW * BR_WW_lnuqq
+xs["GluGluHToWWToLNuQQ_M-125_TuneCP5_13TeV_powheg_jhugen751_pythia8"] = 48.58 * BR_HWW * BR_WW_lnuqq
+
+# - From AN-2023-102:
+#  0.9913 / (BR_HWW *BR_WW_lnulnu) = 46.15
+# - From AN-2020-046
+# 1.0913430 / (BR_HWW *BR_WW_lnulnu) = 50.8
+# xs["GluGluHToWWTo2L2Nu_M-125_TuneCP5_13TeV-powheg-jhugen727-pythia8"] = 0.9913
 
 # VBFHToWWToLNuQQ-MH125
 #  - From GenXsecAnalyzer: 3.892 pb
@@ -70,7 +79,6 @@ xs["ttHToNonbb_M125"] = 5.013e-01 * (1 - BR_HBB)
 xs["HWminusJ_HToWW_M-125"] = 0.5445 * BR_HWW
 xs["HWplusJ_HToWW_M-125"] = 0.8720 * BR_HWW
 xs["HZJ_HToWW_M-125"] = 0.9595 * BR_HWW
-# xs["HZJ_HToWW_M-125"] = 0.7891 * BR_HWW  # this was replaced with above GenXSecAnalyzer Number
 # cross check -  this in xsdb is 0.006185
 xs["GluGluZH_HToWW_ZTo2L_M-125"] = 0.1223 * 3 * 0.033658 * BR_HWW  # 0.002639
 # xs["GluGluZH_HToWW_M-125_TuneCP5_13TeV-powheg-pythia8"] = xs["GluGluZH_HToWW_ZTo2L_M-125"]

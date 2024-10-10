@@ -1547,6 +1547,18 @@
       ]
     },
     "HWW": {
+      "GluGluHToWWToLNuQQ_M-125_TuneCP5_13TeV_powheg_jhugen751_pythia8": [
+        "/store/user/lpcpfnano/cmantill/v2_3/2016/HWW/GluGluHToWWToLNuQQ_M-125_TuneCP5_13TeV_powheg_jhugen751_pythia8/GluGluHToWWToLNuQQ_M-125_TuneCP5_13TeV_powheg_jhugen751_pythia8/241007_154426/0000/nano_mc2016post_1.root",
+        "/store/user/lpcpfnano/cmantill/v2_3/2016/HWW/GluGluHToWWToLNuQQ_M-125_TuneCP5_13TeV_powheg_jhugen751_pythia8/GluGluHToWWToLNuQQ_M-125_TuneCP5_13TeV_powheg_jhugen751_pythia8/241007_154426/0000/nano_mc2016post_10.root",
+        "/store/user/lpcpfnano/cmantill/v2_3/2016/HWW/GluGluHToWWToLNuQQ_M-125_TuneCP5_13TeV_powheg_jhugen751_pythia8/GluGluHToWWToLNuQQ_M-125_TuneCP5_13TeV_powheg_jhugen751_pythia8/241007_154426/0000/nano_mc2016post_2.root",
+        "/store/user/lpcpfnano/cmantill/v2_3/2016/HWW/GluGluHToWWToLNuQQ_M-125_TuneCP5_13TeV_powheg_jhugen751_pythia8/GluGluHToWWToLNuQQ_M-125_TuneCP5_13TeV_powheg_jhugen751_pythia8/241007_154426/0000/nano_mc2016post_3.root",
+        "/store/user/lpcpfnano/cmantill/v2_3/2016/HWW/GluGluHToWWToLNuQQ_M-125_TuneCP5_13TeV_powheg_jhugen751_pythia8/GluGluHToWWToLNuQQ_M-125_TuneCP5_13TeV_powheg_jhugen751_pythia8/241007_154426/0000/nano_mc2016post_4.root",
+        "/store/user/lpcpfnano/cmantill/v2_3/2016/HWW/GluGluHToWWToLNuQQ_M-125_TuneCP5_13TeV_powheg_jhugen751_pythia8/GluGluHToWWToLNuQQ_M-125_TuneCP5_13TeV_powheg_jhugen751_pythia8/241007_154426/0000/nano_mc2016post_5.root",
+        "/store/user/lpcpfnano/cmantill/v2_3/2016/HWW/GluGluHToWWToLNuQQ_M-125_TuneCP5_13TeV_powheg_jhugen751_pythia8/GluGluHToWWToLNuQQ_M-125_TuneCP5_13TeV_powheg_jhugen751_pythia8/241007_154426/0000/nano_mc2016post_6.root",
+        "/store/user/lpcpfnano/cmantill/v2_3/2016/HWW/GluGluHToWWToLNuQQ_M-125_TuneCP5_13TeV_powheg_jhugen751_pythia8/GluGluHToWWToLNuQQ_M-125_TuneCP5_13TeV_powheg_jhugen751_pythia8/241007_154426/0000/nano_mc2016post_7.root",
+        "/store/user/lpcpfnano/cmantill/v2_3/2016/HWW/GluGluHToWWToLNuQQ_M-125_TuneCP5_13TeV_powheg_jhugen751_pythia8/GluGluHToWWToLNuQQ_M-125_TuneCP5_13TeV_powheg_jhugen751_pythia8/241007_154426/0000/nano_mc2016post_8.root",
+        "/store/user/lpcpfnano/cmantill/v2_3/2016/HWW/GluGluHToWWToLNuQQ_M-125_TuneCP5_13TeV_powheg_jhugen751_pythia8/GluGluHToWWToLNuQQ_M-125_TuneCP5_13TeV_powheg_jhugen751_pythia8/241007_154426/0000/nano_mc2016post_9.root"
+      ],
       "GluGluHToWW_Pt-200ToInf_M-125": [
         "/store/user/lpcpfnano/cmantill/v2_3/2016/HWW/GluGluHToWW_Pt-200ToInf_M-125_TuneCP5_MINLO_13TeV-powheg-pythia8/GluGluHToWW_Pt-200ToInf_M-125/220901_224757/0000/nano_mc2016post_1-1.root",
         "/store/user/lpcpfnano/cmantill/v2_3/2016/HWW/GluGluHToWW_Pt-200ToInf_M-125_TuneCP5_MINLO_13TeV-powheg-pythia8/GluGluHToWW_Pt-200ToInf_M-125/220901_224757/0000/nano_mc2016post_1.root",
