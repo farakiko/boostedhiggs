@@ -359,32 +359,16 @@ class HwwProcessor(processor.ProcessorABC):
         ht = ak.sum(jets.pt, axis=1)
 
         # AK4 jets with veto
-        # jet_selector = (
-        #     (jets.pt > 15)
-        #     & (abs(jets.eta) < 5.0)
-        #     & jets.isTight
-        #     & ((jets.pt >= 50) | ((jets.pt < 50) & (jets.puId & 2) == 2))
-        #     & (jets.chEmEF + jets.neEmEF < 0.9)  # neutral and charged energy fraction
-        # )
-        # jets = jets[jet_selector]
-        # jet_veto_map, _ = get_JetVetoMap(jets, self._year)
-        # jets = jets[(jets.pt > 30) & jet_veto_map]
-
-        loose_jet_selector = (
-            (jets.pt > 15)
-            & jets.isTight
-            & ((jets.pt >= 50) | ((jets.pt < 50) & (jets.puId & 2) == 2))
-            & (jets.neEmEF < 0.9)  # neutral energy fraction
-        )
-        vetomapjets = jets[loose_jet_selector]
-        _, cut_jetveto = get_JetVetoMap(vetomapjets, self._year)
         jet_selector = (
-            (jets.pt > 30)
+            (jets.pt > 15)
             & (abs(jets.eta) < 5.0)
             & jets.isTight
             & ((jets.pt >= 50) | ((jets.pt < 50) & (jets.puId & 2) == 2))
+            & (jets.chEmEF + jets.neEmEF < 0.9)  # neutral and charged energy fraction
         )
-        goodjets = jets[jet_selector]
+        jets = jets[jet_selector]
+        jet_veto_map, cut_jetveto = get_JetVetoMap(jets, self._year)
+        jets = jets[(jets.pt > 30) & jet_veto_map]
 
         ak4_outside_ak8_selector = jets.delta_r(candidatefj) > 0.8
         ak4_outside_ak8 = jets[ak4_outside_ak8_selector]
@@ -396,7 +380,7 @@ class HwwProcessor(processor.ProcessorABC):
         mjj = (ak.firsts(jet1) + ak.firsts(jet2)).mass
 
         # OBJECT: b-jets (only for jets with abs(eta)<2.5)
-        bjet_selector = (jet_selector) & (jets.delta_r(candidatefj) > 0.8) & (abs(jets.eta) < 2.5)
+        bjet_selector = (jets.delta_r(candidatefj) > 0.8) & (abs(jets.eta) < 2.5)
         ak4_bjet_candidate = jets[bjet_selector]
 
         NumFatjets = ak.num(good_fatjets)
@@ -609,6 +593,7 @@ class HwwProcessor(processor.ProcessorABC):
         self.add_selection(name="NoTaus", sel=(n_loose_taus_ele == 0), channel="ele")
         self.add_selection(name="AtLeastOneFatJet", sel=(NumFatjets >= 1))
 
+        """
         fj_pt_sel = candidatefj.pt > 250
         if self.isMC:  # make an OR of all the JECs
             for k, v in self.jecs.items():
@@ -624,7 +609,7 @@ class HwwProcessor(processor.ProcessorABC):
             self.add_selection(name="MET", sel=(met.pt < 20))
         else:
             self.add_selection(name="MET", sel=(met.pt > 20))
-
+        """
         # gen-level matching
         signal_mask = None
         if self.isMC:
@@ -658,9 +643,8 @@ class HwwProcessor(processor.ProcessorABC):
 
         # hem-cleaning selection
         if self._year == "2018":
-            # TODO: change to only jets
             hem_veto = ak.any(
-                ((goodjets.eta > -3.2) & (goodjets.eta < -1.3) & (goodjets.phi > -1.57) & (goodjets.phi < -0.87)),
+                ((jets.eta > -3.2) & (jets.eta < -1.3) & (jets.phi > -1.57) & (jets.phi < -0.87)),
                 -1,
             ) | ak.any(
                 (
@@ -697,9 +681,7 @@ class HwwProcessor(processor.ProcessorABC):
                     nPU=ak.to_numpy(events.Pileup.nPU),
                 )
 
-                # TODO: change to only jets
-                # add_pileupid_weights(self.weights[ch], self._year, self._yearmod, jets, events.GenJet, wp="L")
-                add_pileupid_weights(self.weights[ch], self._year, self._yearmod, goodjets, events.GenJet, wp="L")
+                add_pileupid_weights(self.weights[ch], self._year, self._yearmod, jets, events.GenJet, wp="L")
 
                 if ch == "mu":
                     add_lepton_weight(self.weights[ch], candidatelep, self._year + self._yearmod, "muon")
@@ -788,7 +770,7 @@ class HwwProcessor(processor.ProcessorABC):
                         **variables,
                         **get_btag_weights(
                             self._year,
-                            events.Jet,
+                            jets,
                             bjet_selector,
                             wp=wp_,
                             algo="deepJet",

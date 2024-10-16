@@ -136,14 +136,14 @@ xs["WJetsToQQ_HT-800toInf"] = 2.875e01
 
 # W+jets W(lv)
 # from XSDB (miniaodv2) - numbers after # correspond to miniaodv1/preUL?
-xs["WJetsToLNu_HT-70To100"] = 1264.0  # 1292.0
-xs["WJetsToLNu_HT-100To200"] = 1256.0  # 1395.0
-xs["WJetsToLNu_HT-200To400"] = 335.5  # 407.9
-xs["WJetsToLNu_HT-400To600"] = 45.25  # 57.48
-xs["WJetsToLNu_HT-600To800"] = 11.19  # 12.87
-xs["WJetsToLNu_HT-800To1200"] = 4.933  # 5.366
-xs["WJetsToLNu_HT-1200To2500"] = 1.16  # 1.074
-xs["WJetsToLNu_HT-2500ToInf"] = 0.008001  # 0.026 #0.008001
+xs["WJetsToLNu_HT-70To100"] = 1264.0 * 1.21  # 1292.0
+xs["WJetsToLNu_HT-100To200"] = 1256.0 * 0.993  # 1395.0
+xs["WJetsToLNu_HT-200To400"] = 335.5 * 1.002  # 407.9
+xs["WJetsToLNu_HT-400To600"] = 45.25 * 1.009  # 57.48
+xs["WJetsToLNu_HT-600To800"] = 11.19 * 1.120  # 12.87
+xs["WJetsToLNu_HT-800To1200"] = 4.933 * 1.202  # 5.366
+xs["WJetsToLNu_HT-1200To2500"] = 1.16 * 1.332  # 1.074
+xs["WJetsToLNu_HT-2500ToInf"] = 0.008001 * 4.2  # 0.026
 
 xs["WJetsToLNu_TuneCP5_13TeV-madgraphMLM"] = 53940.0  # 52940.0
 
@@ -195,16 +195,16 @@ xs["WW"] = 118.7
 xs["WZ"] = 46.74
 xs["ZZ"] = 16.91
 
+# From VBS AN: AN2023_016_v11
 # EWK Z
-xs["EWKZ_ZToQQ"] = 9.791e00
-xs["EWKZ_ZToLL"] = 6.207e00
-xs["EWKZ_ZToNuNu"] = 1.065e01
-
+xs["EWKZ_ZToQQ"] = 10.67
+xs["EWKZ_ZToLL"] = 6.22
+xs["EWKZ_ZToNuNu"] = 10.72
 # EWK W
-xs["EWKWminus_WToQQ"] = 1.917e01
-xs["EWKWplus_WToQQ"] = 2.874e01
-xs["EWKWminus_WToLNu"] = 3.208e01
-xs["EWKWplus_WToLNu"] = 3.909e01
+xs["EWKWminus_WToQQ"] = 10.67
+xs["EWKWplus_WToQQ"] = 10.67
+xs["EWKWminus_WToLNu"] = 32.26
+xs["EWKWplus_WToLNu"] = 39.33
 
 # Higgs to BB
 xs["GluGluHToBB"] = 4.716e-01 * BR_HBB
