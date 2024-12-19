@@ -649,6 +649,7 @@ class HwwProcessor(processor.ProcessorABC):
                 if "HTXS" in events.fields:
                     genVars["STXS_Higgs_pt"] = events.HTXS.Higgs_pt
                     genVars["STXS_cat"] = events.HTXS.stage1_2_cat_pTjet30GeV
+                    genVars["STXS_finecat"] = events.HTXS.stage1_2_fine_cat_pTjet30GeV
 
             elif "HToTauTau" in dataset:
                 genVars, signal_mask = match_H(events.GenPart, candidatefj, dau_pdgid=15)

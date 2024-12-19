@@ -111,6 +111,11 @@ folders_to_index = {
         "/store/user/lpcpfnano/cmantill/v2_3/2017/HWW",
         "/store/user/lpcpfnano/cmantill/v2_3/2018/HWW",
         ##
+        "/store/user/lpcpfnano/cmantill/v2_3/2016/HWWRivet",
+        "/store/user/lpcpfnano/cmantill/v2_3/2016APV/HWWRivet",
+        "/store/user/lpcpfnano/cmantill/v2_3/2017/HWWRivet",
+        "/store/user/lpcpfnano/cmantill/v2_3/2018/HWWRivet",
+        ##
         "/store/user/lpcpfnano/cmantill/v2_2/2016/HTT",
         "/store/user/lpcpfnano/cmantill/v2_2/2016APV/HTT",
         "/store/user/lpcpfnano/cmantill/v2_2/2017/HTT",

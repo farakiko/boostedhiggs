@@ -2014,6 +2014,30 @@
         "/store/user/lpcpfnano/cmantill/v2_3/2016/HWW/ttHToNonbb_M125_TuneCP5_13TeV-powheg-pythia8/ttHToNonbb_M125/220901_224824/0000/nano_mc2016post_9.root"
       ]
     },
+    "HWWRivet": {
+      "GluGluHToWW_Pt-200ToInf_M-125_Rivet": [
+        "/store/user/lpcpfnano/cmantill/v2_3/2016/HWWRivet/GluGluHToWW_Pt-200ToInf_M-125_TuneCP5_MINLO_13TeV-powheg-pythia8/GluGluHToWW_Pt-200ToInf_M-125_Rivet/241219_001819/0000/nano_mc2016post_1-1.root",
+        "/store/user/lpcpfnano/cmantill/v2_3/2016/HWWRivet/GluGluHToWW_Pt-200ToInf_M-125_TuneCP5_MINLO_13TeV-powheg-pythia8/GluGluHToWW_Pt-200ToInf_M-125_Rivet/241219_001819/0000/nano_mc2016post_1-2.root",
+        "/store/user/lpcpfnano/cmantill/v2_3/2016/HWWRivet/GluGluHToWW_Pt-200ToInf_M-125_TuneCP5_MINLO_13TeV-powheg-pythia8/GluGluHToWW_Pt-200ToInf_M-125_Rivet/241219_001819/0000/nano_mc2016post_1-3.root",
+        "/store/user/lpcpfnano/cmantill/v2_3/2016/HWWRivet/GluGluHToWW_Pt-200ToInf_M-125_TuneCP5_MINLO_13TeV-powheg-pythia8/GluGluHToWW_Pt-200ToInf_M-125_Rivet/241219_001819/0000/nano_mc2016post_1-4.root",
+        "/store/user/lpcpfnano/cmantill/v2_3/2016/HWWRivet/GluGluHToWW_Pt-200ToInf_M-125_TuneCP5_MINLO_13TeV-powheg-pythia8/GluGluHToWW_Pt-200ToInf_M-125_Rivet/241219_001819/0000/nano_mc2016post_1-5.root",
+        "/store/user/lpcpfnano/cmantill/v2_3/2016/HWWRivet/GluGluHToWW_Pt-200ToInf_M-125_TuneCP5_MINLO_13TeV-powheg-pythia8/GluGluHToWW_Pt-200ToInf_M-125_Rivet/241219_001819/0000/nano_mc2016post_1-6.root",
+        "/store/user/lpcpfnano/cmantill/v2_3/2016/HWWRivet/GluGluHToWW_Pt-200ToInf_M-125_TuneCP5_MINLO_13TeV-powheg-pythia8/GluGluHToWW_Pt-200ToInf_M-125_Rivet/241219_001819/0000/nano_mc2016post_1-7.root",
+        "/store/user/lpcpfnano/cmantill/v2_3/2016/HWWRivet/GluGluHToWW_Pt-200ToInf_M-125_TuneCP5_MINLO_13TeV-powheg-pythia8/GluGluHToWW_Pt-200ToInf_M-125_Rivet/241219_001819/0000/nano_mc2016post_1.root",
+        "/store/user/lpcpfnano/cmantill/v2_3/2016/HWWRivet/GluGluHToWW_Pt-200ToInf_M-125_TuneCP5_MINLO_13TeV-powheg-pythia8/GluGluHToWW_Pt-200ToInf_M-125_Rivet/241219_001819/0000/nano_mc2016post_2.root"
+      ],
+      "VBFHToWWToAny_M-125_TuneCP5_withDipoleRecoil_Rivet": [
+        "/store/user/lpcpfnano/cmantill/v2_3/2016/HWWRivet/VBFHToWWToAny_M-125_TuneCP5_withDipoleRecoil_13TeV-powheg-jhugen751-pythia8/VBFHToWWToAny_M-125_TuneCP5_withDipoleRecoil_Rivet/241219_144520/0000/nano_mc2016post_10.root",
+        "/store/user/lpcpfnano/cmantill/v2_3/2016/HWWRivet/VBFHToWWToAny_M-125_TuneCP5_withDipoleRecoil_13TeV-powheg-jhugen751-pythia8/VBFHToWWToAny_M-125_TuneCP5_withDipoleRecoil_Rivet/241219_144520/0000/nano_mc2016post_12.root",
+        "/store/user/lpcpfnano/cmantill/v2_3/2016/HWWRivet/VBFHToWWToAny_M-125_TuneCP5_withDipoleRecoil_13TeV-powheg-jhugen751-pythia8/VBFHToWWToAny_M-125_TuneCP5_withDipoleRecoil_Rivet/241219_144520/0000/nano_mc2016post_13.root",
+        "/store/user/lpcpfnano/cmantill/v2_3/2016/HWWRivet/VBFHToWWToAny_M-125_TuneCP5_withDipoleRecoil_13TeV-powheg-jhugen751-pythia8/VBFHToWWToAny_M-125_TuneCP5_withDipoleRecoil_Rivet/241219_144520/0000/nano_mc2016post_14.root",
+        "/store/user/lpcpfnano/cmantill/v2_3/2016/HWWRivet/VBFHToWWToAny_M-125_TuneCP5_withDipoleRecoil_13TeV-powheg-jhugen751-pythia8/VBFHToWWToAny_M-125_TuneCP5_withDipoleRecoil_Rivet/241219_144520/0000/nano_mc2016post_3.root",
+        "/store/user/lpcpfnano/cmantill/v2_3/2016/HWWRivet/VBFHToWWToAny_M-125_TuneCP5_withDipoleRecoil_13TeV-powheg-jhugen751-pythia8/VBFHToWWToAny_M-125_TuneCP5_withDipoleRecoil_Rivet/241219_144520/0000/nano_mc2016post_4.root",
+        "/store/user/lpcpfnano/cmantill/v2_3/2016/HWWRivet/VBFHToWWToAny_M-125_TuneCP5_withDipoleRecoil_13TeV-powheg-jhugen751-pythia8/VBFHToWWToAny_M-125_TuneCP5_withDipoleRecoil_Rivet/241219_144520/0000/nano_mc2016post_5.root",
+        "/store/user/lpcpfnano/cmantill/v2_3/2016/HWWRivet/VBFHToWWToAny_M-125_TuneCP5_withDipoleRecoil_13TeV-powheg-jhugen751-pythia8/VBFHToWWToAny_M-125_TuneCP5_withDipoleRecoil_Rivet/241219_144520/0000/nano_mc2016post_6.root",
+        "/store/user/lpcpfnano/cmantill/v2_3/2016/HWWRivet/VBFHToWWToAny_M-125_TuneCP5_withDipoleRecoil_13TeV-powheg-jhugen751-pythia8/VBFHToWWToAny_M-125_TuneCP5_withDipoleRecoil_Rivet/241219_144520/0000/nano_mc2016post_7.root"
+      ]
+    },
     "JetHT2016": {
       "JetHT_Run2016B_ver2_HIPM": [],
       "JetHT_Run2016C_HIPM": [],
