@@ -618,7 +618,6 @@ class HwwProcessor(processor.ProcessorABC):
         self.add_selection(name="NoTaus", sel=(n_loose_taus_ele == 0), channel="ele")
         self.add_selection(name="AtLeastOneFatJet", sel=(NumFatjets >= 1))
 
-        """
         fj_pt_sel = candidatefj.pt > 250
         if self.isMC:  # make an OR of all the JECs
             for k, v in self.jecs.items():
@@ -634,7 +633,7 @@ class HwwProcessor(processor.ProcessorABC):
             self.add_selection(name="MET", sel=(met.pt < 20))
         else:
             self.add_selection(name="MET", sel=(met.pt > 20))
-        """
+
         # gen-level matching
         signal_mask = None
         if self.isMC:

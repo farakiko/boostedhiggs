@@ -1,5 +1,7 @@
 # SAMPLES to run (assume same names for all years 2016,2016APV,2017,2018)
 mc:
+  - GluGluHToWW_Pt-200ToInf_M-125_Rivet
+  - VBFHToWWToAny_M-125_TuneCP5_withDipoleRecoil_Rivet
   - GluGluHToWWToLNuQQ_M-125_TuneCP5_13TeV_powheg_jhugen751_pythia8
   - GluGluHToWW_Pt-200ToInf_M-125
   - VBFHToWWToAny_M-125_TuneCP5_withDipoleRecoil

@@ -34,7 +34,11 @@ def main(args):
     # if --macos is specified in args, process only the files provided
     if args.macos:
         files = {}
-        files[args.sample] = [f"rootfiles2/rootfiles/{args.sample}/file{i+1}.root" for i in range(1)]
+        # files[args.sample] = [f"rootfiles2/rootfiles/{args.sample}/file{i+1}.root" for i in range(1)]
+
+        files[args.sample] = [
+            "/eos/uscms/store/group/lpcpfnano/cmantill/v2_3/2017/HWWRivet/GluGluHToWW_Pt-200ToInf_M-125_TuneCP5_MINLO_13TeV-powheg-pythia8/GluGluHToWW_Pt-200ToInf_M-125/241219_000454/0000/nano_mc2017_4.root"
+        ]
 
     # if --local is specified in args, process only the args.sample provided
     elif args.local:
