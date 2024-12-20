@@ -723,7 +723,7 @@ class HwwProcessor(processor.ProcessorABC):
                 if (
                     ("GluGluHToWWToLNuQQ_M-125_TuneCP5_13TeV_powheg_jhugen751_pythia8" in dataset)
                     or ("ttHToNonbb_M125" in dataset)
-                    or ("HZJ_HToWW_M-125" in dataset)
+                    # or ("HZJ_HToWW_M-125" in dataset)
                     or ("HWplusJ_HToWW_M-125" in dataset)
                     or ("HWminusJ_HToWW_M-125" in dataset)
                 ):
