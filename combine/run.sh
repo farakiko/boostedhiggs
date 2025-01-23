@@ -41,15 +41,14 @@ gofdata=0
 goftoys=0
 unfolding=0
 impactsi=0
-impactsf=0
-impactsc=0
+unblind=0
 seed=444
 numtoys=100
 bias=-1
 mintol=0.5 # --cminDefaultMinimizerTolerance
 # maxcalls=1000000000  # --X-rtd MINIMIZER_MaxCalls
 
-options=$(getopt -o "wblsdrgti" --long "workspace,bfit,limits,significance,multisig,vbf,ggf,dfit,dfitasimov,resonant,gofdata,goftoys,unfolding,impactsi,impactsf:,impactsc:,bias:,seed:,numtoys:,mintol:" -- "$@")
+options=$(getopt -o "wblsdrgti" --long "workspace,bfit,limits,significance,multisig,vbf,ggf,dfit,dfitasimov,resonant,gofdata,goftoys,unfolding,impactsi,unblind,bias:,seed:,numtoys:,mintol:" -- "$@")
 eval set -- "$options"
 
 while true; do
@@ -93,13 +92,8 @@ while true; do
         -i|--impactsi)
             impactsi=1
             ;;
-        --impactsf)
-            shift
-            impactsf=$1
-            ;;
-        --impactsc)
-            shift
-            impactsc=$1
+        --unblind)
+            unblind=1
             ;;
         --seed)
             shift
@@ -133,7 +127,7 @@ while true; do
 done
 
 echo "Arguments: workspace=$workspace bfit=$bfit limits=$limits \
-significance=$significance multisig=$multisig vbf=$vbf ggf=$ggf unfolding=$unfolding \
+significance=$significance multisig=$multisig vbf=$vbf ggf=$ggf unfolding=$unfolding unblind=$unblind \
 dfit=$dfit gofdata=$gofdata goftoys=$goftoys \
 seed=$seed numtoys=$numtoys"
 
@@ -178,12 +172,13 @@ combined_datacard=${outdir}/combined.txt
 ws=${outdir}/workspace.root
 
 ################# Edit below which cards you want to provide to combine
-sr1="VBF"
+# sr1="VBF"
 sr2="ggFpt250to350"
 sr3="ggFpt350to500"
 sr4="ggFpt500toInf"
-ccargs="SR1=${cards_dir}/${sr1}.txt SR2=${cards_dir}/${sr2}.txt SR3=${cards_dir}/${sr3}.txt SR4=${cards_dir}/${sr4}.txt"
+# ccargs="SR1=${cards_dir}/${sr1}.txt SR2=${cards_dir}/${sr2}.txt SR3=${cards_dir}/${sr3}.txt SR4=${cards_dir}/${sr4}.txt"
 # ccargs="SR1=${cards_dir}/${sr1}.txt"
+ccargs="SR2=${cards_dir}/${sr2}.txt SR3=${cards_dir}/${sr3}.txt SR4=${cards_dir}/${sr4}.txt"
 
 cr1="TopCR"
 cr2="WJetsCR"
@@ -277,24 +272,35 @@ fi
 if [ $impactsi = 1 ]; then
 
     echo "Initial fit for impacts"
-    # combineTool.py -M Impacts -d $ws -t -1 --rMin -1 --rMax 2 -m 125 --robustFit 1 --doInitialFit   # old
 
-    combineTool.py -M Impacts -d $ws -t -1 --rMin -1 --rMax 2 -m 125 --robustFit 1 --doInitialFit --expectSignal 1
-    combineTool.py -M Impacts -d $ws -t -1 --rMin -1 --rMax 2 -m 125 --robustFit 1 --doFits --expectSignal 1 --parallel 50
-    combineTool.py -M Impacts -d $ws -t -1 --rMin -1 --rMax 2 -m 125 --robustFit 1 --output impacts.json --expectSignal 1
-    plotImpacts.py -i impacts.json -o impacts
+    if [ $unblind = 1 ]; then
+        echo Impacts unblinded
+        combineTool.py -M Impacts -d $ws --rMin -1 --rMax 2 -m 125 --robustFit 1 --doInitialFit --expectSignal 1
+        combineTool.py -M Impacts -d $ws --rMin -1 --rMax 2 -m 125 --robustFit 1 --doFits --expectSignal 1 --parallel 50
+        combineTool.py -M Impacts -d $ws --rMin -1 --rMax 2 -m 125 --robustFit 1 --output impacts.json --expectSignal 1
+        plotImpacts.py -i impacts.json -o impacts --blind
+    else
+        echo Impacts blinded
+        combineTool.py -M Impacts -d $ws -t -1 --rMin -1 --rMax 2 -m 125 --robustFit 1 --doInitialFit --expectSignal 1
+        combineTool.py -M Impacts -d $ws -t -1 --rMin -1 --rMax 2 -m 125 --robustFit 1 --doFits --expectSignal 1 --parallel 50
+        combineTool.py -M Impacts -d $ws -t -1 --rMin -1 --rMax 2 -m 125 --robustFit 1 --output impacts.json --expectSignal 1
+        plotImpacts.py -i impacts.json -o impacts
+    fi
 
 fi
 
 
 if [ $goftoys = 1 ]; then
     echo "GoF on toys"
-    combine -M GoodnessOfFit -d $ws --algo=saturated -t 100 -s 1 -m 125 -n Toys
+    combine -M GoodnessOfFit -d $ws --algo=saturated -t 100 -s 1 -m 125 --toysFrequentist -n Toys_ggF | tee $logsdir/GoF_toys.txt
+    # combine -M GoodnessOfFit -d $ws --algo=saturated -t 100 -s 1 -m 125 --toysFrequentist -n Toys_result_bonly_CRonly --setParametersForFit mask_ch1=1 --setParametersForEval mask_ch1=0 --freezeParameters r --setParameters r=0
 fi
 
 if [ $gofdata = 1 ]; then
     echo "GoF on data"
-    combine -M GoodnessOfFit -d $ws --algo=saturated -s 1 -m 125 -n Observed
+    combine -M GoodnessOfFit -d $ws --algo=saturated -s 1 -m 125 -n Observed_ggF | tee $logsdir/GoF_data.txt
+    # combine -M GoodnessOfFit -d $ws --algo=saturated -n _result_bonly_CRonly --setParametersForFit mask_ch1=1 --setParametersForEval mask_ch1=0 --freezeParameters r --setParameters r=0
+
 fi
 
 if [ $unfolding = 1 ]; then
