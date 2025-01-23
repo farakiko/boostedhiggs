@@ -59,6 +59,7 @@ labels = {
     "ttH": "ttH_hww",
     "WH": "WH_hww",
     "ZH": "ZH_hww",
+    "mjj1000toInf": "qqH_hww_mjj_1000_Inf",
     # BKGS
     "WJetsLNu": "wjets",
     "TTbar": "ttbar",

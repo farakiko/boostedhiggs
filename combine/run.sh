@@ -1,5 +1,5 @@
 #!/bin/bash
-### https://github.com/rkansal47/HHbbVV/blob/main/src/HHbbVV/combine/run_blinded.sh
+# Based on: https://github.com/rkansal47/HHbbVV/blob/main/src/HHbbVV/combine/run_blinded.sh
 
 ####################################################################################################
 # Script for fits
@@ -7,12 +7,14 @@
 # 1) Combines cards and makes a workspace (--workspace / -w)
 # 2) Background-only fit (--bfit / -b)
 # 3) Expected asymptotic limits (--limits / -l)
-# 4) Expected significance (--significance / -s)
+# 4) Expected significance (--significance / --sig / -s)
 # 5) Fit diagnostics (--dfit / -d)
-# 6) GoF on data (--gofdata / -g)
-# 7) GoF on toys (--unfolding / -t),
-# 8) Impacts: initial fit (--impactsi / -i), per-nuisance fits (--impactsf $nuisance), collect (--impactsc $nuisances)
-# 9) Bias test: run a bias test on toys (using post-fit nuisances) with expected signal strength
+# 6) Asimov fit (--dfitasimov / --dfita)
+# 7) GoF on data (--gofdata / -g)
+# 8) GoF on toys (--goftoys / -t),
+# 9) Impacts: initial fit (--impactsi / -i), per-nuisance fits (--impactsf $nuisance), collect (--impactsc $nuisances)
+# 10) Unfolding (--unfolding / -u),
+# 11) Bias test: run a bias test on toys (using post-fit nuisances) with expected signal strength
 #    given by --bias X.
 #
 # Specify seed with --seed (default 42) and number of toys with --numtoys (default 100)
@@ -30,9 +32,13 @@ workspace=0
 bfit=0
 limits=0
 significance=0
+multisig=0
+vbf=0
+ggf=0
 dfit=0
 dfit_asimov=0
 gofdata=0
+goftoys=0
 unfolding=0
 impactsi=0
 impactsf=0
@@ -43,7 +49,7 @@ bias=-1
 mintol=0.5 # --cminDefaultMinimizerTolerance
 # maxcalls=1000000000  # --X-rtd MINIMIZER_MaxCalls
 
-options=$(getopt -o "wblsdrgti" --long "workspace,bfit,limits,significance,dfit,dfitasimov,resonant,gofdata,unfolding,impactsi,impactsf:,impactsc:,bias:,seed:,numtoys:,mintol:" -- "$@")
+options=$(getopt -o "wblsdrgti" --long "workspace,bfit,limits,significance,multisig,vbf,ggf,dfit,dfitasimov,resonant,gofdata,goftoys,unfolding,impactsi,impactsf:,impactsc:,bias:,seed:,numtoys:,mintol:" -- "$@")
 eval set -- "$options"
 
 while true; do
@@ -60,6 +66,18 @@ while true; do
         -s|--significance)
             significance=1
             ;;
+        --multisig)
+            multisig=1
+            ;;
+        --vbf)
+            vbf=1
+            ;;
+        --ggf)
+            ggf=1
+            ;; 
+        -u|--unfolding)
+            unfolding=1
+            ;;            
         -d|--dfit)
             dfit=1
             ;;
@@ -69,9 +87,9 @@ while true; do
         -g|--gofdata)
             gofdata=1
             ;;
-        -t|--unfolding)
-            unfolding=1
-            ;;
+        -t|--goftoys)
+            goftoys=1
+            ;;                                   
         -i|--impactsi)
             impactsi=1
             ;;
@@ -115,7 +133,8 @@ while true; do
 done
 
 echo "Arguments: workspace=$workspace bfit=$bfit limits=$limits \
-significance=$significance dfit=$dfit gofdata=$gofdata unfolding=$unfolding \
+significance=$significance multisig=$multisig vbf=$vbf ggf=$ggf unfolding=$unfolding \
+dfit=$dfit gofdata=$gofdata goftoys=$goftoys \
 seed=$seed numtoys=$numtoys"
 
 
@@ -128,8 +147,14 @@ seed=$seed numtoys=$numtoys"
 ####################################################################################################
 
 dataset=data_obs
-cards_dir="templates/v11/datacards"
-# cards_dir="templates/v11/datacards_unfolding"
+cards_dir="templates/v12"
+
+if [ $unfolding = 1 ]; then
+    cards_dir+="/datacards_unfolding"
+else
+    cards_dir+="/datacards"
+fi
+
 cp ${cards_dir}/testModel.root testModel.root # TODO: avoid this
 CMS_PARAMS_LABEL="CMS_HWW_boosted"
 
@@ -152,19 +177,18 @@ chmod +x ${logsdir}
 combined_datacard=${outdir}/combined.txt
 ws=${outdir}/workspace.root
 
-# ADD REGIONS
+################# Edit below which cards you want to provide to combine
 sr1="VBF"
 sr2="ggFpt250to350"
 sr3="ggFpt350to500"
 sr4="ggFpt500toInf"
 ccargs="SR1=${cards_dir}/${sr1}.txt SR2=${cards_dir}/${sr2}.txt SR3=${cards_dir}/${sr3}.txt SR4=${cards_dir}/${sr4}.txt"
 # ccargs="SR1=${cards_dir}/${sr1}.txt"
-# ccargs="SR2=${cards_dir}/${sr2}.txt SR3=${cards_dir}/${sr3}.txt SR4=${cards_dir}/${sr4}.txt"
 
 cr1="TopCR"
 cr2="WJetsCR"
 ccargs+=" CR1=${cards_dir}/${cr1}.txt CR2=${cards_dir}/${cr2}.txt"
-
+######################################################################
 
 if [ $workspace = 1 ]; then
     echo "Combining cards:"
@@ -176,12 +200,22 @@ if [ $workspace = 1 ]; then
 
     echo "Running text2workspace"
 
-    # single POI
-    text2workspace.py $combined_datacard -o $ws 2>&1 | tee $logsdir/text2workspace.txt
-
-    # seperate POIs (to make Table 30 in v11)
-    # text2workspace.py $combined_datacard -P HiggsAnalysis.CombinedLimit.PhysicsModel:multiSignalModel --PO verbose --PO 'map=.*/ggH_hww:r_ggH_hww[1,0,10]' --PO 'map=.*/qqH_hww:r_qqH_hww[1,0,10]' --PO 'map=.*/WH_hww:r_WH_hww[1,0,10]' --PO 'map=.*/ZH_hww:r_ZH_hww[1,0,10]' --PO 'map=.*/ttH_hww:r_ttH_hww[1,0,10]' -o $ws 2>&1
-
+    if [ $unfolding = 1 ]; then
+        echo "- Unfolding workspace"
+        text2workspace.py $combined_datacard -P HiggsAnalysis.CombinedLimit.PhysicsModel:multiSignalModel --PO verbose --PO 'map=.*/ggH_hww_200_300:r_ggH_pt200_300[1,-10,10]' --PO 'map=.*/ggH_hww_300_450:r_ggH_pt300_450[1,-10,10]' --PO 'map=.*/ggH_hww_450_Inf:r_ggH_pt450_inf[1,-10,10]' --PO 'map=.*/qqH_hww_mjj_1000_Inf:r_qqH_mjj_1000_inf[1,-10,10]' --PO 'map=.*/WH_hww:r_WH_hww[1,-10,10]' --PO 'map=.*/ZH_hww:r_ZH_hww[1,-10,10]' --PO 'map=.*/ttH_hww:r_ttH_hww[1,-10,10]' -o $ws 2>&1 | tee $logsdir/text2workspace.txt
+    else
+        echo "- Inclusive workspace"
+        if [ $multisig = 1 ]; then
+            echo "- Multiple POIs workspace"
+            # seperate POIs (to make Table 30 in v11)
+            text2workspace.py $combined_datacard -P HiggsAnalysis.CombinedLimit.PhysicsModel:multiSignalModel --PO verbose --PO 'map=.*/ggH_hww:r_ggH_hww[1,0,10]' --PO 'map=.*/qqH_hww:r_qqH_hww[1,0,10]' --PO 'map=.*/WH_hww:r_WH_hww[1,0,10]' --PO 'map=.*/ZH_hww:r_ZH_hww[1,0,10]' --PO 'map=.*/ttH_hww:r_ttH_hww[1,0,10]' -o $ws 2>&1
+        else
+            echo "- Single POI workspace"
+            # single POI
+            text2workspace.py $combined_datacard -o $ws 2>&1 | tee $logsdir/text2workspace.txt    
+        fi
+    fi
+    echo "-------------------------"
 else
     if [ ! -f "$ws" ]; then
         echo "Workspace doesn't exist! Use the -w|--workspace option to make workspace first"
@@ -193,13 +227,24 @@ fi
 if [ $significance = 1 ]; then
     echo "Expected significance"
 
-    # single POI
-    combine -M Significance -d $ws -m 125 --expectSignal=1 --rMin -1 --rMax 5 -t -1
-
-    # seperate POIs (to make Table 30 in v11 of AN: uncomment either next line for VBF and the one after for ggF)
-    # combine -M Significance -d $ws -t -1 --redefineSignalPOIs r_qqH_hww --setParameters r_ggH_hww=1,r_qqH_hww=1,r_WH_hww=1,r_ZH_hww=1,r_ttH_hww=1 --freezeParameters r_WH_hww,r_ZH_hww,r_ttH_hww
-    # combine -M Significance -d $ws -t -1 --redefineSignalPOIs r_ggH_hww --setParameters r_ggH_hww=1,r_qqH_hww=1,r_WH_hww=1,r_ZH_hww=1,r_ttH_hww=1 --freezeParameters r_WH_hww,r_ZH_hww,r_ttH_hww
-
+    if [ $multisig = 1 ]; then
+        
+        if [ $vbf = 1 ]; then
+            
+            echo "VBF significance"
+            combine -M Significance -d $ws -t -1 --redefineSignalPOIs r_qqH_hww --setParameters r_ggH_hww=1,r_qqH_hww=1,r_WH_hww=1,r_ZH_hww=1,r_ttH_hww=1 --freezeParameters r_WH_hww,r_ZH_hww,r_ttH_hww
+        
+        elif [ $ggf = 1 ]; then
+            
+            echo "ggF Significance"
+            combine -M Significance -d $ws -t -1 --redefineSignalPOIs r_ggH_hww --setParameters r_ggH_hww=1,r_qqH_hww=1,r_WH_hww=1,r_ZH_hww=1,r_ttH_hww=1 --freezeParameters r_WH_hww,r_ZH_hww,r_ttH_hww
+        else
+            echo "must provide either --ggf or --vbf"
+        fi
+    else
+        echo "Total significance"
+        combine -M Significance -d $ws -m 125 --expectSignal=1 --rMin -1 --rMax 5 -t -1
+    fi
 fi
 
 if [ $dfit = 1 ]; then
@@ -217,16 +262,7 @@ if [ $dfit_asimov = 1 ]; then
     -t -1 --expectSignal=1 --saveWorkspace -n Asimov --ignoreCovWarning \
     --saveShapes --saveNormalizations --saveWithUncertainties --saveOverallShapes 2>&1 | tee $logsdir/FitDiagnosticsAsimov.txt
 
-    # w frequentist toys mean prefit data
-    # w/o frequentist toys mean prefit asimov
-
-    # echo "Fit Diagnostics Asimov"
-    # combine -M FitDiagnostics -m 125 -d $ws \
-    # -t -1 --setParameters r_ggF=1,r_VBF=1,r_VH=1,r_ttH=1 --saveWorkspace --saveToys -n Asimov --ignoreCovWarning \
-    # --saveShapes --saveNormalizations --saveWithUncertainties --saveOverallShapes 2>&1 | tee $logsdir/FitDiagnosticsAsimov.txt
-    # python diffNuisances.py fitDiagnosticsAsimov.root --abs
 fi
-
 
 if [ $limits = 1 ]; then
     # echo "Expected limits"
@@ -251,39 +287,18 @@ if [ $impactsi = 1 ]; then
 fi
 
 
-# if [ $goftoys = 1 ]; then
-#     echo "GoF on toys"
-#     combine -M GoodnessOfFit -d $ws --algo=saturated -t 100 -s 1 -m 125 -n Toys
-# fi
+if [ $goftoys = 1 ]; then
+    echo "GoF on toys"
+    combine -M GoodnessOfFit -d $ws --algo=saturated -t 100 -s 1 -m 125 -n Toys
+fi
 
 if [ $gofdata = 1 ]; then
     echo "GoF on data"
     combine -M GoodnessOfFit -d $ws --algo=saturated -s 1 -m 125 -n Observed
 fi
 
+if [ $unfolding = 1 ]; then
 
-# if [ $unfolding = 1 ]; then
-#     echo "Combining cards:"
-#     for file in $ccargs; do
-#     echo "  ${file##*/}"
-#     done
-#     echo "-------------------------"
-#     combineCards.py $ccargs > $combined_datacard
+    combine -M MultiDimFit --algo singles -d $ws -t -1 --setParameters r_ggH_pt200_300=1,r_ggH_pt300_450=1,r_ggH_pt450_inf=1,r_qqH_mjj_1000_inf=1,r_WH_hww=1,r_ZH_hww=1,r_ttH_hww=1 --freezeParameters r_WH_hww,r_ZH_hww,r_ttH_hww
 
-#     # must use datacards_unfolding in cards_dir
-#     # must comment the workspace part above
-
-#     text2workspace.py $combined_datacard -P HiggsAnalysis.CombinedLimit.PhysicsModel:multiSignalModel --PO verbose --PO 'map=.*/ggH_hww_200_300:r_ggH_pt200_300[1,-10,10]' --PO 'map=.*/ggH_hww_300_450:r_ggH_pt300_450[1,-10,10]' --PO 'map=.*/ggH_hww_450_Inf:r_ggH_pt450_inf[1,-10,10]' --PO 'map=.*/qqH_hww:r_qqH_hww[1,-10,10]' --PO 'map=.*/WH_hww:r_WH_hww[1,-10,10]' --PO 'map=.*/ZH_hww:r_ZH_hww[1,-10,10]' --PO 'map=.*/ttH_hww:r_ttH_hww[1,-10,10]' -o $ws 2>&1 | tee $logsdir/text2workspace.txt
-
-#     combine -M MultiDimFit --algo singles -d $ws -t -1 --setParameters r_ggH_pt200_300=1,r_ggH_pt300_450=1,r_ggH_pt450_inf=1,r_qqH_hww=1,r_WH_hww=1,r_ZH_hww=1,r_ttH_hww=1 --freezeParameters r_WH_hww,r_ZH_hww,r_ttH_hww
-
-#     # --- MultiDimFit ---
-#     # best fit parameter values and profile-likelihood uncertainties: 
-#     # r_ggH_pt200_300 :    +1.000   -1.000/+4.796 (68%)
-#     # r_ggH_pt300_450 :    +1.000   -1.000/+1.916 (68%)
-#     # r_ggH_pt450_inf :    +1.000   -1.000/+2.523 (68%)
-#     #         r_qqH_hww :    +1.000   -0.990/+1.255 (68%)
-#     #         r_WH_hww :    +1.000   +0.000/+0.000 (68%)
-#     #         r_ZH_hww :    +1.000   +0.000/+0.000 (68%)
-#     #         r_ttH_hww :    +1.000   +0.000/+0.000 (68%)
-# fi
+fi

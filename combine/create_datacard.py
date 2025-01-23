@@ -54,10 +54,12 @@ def create_datacard(
     samples = sigs + bkgs
     if do_unfolding:
         samples.remove("ggF")
+        samples.remove("VBF")
     else:
         samples.remove("ggFpt200to300")
         samples.remove("ggFpt300to450")
         samples.remove("ggFpt450toInf")
+        samples.remove("mjj1000toInf")
 
     n_thww = rl.NuisanceParameter(f"{CMS_PARAMS_LABEL}_taggereff", "lnN")
     thww_unc = {
@@ -121,7 +123,7 @@ def create_datacard(
 
             if sName in sigs:
                 # tagger eff
-                if "VBF" in ChName:
+                if ("VBF" in ChName) or ("mjj" in ChName):
                     sample.setParamEffect(
                         n_thww,
                         thww_unc["VBF"][0],

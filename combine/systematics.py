@@ -9,7 +9,7 @@ ttbar_list = [
     "TTbar_LP_others",
 ]
 # bkgs += ttbar_list
-sigs = ["ggFpt200to300", "ggFpt300to450", "ggFpt450toInf", "ggF", "VBF", "WH", "ZH", "ttH"]
+sigs = ["mjj1000toInf", "ggFpt200to300", "ggFpt300to450", "ggFpt450toInf", "ggF", "VBF", "WH", "ZH", "ttH"]
 
 samples = sigs + bkgs + ["Fake"]
 
