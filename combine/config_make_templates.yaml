@@ -21,7 +21,7 @@ regions_sel:
     "ggFpt500toInf": (n_bjets_T==0) & (THWW>0.93) & ( (mjj<1000) | (deta<3.5) | (NumOtherJets<2) ) & (rec_higgs_pt>500) & (VH_fj_VScore<0.9)
 
     "WJetsCR": (n_bjets_T==0) & (THWW<0.905) & (rec_higgs_pt>250)
-    "TopCR": (n_bjets_T>0) & (rec_higgs_pt>250)
+    "TopCR": (n_bjets_T>0) & (rec_higgs_pt>250) & (THWW>0.90)
 
 samples_dir:
     "2018": ../eos/Dec20_hww_2018
