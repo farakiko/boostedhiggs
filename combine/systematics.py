@@ -35,7 +35,8 @@ def get_systematic_dict(years):
         # ISR/FSR
         "weight_PSFSR": (
             years,
-            sigs + ["TTbar", "WJetsLNu", "SingleTop"] + ttbar_list,
+            # sigs + ["TTbar", "WJetsLNu", "SingleTop"] + ttbar_list,
+            sigs + ["TTbar", "SingleTop"] + ttbar_list,
             {"ele": "weight_ele_PSFSR", "mu": "weight_mu_PSFSR"},
         ),
         "weight_PSISR": (
@@ -137,6 +138,20 @@ def get_systematic_dict(years):
                     [year],
                     sigs + bkgs,
                     {"ele": "weight_ele_pileup", "mu": "weight_mu_pileup"},
+                ),
+            },
+            **{
+                f"weight_pileup_{year}": (
+                    [year],
+                    sigs + bkgs,
+                    {"ele": "weight_ele_pileup", "mu": "weight_mu_pileup"},
+                ),
+            },
+            **{
+                f"weight_PSFSR_wjets_{year}": (
+                    [year],
+                    ["WJetsLNu"],
+                    {"ele": "weight_ele_PSFSR", "mu": "weight_mu_PSFSR"},
                 ),
             },
         }
