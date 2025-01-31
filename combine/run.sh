@@ -141,7 +141,7 @@ seed=$seed numtoys=$numtoys"
 ####################################################################################################
 
 dataset=data_obs
-cards_dir="templates/v12"
+cards_dir="templates/v13"
 
 if [ $unfolding = 1 ]; then
     cards_dir+="/datacards_unfolding"
@@ -172,13 +172,13 @@ combined_datacard=${outdir}/combined.txt
 ws=${outdir}/workspace.root
 
 ################# Edit below which cards you want to provide to combine
-# sr1="VBF"
+sr1="VBF"
 sr2="ggFpt250to350"
 sr3="ggFpt350to500"
 sr4="ggFpt500toInf"
-# ccargs="SR1=${cards_dir}/${sr1}.txt SR2=${cards_dir}/${sr2}.txt SR3=${cards_dir}/${sr3}.txt SR4=${cards_dir}/${sr4}.txt"
+ccargs="SR1=${cards_dir}/${sr1}.txt SR2=${cards_dir}/${sr2}.txt SR3=${cards_dir}/${sr3}.txt SR4=${cards_dir}/${sr4}.txt"
 # ccargs="SR1=${cards_dir}/${sr1}.txt"
-ccargs="SR2=${cards_dir}/${sr2}.txt SR3=${cards_dir}/${sr3}.txt SR4=${cards_dir}/${sr4}.txt"
+# ccargs="SR2=${cards_dir}/${sr2}.txt SR3=${cards_dir}/${sr3}.txt SR4=${cards_dir}/${sr4}.txt"
 
 cr1="TopCR"
 cr2="WJetsCR"
@@ -207,7 +207,7 @@ if [ $workspace = 1 ]; then
         else
             echo "- Single POI workspace"
             # single POI
-            text2workspace.py $combined_datacard -o $ws 2>&1 | tee $logsdir/text2workspace.txt    
+            text2workspace.py $combined_datacard --channel-masks -o $ws 2>&1 | tee $logsdir/text2workspace.txt    
         fi
     fi
     echo "-------------------------"
@@ -243,11 +243,18 @@ if [ $significance = 1 ]; then
 fi
 
 if [ $dfit = 1 ]; then
-    echo "Fit Diagnostics"
-    combine -M FitDiagnostics -m 125 -d $ws \
-    --expectSignal=1 --saveWorkspace --saveToys -n Blinded --ignoreCovWarning \
-    --saveShapes --saveNormalizations --saveWithUncertainties --saveOverallShapes 2>&1 | tee $logsdir/FitDiagnosticsBlinded.txt
 
+    # combine -M MultiDimFit -d $ws -n _paramFit_test_wjetsnormSF --algo impact --redefineSignalPOIs r -P wjetsnormSF --floatOtherPOIs 1 --saveInactivePOI 1 --robustFit 1 --rMin -10 --rMax 10 -m 125 -v2 --setParameters ps_fsr_wjets=1 --freezeParameters ps_fsr_wjets
+    
+    # combine -M MultiDimFit -d $ws -n _paramFit_test_CMS_HWW_boosted_WJetsCR_mcstat_bin4 --algo impact --redefineSignalPOIs r -P CMS_HWW_boosted_WJetsCR_mcstat_bin4 --floatOtherPOIs 1 --saveInactivePOI 1 --robustFit 1 --rMin -20 --rMax 20 -m 125 -v2
+
+    # combine -M MultiDimFit -d $ws --algo grid  -m 125 --rMin -10 --rMax 10 --points 20 -P CMS_HWW_boosted_taggereff --redefineSignalPOIs r --floatOtherPOIs 1 --setParameterRanges name=min,max[:CMS_HWW_boosted_taggereff=-3,3:]
+    # combine -M MultiDimFit -d $ws --algo grid -n test_ -m 125 --rMin -10 --rMax 10 --points 30 --freezeParameters allConstrainedNuisances
+
+    combine -M MultiDimFit -d $ws -n test_ --algo grid -P CMS_HWW_boosted_taggereff_ggF -m 125 --rMin 0 --rMax 10 --setParameterRanges name=min,max[:CMS_HWW_boosted_taggereff_ggF=-3,3:] --points 60 --floatOtherPOIs 1  --setParameters mask_SR1=1
+
+    # plot 1D scan
+    # python3 CMSSW_14_1_0_pre4/src/HiggsAnalysis/CombinedLimit/scripts/plot1DScan.py higgsCombinetest_.MultiDimFit.mH125.root -o output --POI CMS_HWW_boosted_taggereff 
 fi
 
 if [ $dfit_asimov = 1 ]; then
@@ -275,31 +282,80 @@ if [ $impactsi = 1 ]; then
 
     if [ $unblind = 1 ]; then
         echo Impacts unblinded
-        combineTool.py -M Impacts -d $ws --rMin -1 --rMax 2 -m 125 --robustFit 1 --doInitialFit --expectSignal 1
-        combineTool.py -M Impacts -d $ws --rMin -1 --rMax 2 -m 125 --robustFit 1 --doFits --expectSignal 1 --parallel 50
-        combineTool.py -M Impacts -d $ws --rMin -1 --rMax 2 -m 125 --robustFit 1 --output impacts.json --expectSignal 1
+        combineTool.py -M Impacts -d $ws --rMin -10 --rMax 10 -m 125 --robustFit 1 --doInitialFit --expectSignal 1
+        combineTool.py -M Impacts -d $ws --rMin -10 --rMax 10 -m 125 --robustFit 1 --doFits --expectSignal 1 --parallel 50
+        combineTool.py -M Impacts -d $ws --rMin -10 --rMax 10 -m 125 --robustFit 1 --output impacts.json --expectSignal 1
         plotImpacts.py -i impacts.json -o impacts --blind
+
+
+        # combineTool.py -M Impacts -d $ws --rMin -10 --rMax 10 -m 125 --robustFit 1 --doInitialFit --expectSignal 1 --named CMS_pileup_2018
+        # combineTool.py -M Impacts -d $ws --rMin -10 --rMax 10 -m 125 --robustFit 1 --doFits --expectSignal 1 --parallel 50 --named CMS_pileup_2018
+        # combineTool.py -M Impacts -d $ws --rMin -10 --rMax 10 -m 125 --robustFit 1 --output impacts.json --expectSignal 1 --named CMS_pileup_2018
+        # plotImpacts.py -i impacts.json -o impacts --blind
+
+        #  --setParameters mask_SR1=1
+
+        # combineTool.py -M Impacts -d $ws -m 125 --robustFit 1 --doInitialFit --named CMS_HWW_boosted_taggereff --setParameters r=0 --freezeParameters r
+        # combineTool.py -M Impacts -d $ws -m 125 --robustFit 1 --doFits --parallel 50 --named CMS_HWW_boosted_taggereff --setParameters r=0 --freezeParameters r
+        # combineTool.py -M Impacts -d $ws -m 125 --robustFit 1 --output impacts.json --named CMS_HWW_boosted_taggereff --setParameters r=0 --freezeParameters r
+        # plotImpacts.py -i impacts.json -o impacts --blind        
+
+        # combineTool.py -M Impacts -d $ws --rMin -10 --rMax 10 -m 125 --robustFit 1 --doInitialFit --expectSignal 1 --named ps_fsr_wjets_2018,ps_fsr_wjets_2017,ps_fsr_wjets_2016,ps_fsr_wjets_2016APV
+        # combineTool.py -M Impacts -d $ws --rMin -10 --rMax 10 -m 125 --robustFit 1 --doFits --expectSignal 1 --parallel 50 --named ps_fsr_wjets_2018,ps_fsr_wjets_2017,ps_fsr_wjets_2016,ps_fsr_wjets_2016APV
+        # combineTool.py -M Impacts -d $ws --rMin -10 --rMax 10 -m 125 --robustFit 1 --output impacts.json --expectSignal 1 --named ps_fsr_wjets_2018,ps_fsr_wjets_2017,ps_fsr_wjets_2016,ps_fsr_wjets_2016APV
+        # plotImpacts.py -i impacts.json -o impacts --blind
     else
         echo Impacts blinded
         combineTool.py -M Impacts -d $ws -t -1 --rMin -1 --rMax 2 -m 125 --robustFit 1 --doInitialFit --expectSignal 1
         combineTool.py -M Impacts -d $ws -t -1 --rMin -1 --rMax 2 -m 125 --robustFit 1 --doFits --expectSignal 1 --parallel 50
         combineTool.py -M Impacts -d $ws -t -1 --rMin -1 --rMax 2 -m 125 --robustFit 1 --output impacts.json --expectSignal 1
-        plotImpacts.py -i impacts.json -o impacts
+        plotImpacts.py -i impacts.json -o impacts      
     fi
 
 fi
 
-
 if [ $goftoys = 1 ]; then
     echo "GoF on toys"
-    combine -M GoodnessOfFit -d $ws --algo=saturated -t 100 -s 1 -m 125 --toysFrequentist -n Toys_ggF | tee $logsdir/GoF_toys.txt
-    # combine -M GoodnessOfFit -d $ws --algo=saturated -t 100 -s 1 -m 125 --toysFrequentist -n Toys_result_bonly_CRonly --setParametersForFit mask_ch1=1 --setParametersForEval mask_ch1=0 --freezeParameters r --setParameters r=0
+    combine -M GoodnessOfFit -d $ws --algo=saturated -t 100 -s 1 -m 125 --toysFrequentist -n Toys | tee $logsdir/GoF_toys.txt
+    # combine -M GoodnessOfFit -d $ws --algo=saturated -t 100 -s 1 -m 125 --toysFrequentist -n Toys_test --setParameters ttbarnormSF=1.0,wjetsnormSF=1.0 --freezeParameters ttbarnormSF,wjetsnormSF
+
+    # combine -M GoodnessOfFit -d $ws --algo=saturated -t 100 -s 1 -m 125 --toysFrequentist -n Toys_SR --setParameters ttbarnormSF=1.0,wjetsnormSF=1.0,mask_CR1=1,mask_CR2=1 --freezeParameters ttbarnormSF,wjetsnormSF | tee $logsdir/GoF_toys.txt
+
+    # mask CR (!!!must freeze the rate params in the SRs; either to 1 or whatever they are when I fit to the CRs)
+    # look at the postfit 
+
+    
+    # # mask SR1 --> masking VBF (!!!must freeze the rate constraints)
+    # combine -M GoodnessOfFit -d $ws --algo=saturated -t 100 -s 1 -m 125 --toysFrequentist -n Toys_ggF --setParameters mask_SR1=1 | tee $logsdir/GoF_toys.txt
+
+    # # mask SR2, SR3, SR4 --> masking ggF  (!!!must freeze the rate constraints)
+    # combine -M GoodnessOfFit -d $ws --algo=saturated -t 100 -s 1 -m 125 --toysFrequentist -n Toys_VBF --setParameters mask_SR2=1,mask_SR3=1,mask_SR4=1 | tee $logsdir/GoF_toys.txt
+
+    # # mask all signal regions
+    # combine -M GoodnessOfFit -d $ws --algo=saturated -t 100 -s 1 -m 125 --toysFrequentist -n Toys_CR --setParameters r=0,mask_SR1=1,mask_SR2=1,mask_SR3=1,mask_SR4=1 --freezeParameters r | tee $logsdir/GoF_toys.txt
+    # combine -M GoodnessOfFit -d $ws --algo=saturated -t 100 -s 1 -m 125 --toysFrequentist -n Toys_wjetsCR --setParameters r=0,mask_SR1=1,mask_SR2=1,mask_SR3=1,mask_SR4=1,mask_CR1=1 --freezeParameters r | tee $logsdir/GoF_toys.txt
+    # combine -M GoodnessOfFit -d $ws --algo=saturated -t 100 -s 1 -m 125 --toysFrequentist -n Toys_topCR --setParameters r=0,mask_SR1=1,mask_SR2=1,mask_SR3=1,mask_SR4=1,mask_CR2=1 --freezeParameters r | tee $logsdir/GoF_toys.txt
+
+
 fi
 
 if [ $gofdata = 1 ]; then
     echo "GoF on data"
-    combine -M GoodnessOfFit -d $ws --algo=saturated -s 1 -m 125 -n Observed_ggF | tee $logsdir/GoF_data.txt
-    # combine -M GoodnessOfFit -d $ws --algo=saturated -n _result_bonly_CRonly --setParametersForFit mask_ch1=1 --setParametersForEval mask_ch1=0 --freezeParameters r --setParameters r=0
+    combine -M GoodnessOfFit -d $ws --algo=saturated -s 1 -m 125 -n Observed | tee $logsdir/GoF_data.txt
+    # combine -M GoodnessOfFit -d $ws --algo=saturated -s 1 -m 125 -n Observed_SR --setParameters ttbarnormSF=1.0,wjetsnormSF=1.0,mask_CR1=1,mask_CR2=1 --freezeParameters ttbarnormSF,wjetsnormSF
+
+    # # mask SR1 --> masking VBF
+    # combine -M GoodnessOfFit -d $ws --algo=saturated -s 1 -m 125 -n Observed_ggF --setParameters mask_SR1=1 | tee $logsdir/GoF_data.txt
+
+    # mask SR2, SR3, SR4 --> masking ggF
+    # combine -M GoodnessOfFit -d $ws --algo=saturated -s 1 -m 125 -n Observed_VBF --setParameters mask_SR2=1,mask_SR3=1,mask_SR4=1 | tee $logsdir/GoF_data.txt
+
+    # mask all signal regions
+    # combine -M GoodnessOfFit -d $ws --algo=saturated -s 1 -m 125 -n Observed_CR --setParameters r=0,mask_SR1=1,mask_SR2=1,mask_SR3=1,mask_SR4=1 --freezeParameters r | tee $logsdir/GoF_data.txt
+    
+    # combine -M GoodnessOfFit -d $ws --algo=saturated -s 1 -m 125 -n Observed_wjetsCR --setParameters r=0,mask_SR1=1,mask_SR2=1,mask_SR3=1,mask_SR4=1,mask_SR4=1,mask_CR1=1 --freezeParameters r | tee $logsdir/GoF_data.txt
+    # combine -M GoodnessOfFit -d $ws --algo=saturated -s 1 -m 125 -n Observed_topCR --setParameters r=0,mask_SR1=1,mask_SR2=1,mask_SR3=1,mask_SR4=1,mask_SR4=1,mask_CR2=1 --freezeParameters r | tee $logsdir/GoF_data.txt
+
 
 fi
 

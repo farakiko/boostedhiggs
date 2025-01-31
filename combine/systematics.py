@@ -13,6 +13,8 @@ sigs = ["mjj1000toInf", "ggFpt200to300", "ggFpt300to450", "ggFpt450toInf", "ggF"
 
 samples = sigs + bkgs + ["Fake"]
 
+SIG_regions = ["VBF", "ggFpt250to350", "ggFpt350to500", "ggFpt500toInf"]
+CONTROL_regions = ["TopCR", "WJetsCR"]
 
 def get_systematic_dict(years):
     """
@@ -35,7 +37,8 @@ def get_systematic_dict(years):
         # ISR/FSR
         "weight_PSFSR": (
             years,
-            sigs + ["TTbar", "WJetsLNu", "SingleTop"] + ttbar_list,
+            # sigs + ["TTbar", "WJetsLNu", "SingleTop"] + ttbar_list,
+            sigs + ["TTbar", "SingleTop"] + ttbar_list,
             {"ele": "weight_ele_PSFSR", "mu": "weight_mu_PSFSR"},
         ),
         "weight_PSISR": (
@@ -147,9 +150,9 @@ def get_systematic_dict(years):
                 ),
             },
             **{
-                f"weight_PSFSR_{year}": (
+                f"weight_PSFSR_wjets_{year}": (
                     [year],
-                    sigs + ["TTbar", "WJetsLNu", "SingleTop"] + ttbar_list,
+                    ["WJetsLNu"],
                     {"ele": "weight_ele_PSFSR", "mu": "weight_mu_PSFSR"},
                 ),
             },

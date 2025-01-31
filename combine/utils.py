@@ -43,9 +43,6 @@ combine_samples = {
     "EWK": "EWKvjets",
     "DYJets": "DYJets",
     "JetsToQQ": "WZQQ",
-    # TODO: make sure it's WZQQ is NLO in next iteration
-    # "DYJets": "WZQQorDYJets",
-    # "JetsToQQ": "WZQQorDYJets",
 }
 
 # (name in templates, name in cards)
@@ -66,10 +63,8 @@ labels = {
     "SingleTop": "singletop",
     "Diboson": "diboson",
     "EWKvjets": "ewkvjets",
-    # TODO: make sure it's WZQQ is NLO in next iteration
     "DYJets": "zjets",
     "WZQQ": "wzqq",
-    # "WZQQorDYJets": "vjets",
     "Fake": "fake",
 }
 
@@ -191,14 +186,10 @@ def shape_to_num(var, nom, clip=1.5):
 
 
 def get_template(h, sample, region):
-    # massbins = h.axes["mass_observable"].edges
-    # return (h[{"Sample": sample, "Systematic": "nominal", "Category": category}].values(), massbins, "mass_observable")
     return h[{"Sample": sample, "Systematic": "nominal", "Region": region}]
 
 
 def get_template_diffbins(h, sample):
-    # massbins = h.axes["mass_observable"].edges
-    # return (h[{"Sample": sample, "Systematic": "nominal", "Category": category}].values(), massbins, "mass_observable")
     if sample not in h.axes["Sample"]:
         return 0
 
@@ -240,12 +231,11 @@ def blindBins(h: Hist, blind_region: List = [90, 160], blind_samples: List[str] 
     if len(blind_samples) >= 1:
         for blind_sample in blind_samples:
             sample_index = np.argmax(np.array(list(h.axes[0])) == blind_sample)
-            # h.view(flow=True)[sample_index, :, :, lv:rv] = 0
+
             h.view(flow=True)[sample_index, :, :, lv:rv].value = 0
             h.view(flow=True)[sample_index, :, :, lv:rv].variance = 0
 
     else:
-        # h.view(flow=True)[:, :, :, lv:rv] = 0
         h.view(flow=True)[:, :, :, lv:rv].value = 0
         h.view(flow=True)[:, :, :, lv:rv].variance = 0
 

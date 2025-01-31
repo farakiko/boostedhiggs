@@ -1,7 +1,7 @@
-# Datacard for <Channel (TopCR) instance at 0x7fbffe979b50> generated on 2025-01-24 11:33:29.807563
+# Datacard for <Channel (TopCR) instance at 0x7f3d81beac10> generated on 2025-01-31 08:49:52.039422
 imax 1 # number of categories ('bins' but here we are using shape templates)
 jmax 11 # number of samples minus 1
-kmax 147 # number of nuisance parameters
+kmax 150 # number of nuisance parameters
 shapes * TopCR testModel.root testModel:TopCR_$PROCESS testModel:TopCR_$PROCESS_$SYSTEMATIC
 bin TopCR
 observation 390.000
@@ -14,14 +14,14 @@ CMS_HWW_boosted_EW_unc lnN                                                 -  0.
 CMS_HWW_boosted_FakeRate_EWK_SF_statistical_uncertainty shape              -              -              -              -              -              -              -              -              -              -              -  1.0000
 CMS_HWW_boosted_FakeRate_statistical_uncertainty shape                     -              -              -              -              -              -              -              -              -              -              -  1.0000
 CMS_HWW_boosted_Fake_SF_uncertainty lnN                                    -              -              -              -              -              -              -              -              -              -              -  1.2500
-CMS_HWW_boosted_TopCR_mcstat_bin0 shape                               1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000  1.0000
-CMS_HWW_boosted_TopCR_mcstat_bin1 shape                               1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000  1.0000
-CMS_HWW_boosted_TopCR_mcstat_bin2 shape                               1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000  1.0000
-CMS_HWW_boosted_TopCR_mcstat_bin3 shape                               1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000  1.0000
-CMS_HWW_boosted_TopCR_mcstat_bin4 shape                               1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000  1.0000
-CMS_HWW_boosted_TopCR_mcstat_bin5 shape                               1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000  1.0000
-CMS_HWW_boosted_TopCR_mcstat_bin6 shape                               1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000  1.0000
-CMS_HWW_boosted_TopCR_mcstat_bin7 shape                               1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000  1.0000
+CMS_HWW_boosted_TopCR_mcstat_bin0 shape                               1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000       -
+CMS_HWW_boosted_TopCR_mcstat_bin1 shape                               1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000       -
+CMS_HWW_boosted_TopCR_mcstat_bin2 shape                               1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000       -
+CMS_HWW_boosted_TopCR_mcstat_bin3 shape                               1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000       -
+CMS_HWW_boosted_TopCR_mcstat_bin4 shape                               1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000       -
+CMS_HWW_boosted_TopCR_mcstat_bin5 shape                               1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000       -
+CMS_HWW_boosted_TopCR_mcstat_bin6 shape                               1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000       -
+CMS_HWW_boosted_TopCR_mcstat_bin7 shape                               1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000       -
 CMS_HWW_boosted_TopPtReweight shape                                        -              -              -              -              -         1.0000              -              -              -              -              -       -
 CMS_HWW_boosted_W_d1kappa_EW lnN                                           -              -              -              -              -              -         1.0092              -         1.0100              -              -       -
 CMS_HWW_boosted_W_d2kappa_EW lnN                                           -              -              -              -              -              -         1.0126              -              -              -              -       -
@@ -146,7 +146,10 @@ ps_fsr_qqH shape                                                           -    
 ps_fsr_singletop shape                                                     -              -              -              -              -              -              -         1.0000              -              -              -       -
 ps_fsr_ttH shape                                                           -              -              -              -         1.0000              -              -              -              -              -              -       -
 ps_fsr_ttbar shape                                                         -              -              -              -              -         1.0000              -              -              -              -              -       -
-ps_fsr_wjets shape                                                         -              -              -              -              -              -         1.0000              -              -              -              -       -
+ps_fsr_wjets_2016 shape                                                    -              -              -              -              -              -         1.0000              -              -              -              -       -
+ps_fsr_wjets_2016APV shape                                                 -              -              -              -              -              -         1.0000              -              -              -              -       -
+ps_fsr_wjets_2017 shape                                                    -              -              -              -              -              -         1.0000              -              -              -              -       -
+ps_fsr_wjets_2018 shape                                                    -              -              -              -              -              -         1.0000              -              -              -              -       -
 ps_isr_WH shape                                                            -              -         1.0000              -              -              -              -              -              -              -              -       -
 ps_isr_ZH shape                                                            -              -              -         1.0000              -              -              -              -              -              -              -       -
 ps_isr_ggH shape                                                      1.0000              -              -              -              -              -              -              -              -              -              -       -
