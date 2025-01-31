@@ -61,14 +61,11 @@ def create_datacard(
     n_thww = {}
     n_thww["VBF"] = rl.NuisanceParameter(f"{CMS_PARAMS_LABEL}_taggereff_VBF", "lnN")
     n_thww["ggF"] = rl.NuisanceParameter(f"{CMS_PARAMS_LABEL}_taggereff_ggF", "lnN")
-    
+
     thww_unc = {
         "VBF": (1 + 0.093, 1 - 0.244),
         "ggF": (1 + 0.100233, 1 - 0.28017),
-        # "VBF": (1 + 0.095, 1 - 0.26),
-        # "ggF": (1 + 0.095, 1 - 0.26),
     }
-
 
     # fill datacard with systematics and rates
     for ChName in SIG_regions + CONTROL_regions:
@@ -100,7 +97,7 @@ def create_datacard(
             for sys_value, (sys_name, samples_to_cover, regions_to_cover) in sys_from_parquets.items():
 
                 if (sName in samples_to_cover) and (ChName in regions_to_cover):
-             
+
                     syst_up = hists_templates[{"Sample": sName, "Region": ChName, "Systematic": sys_name + "_up"}].values()
                     syst_do = hists_templates[{"Sample": sName, "Region": ChName, "Systematic": sys_name + "_down"}].values()
                     nominal = hists_templates[{"Sample": sName, "Region": ChName, "Systematic": "nominal"}].values()
@@ -117,14 +114,14 @@ def create_datacard(
                     else:
 
                         nominal[nominal == 0] = 1  # to avoid invalid value encountered in true_divide in "syst_up/nominal"
-                        
+
                         if "weight_pileup_2018" in sys_name:
                             print("Will smoothen weight_pileup_2018")
-                            max_variation = np.maximum(abs(nominal-syst_up), abs(nominal-syst_do))
+                            max_variation = np.maximum(abs(nominal - syst_up), abs(nominal - syst_do))
 
                             syst_up = nominal + max_variation
                             syst_do = nominal - max_variation
-                                                    
+
                         sample.setParamEffect(sys_value, (syst_up / nominal), (syst_do / nominal))
 
             if sName in sigs:
@@ -143,7 +140,7 @@ def create_datacard(
                     )
 
             ch.addSample(sample)
-        
+
         # add mcstats
         ch.autoMCStats(
             channel_name=f"{CMS_PARAMS_LABEL}_{ChName}",

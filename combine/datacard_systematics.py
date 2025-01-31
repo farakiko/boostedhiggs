@@ -3,7 +3,8 @@ from __future__ import division, print_function
 import json
 import logging
 import warnings
-from lib2to3.fixes.fix_operator import invocation
+
+# from lib2to3.fixes.fix_operator import invocation
 from typing import List
 
 import pandas as pd
@@ -259,7 +260,7 @@ def systs_from_parquets(years):
             "weight_PSFSR",
             ["WJetsLNu"],
             ["ggFpt250to350"],
-        ),        
+        ),
         rl.NuisanceParameter("ps_fsr_wjets_ggFpt350to500", "lnN"): (
             "weight_PSFSR",
             ["WJetsLNu"],
@@ -455,7 +456,7 @@ def systs_from_parquets(years):
                     "weight_ele_reco",
                     sigs + bkgs,
                     SIG_regions + CONTROL_regions,
-                ),        
+                ),
                 # trigger SF
                 rl.NuisanceParameter(f"{CMS_PARAMS_LABEL}_ele_trigger_stat_unc_{year}", "shape"): (
                     "trigger_ele_SF",
@@ -466,7 +467,7 @@ def systs_from_parquets(years):
                     f"weight_PSFSR_{year}",
                     ["WJetsLNu"],
                     SIG_regions + CONTROL_regions,
-                ),                    
+                ),
             },
         }
         if year != "2018":
@@ -477,7 +478,7 @@ def systs_from_parquets(years):
                         f"weight_L1Prefiring_{year}",
                         sigs + bkgs,
                         SIG_regions + CONTROL_regions,
-                    ),                        
+                    ),
                 },
             }
 
