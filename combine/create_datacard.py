@@ -116,7 +116,7 @@ def create_datacard(
                         nominal[nominal == 0] = 1  # to avoid invalid value encountered in true_divide in "syst_up/nominal"
 
                         if "weight_pileup_2018" in sys_name:
-                            print("Will smoothen weight_pileup_2018")
+                            # must smoothen weight_pileup_2018
                             max_variation = np.maximum(abs(nominal - syst_up), abs(nominal - syst_do))
 
                             syst_up = nominal + max_variation
