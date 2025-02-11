@@ -1,4 +1,4 @@
-bkgs = ["TTbar", "WJetsLNu", "SingleTop", "DYJets", "Diboson", "EWKvjets"]
+bkgs = ["TTbar", "WJetsLNu", "SingleTop", "DYJets", "Diboson", "EWKvjets", "WZQQ"]
 ttbar_list = [
     "TTbar_is_top_lq",
     "TTbar_is_top_lqq",
@@ -15,6 +15,7 @@ samples = sigs + bkgs + ["Fake"]
 
 SIG_regions = ["VBF", "ggFpt250to350", "ggFpt350to500", "ggFpt500toInf"]
 CONTROL_regions = ["TopCR", "WJetsCR"]
+
 
 def get_systematic_dict(years):
     """
@@ -37,8 +38,7 @@ def get_systematic_dict(years):
         # ISR/FSR
         "weight_PSFSR": (
             years,
-            # sigs + ["TTbar", "WJetsLNu", "SingleTop"] + ttbar_list,
-            sigs + ["TTbar", "SingleTop"] + ttbar_list,
+            sigs + ["TTbar", "WJetsLNu", "SingleTop"] + ttbar_list,
             {"ele": "weight_ele_PSFSR", "mu": "weight_mu_PSFSR"},
         ),
         "weight_PSISR": (
