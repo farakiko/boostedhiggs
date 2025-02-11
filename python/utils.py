@@ -245,8 +245,8 @@ def get_axis(var, massbin=5):
         "rec_higgs_etajet_m": hist2.axis.Variable(
             list(range(50, 240, 20)), name="var", label=r"PKU definition Higgs reconstructed mass [GeV]", overflow=True
         ),
-        "rec_higgs_pt": hist2.axis.Regular(
-            40, 250, 1000, name="var", label=r"Higgs reconstructed $p_T$ [GeV]", overflow=True
+        "rec_higgs_pt": hist2.axis.Variable(
+            [250, 350, 500, 1000], name="var", label=r"Higgs reconstructed $p_T$ [GeV]", overflow=True
         ),
         "fj_pt_over_lep_pt": hist2.axis.Regular(35, 1, 10, name="var", label=r"$p_T$(Jet) / $p_T$(Lepton)", overflow=True),
         "rec_higgs_pt_over_lep_pt": hist2.axis.Regular(
