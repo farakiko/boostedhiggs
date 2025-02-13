@@ -280,7 +280,8 @@ def get_axis(var, massbin=5):
         "SecondFatjet_pt": hist2.axis.Regular(
             30, 250, 600, name="var", label=r"Sub-Leading AK8 jet $p_T$ [GeV]", overflow=True
         ),
-        "fj_pt": hist2.axis.Regular(30, 250, 600, name="var", label=r"Higgs candidate jet $p_T$ [GeV]", overflow=True),
+        # "fj_pt": hist2.axis.Regular(30, 250, 600, name="var", label=r"Higgs candidate jet $p_T$ [GeV]", overflow=True),
+        "fj_pt": hist2.axis.Regular(10, 250, 600, name="var", label=r"Higgs candidate jet $p_T$ [GeV]", overflow=True),
         "lep_pt": hist2.axis.Regular(40, 30, 400, name="var", label=r"Lepton $p_T$ [GeV]", overflow=True),
         "pt_ratio": hist2.axis.Regular(40, 0, 2, name="var", label=r"Lepton $p_T$ / Jet $p_T$", overflow=True),
         "rho": hist2.axis.Regular(50, -1, -10, name="var", label=r"Rho", overflow=True),
@@ -292,7 +293,8 @@ def get_axis(var, massbin=5):
         "lep_fj_dr": hist2.axis.Regular(
             35, 0.03, 0.8, name="var", label=r"$\Delta R(\ell, \mathrm{Higgs \ candidate \ jet})$", overflow=True
         ),
-        "met_pt": hist2.axis.Regular(40, 20, 250, name="var", label=r"MET [GeV]", overflow=True),
+        # "met_pt": hist2.axis.Regular(40, 20, 250, name="var", label=r"MET [GeV]", overflow=True),
+        "met_pt": hist2.axis.Regular(10, 20, 250, name="var", label=r"MET [GeV]", overflow=True),
         "met_phi": hist2.axis.Regular(40, -3.14, 3.14, name="var", label=r"MET $\Phi$", overflow=True),
         "met_fj_dphi": hist2.axis.Regular(
             35,
@@ -306,7 +308,7 @@ def get_axis(var, massbin=5):
         "ht": hist2.axis.Regular(30, 400, 1400, name="var", label=r"ht [GeV]", overflow=True),
         "rec_W_qq_m": hist2.axis.Regular(40, 0, 160, name="var", label=r"Reconstructed $W_{qq}$ mass [GeV]", overflow=True),
         "rec_higgs_m": hist2.axis.Variable(
-            list(range(65, 255, massbin)), name="var", label=r"Higgs reconstructed mass [GeV]", overflow=True
+            list(range(75, 235, massbin)), name="var", label=r"Higgs reconstructed mass [GeV]", overflow=True
         ),
         "rec_W_lnu_m": hist2.axis.Regular(
             40, 0, 160, name="var", label=r"Reconstructed $W_{\ell \nu}$ mass [GeV]", overflow=True
