@@ -18,10 +18,22 @@ plt.style.use(hep.style.CMS)
 warnings.filterwarnings("ignore", message="Found duplicate branch ")
 
 
+# df = 1
+
+# mapping_dict = {
+#     "mjj350-700": (df["VBF"]["lep"]["STXS_finecat"] % 100 == 17) | (df["VBF"]["lep"]["STXS_finecat"] % 100 == 18),
+#     "mjj700-1000": (df["VBF"]["lep"]["STXS_finecat"] % 100 == 19) | (df["VBF"]["lep"]["STXS_finecat"] % 100 == 20),
+#     "mjj1000-1500": (df["VBF"]["lep"]["STXS_finecat"] % 100 == 21) | (df["VBF"]["lep"]["STXS_finecat"] % 100 == 22),
+#     "mjj1500plus": (df["VBF"]["lep"]["STXS_finecat"] % 100 == 23) | (df["VBF"]["lep"]["STXS_finecat"] % 100 == 24),
+# }
+
+
 combine_samples_by_name = {
     "GluGluHToWW_Pt-200ToInf_M-125": "ggF",
+    "GluGluHToWW_Pt-200ToInf_M-125_Rivet": "ggF",
     "GluGluHToWWToLNuQQ_M-125_TuneCP5_13TeV_powheg_jhugen751_pythia8": "ggF",  # inclusive sample
     "VBFHToWWToAny_M-125_TuneCP5_withDipoleRecoil": "VBF",
+    "VBFHToWWToAny_M-125_TuneCP5_withDipoleRecoil_Rivet": "VBF",
     "ttHToNonbb_M125": "ttH",
     "HWminusJ_HToWW_M-125": "WH",
     "HWplusJ_HToWW_M-125": "WH",
@@ -221,6 +233,9 @@ label_by_ch = {"mu": "Muon", "ele": "Electron"}
 
 def get_axis(var, massbin=5):
     axis_dict = {
+        "dR_genlep_recolep": hist2.axis.Regular(
+            35, 0, 0.02, name="var", label=r"$\Delta R(\ell_{gen}, \ell_{reco})$", overflow=True
+        ),
         "Zmass": hist2.axis.Regular(40, 30, 450, name="var", label=r"Zmass [GeV]", overflow=True),
         "fj_bjets_ophem": hist2.axis.Regular(35, 0, 1, name="var", label=r"max btagFlavB (opphem)", overflow=True),
         "fj_bjets": hist2.axis.Regular(35, 0, 1, name="var", label=r"max btagFlavB", overflow=True),
@@ -230,8 +245,8 @@ def get_axis(var, massbin=5):
         "rec_higgs_etajet_m": hist2.axis.Variable(
             list(range(50, 240, 20)), name="var", label=r"PKU definition Higgs reconstructed mass [GeV]", overflow=True
         ),
-        "rec_higgs_pt": hist2.axis.Regular(
-            40, 250, 1000, name="var", label=r"Higgs reconstructed $p_T$ [GeV]", overflow=True
+        "rec_higgs_pt": hist2.axis.Variable(
+            [250, 350, 500, 1000], name="var", label=r"Higgs reconstructed $p_T$ [GeV]", overflow=True
         ),
         "fj_pt_over_lep_pt": hist2.axis.Regular(35, 1, 10, name="var", label=r"$p_T$(Jet) / $p_T$(Lepton)", overflow=True),
         "rec_higgs_pt_over_lep_pt": hist2.axis.Regular(
@@ -256,8 +271,8 @@ def get_axis(var, massbin=5):
         ),
         "nj": hist2.axis.Regular(40, 0, 10, name="var", label="number of jets outside candidate jet", overflow=True),
         "inclusive_score": hist2.axis.Regular(35, 0, 1, name="var", label=r"tagger score", overflow=True),
-        # "THWW": hist2.axis.Regular(25, 0, 1, name="var", label=r"$T_{HWW}$", overflow=True),
-        "THWW": hist2.axis.Regular(8, 0.9, 1, name="var", label=r"$T_{HWW}$", overflow=True),
+        "THWW": hist2.axis.Regular(25, 0, 1, name="var", label=r"$T_{HWW}$", overflow=True),
+        # "THWW": hist2.axis.Regular(8, 0.9, 1, name="var", label=r"$T_{HWW}$", overflow=True),
         "fj_ParT_inclusive_score": hist2.axis.Regular(35, 0, 1, name="var", label=r"ParT-Finetuned score", overflow=True),
         "fj_ParT_all_score": hist2.axis.Regular(35, 0, 1, name="var", label=r"tagger score", overflow=True),
         # AN
@@ -265,7 +280,8 @@ def get_axis(var, massbin=5):
         "SecondFatjet_pt": hist2.axis.Regular(
             30, 250, 600, name="var", label=r"Sub-Leading AK8 jet $p_T$ [GeV]", overflow=True
         ),
-        "fj_pt": hist2.axis.Regular(30, 250, 600, name="var", label=r"Higgs candidate jet $p_T$ [GeV]", overflow=True),
+        # "fj_pt": hist2.axis.Regular(30, 250, 600, name="var", label=r"Higgs candidate jet $p_T$ [GeV]", overflow=True),
+        "fj_pt": hist2.axis.Regular(20, 250, 600, name="var", label=r"Higgs candidate jet $p_T$ [GeV]", overflow=True),
         "lep_pt": hist2.axis.Regular(40, 30, 400, name="var", label=r"Lepton $p_T$ [GeV]", overflow=True),
         "pt_ratio": hist2.axis.Regular(40, 0, 2, name="var", label=r"Lepton $p_T$ / Jet $p_T$", overflow=True),
         "rho": hist2.axis.Regular(50, -1, -10, name="var", label=r"Rho", overflow=True),
@@ -277,7 +293,8 @@ def get_axis(var, massbin=5):
         "lep_fj_dr": hist2.axis.Regular(
             35, 0.03, 0.8, name="var", label=r"$\Delta R(\ell, \mathrm{Higgs \ candidate \ jet})$", overflow=True
         ),
-        "met_pt": hist2.axis.Regular(40, 20, 250, name="var", label=r"MET [GeV]", overflow=True),
+        # "met_pt": hist2.axis.Regular(40, 20, 250, name="var", label=r"MET [GeV]", overflow=True),
+        "met_pt": hist2.axis.Regular(20, 20, 250, name="var", label=r"MET [GeV]", overflow=True),
         "met_phi": hist2.axis.Regular(40, -3.14, 3.14, name="var", label=r"MET $\Phi$", overflow=True),
         "met_fj_dphi": hist2.axis.Regular(
             35,
@@ -291,7 +308,7 @@ def get_axis(var, massbin=5):
         "ht": hist2.axis.Regular(30, 400, 1400, name="var", label=r"ht [GeV]", overflow=True),
         "rec_W_qq_m": hist2.axis.Regular(40, 0, 160, name="var", label=r"Reconstructed $W_{qq}$ mass [GeV]", overflow=True),
         "rec_higgs_m": hist2.axis.Variable(
-            list(range(45, 255, massbin)), name="var", label=r"Higgs reconstructed mass [GeV]", overflow=True
+            list(range(75, 235, massbin)), name="var", label=r"Higgs reconstructed mass [GeV]", overflow=True
         ),
         "rec_W_lnu_m": hist2.axis.Regular(
             40, 0, 160, name="var", label=r"Reconstructed $W_{\ell \nu}$ mass [GeV]", overflow=True
@@ -727,7 +744,8 @@ def plot_hists(
                     )
 
         ax.set_ylabel("Events")
-        ax.set_xlabel("")  # because the bottom plot will have the label
+        if "Data" in samples:
+            ax.set_xlabel("")  # because the bottom plot will have the label
 
         if rax is not None:
             rax.set_ylabel("Ratio", fontsize=20, labelpad=15)

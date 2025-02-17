@@ -2,108 +2,15 @@
 
 import json
 import os
-import pickle as pkl
 import warnings
 
-import hist as hist2
 import matplotlib.pyplot as plt
 import mplhep as hep
 import numpy as np
-import onnx
-import onnxruntime as ort
-import scipy
 
 plt.style.use(hep.style.CMS)
 
 warnings.filterwarnings("ignore", message="Found duplicate branch ")
-
-
-combine_samples_by_name = {
-    "GluGluHToWW_Pt-200ToInf_M-125": "ggF",
-    "VBFHToWWToAny_M-125_TuneCP5_withDipoleRecoil": "VBF",
-    "ttHToNonbb_M125": "ttH",
-    "HWminusJ_HToWW_M-125": "WH",
-    "HWplusJ_HToWW_M-125": "WH",
-    "HZJ_HToWW_M-125": "ZH",
-    "GluGluZH_HToWW_M-125_TuneCP5_13TeV-powheg-pythia8": "ZH",
-    "GluGluHToTauTau": "HTauTau",
-}
-
-combine_samples = {
-    # data
-    "SingleElectron_": "Data",
-    "SingleMuon_": "Data",
-    "EGamma_": "Data",
-    # bkg
-    "QCD_Pt": "QCD",
-    "TT": "TTbar",
-    "WJetsToLNu_": "WJetsLNu",
-    "ST_": "SingleTop",
-    "WW": "Diboson",
-    "WZ": "Diboson",
-    "ZZ": "Diboson",
-    "EWK": "EWKvjets",
-    # TODO: make sure it's WZQQ is NLO in next iteration
-    "DYJets": "WZQQorDYJets",
-    "JetsToQQ": "WZQQorDYJets",
-}
-
-signals = ["VBF", "ggF"]
-
-
-def get_sum_sumgenweight(pkl_files, year, sample):
-    sum_sumgenweight = 0
-    for ifile in pkl_files:
-        # load and sum the sumgenweight of each
-        with open(ifile, "rb") as f:
-            metadata = pkl.load(f)
-        sum_sumgenweight = sum_sumgenweight + metadata[sample][year]["sumgenweight"]
-    return sum_sumgenweight
-
-
-def get_xsecweight(pkl_files, year, sample, is_data, luminosity):
-    if not is_data:
-        # find xsection
-        f = open("../fileset/xsec_pfnano.json")
-        xsec = json.load(f)
-        f.close()
-        try:
-            xsec = eval(str((xsec[sample])))
-        except ValueError:
-            print(f"sample {sample} doesn't have xsecs defined in xsec_pfnano.json so will skip it")
-            return None
-
-        # get overall weighting of events.. each event has a genweight...
-        # sumgenweight sums over events in a chunk... sum_sumgenweight sums over chunks
-        xsec_weight = (xsec * luminosity) / get_sum_sumgenweight(pkl_files, year, sample)
-    else:
-        xsec_weight = 1
-    return xsec_weight
-
-
-# ---------------------------------------------------------
-# TAGGER STUFF
-def get_finetuned_score(data, modelv="v2_nor2"):
-    # add finetuned tagger score
-    PATH = f"../../weaver-core-dev/experiments_finetuning/{modelv}/model.onnx"
-
-    input_dict = {
-        "highlevel": data.loc[:, "fj_ParT_hidNeuron000":"fj_ParT_hidNeuron127"].values.astype("float32"),
-    }
-
-    onnx_model = onnx.load(PATH)
-    onnx.checker.check_model(onnx_model)
-
-    ort_sess = ort.InferenceSession(
-        PATH,
-        providers=["AzureExecutionProvider"],
-    )
-    outputs = ort_sess.run(None, input_dict)
-
-    return scipy.special.softmax(outputs[0], axis=1)[:, 0]
-
-
-# ---------------------------------------------------------
 
 # PLOTTING UTILS
 color_by_sample = {
@@ -127,7 +34,14 @@ color_by_sample = {
     "WZQQ": "khaki",
     "WZQQorDYJets": "khaki",
     "Fake": "tab:orange",
+    ###################################
+    # stxs
+    "ggH_hww_200_300": "lightsteelblue",
+    "ggH_hww_300_450": "tab:olive",
+    "ggH_hww_450_Inf": "tab:brown",
+    "qqH_hww_mjj_1000_Inf": "peru",
 }
+
 
 plot_labels = {
     "ggF": "ggF",
@@ -158,29 +72,18 @@ plot_labels = {
     "WZQQ": r"V$(qq)$",
     "WZQQorDYJets": r"W$(qq)$/Z(inc.)+jets",
     "Fake": "Fake",
+    ###################################
+    # stxs
+    "ggH_hww_200_300": r"ggF $pT^{H}: 200-300$",
+    "ggH_hww_300_450": r"ggF $pT^{H}: 300-450$",
+    "ggH_hww_450_Inf": r"ggF $pT^{H}: 450-Inf$",
+    "qqH_hww_mjj_1000_Inf": r"VBF $m_{jj}: 1000-Inf$",
 }
 
 label_by_ch = {"mu": "Muon", "ele": "Electron"}
 
-label_by_ch = {"mu": "Muon", "ele": "Electron"}
 
-
-def plot_hists(
-    h,
-    years,
-    channels,
-    add_data,
-    logy,
-    add_soverb,
-    only_sig,
-    mult,
-    outpath,
-    text_="",
-    blind_region=None,
-    save_as=None,
-    remove_samples=[],
-):
-    # luminosity
+def get_lumi(years, channels):
     luminosity = 0
     for year in years:
         lum = 0
@@ -189,6 +92,37 @@ def plot_hists(
                 lum += json.load(f)[ch][year] / 1000.0
 
         luminosity += lum / len(channels)
+    return luminosity
+
+
+signals = ["VBF", "ggF", "ttH", "WH", "ZH"]
+signals += ["ggH_hww_200_300", "ggH_hww_300_450", "ggH_hww_450_Inf", "qqH_hww_mjj_1000_Inf"]
+
+
+def plot_hists(
+    h,
+    years,
+    channels,
+    mult,
+    out_dir,
+    out_fname=None,
+    ax_plot_sig=True,
+    ax_plot_bkg=True,
+    ax_plot_tot_sig=False,
+    ax_plot_tot_bkg_sig=False,
+    rax_plot_sig=True,
+    rax_plot_bkg=True,
+    rax_plot_tot_sig=True,
+    legend_title="",
+    blind_region=None,
+    label_on_plot="",
+    remove_samples=[],
+    ratio_plot="Data-MC",
+    use_postfit_errors=False,
+    postfit_errors_mc=None,
+    postfit_errors_data=None,
+    logy=False,
+):
 
     # get samples existing in histogram
     samples = [h.axes[0].value(i) for i in range(len(h.axes[0].edges))]
@@ -197,36 +131,43 @@ def plot_hists(
         if s in samples:
             samples.remove(s)
 
+    # get data
+    data = h[{"Sample": "Data"}]
+
+    # get signal
     signal_labels = [label for label in samples if label in signals]
-    bkg_labels = [label for label in samples if (label and label not in signal_labels and (label not in ["Data"]))]
-
-    # get total yield of backgrounds per label
-    # (sort by yield in fixed fj_pt histogram after pre-sel)
-    order_dic = {}
-    for bkg_label in bkg_labels:
-        order_dic[plot_labels[bkg_label]] = h[{"Sample": bkg_label}].sum()
-
-    # data
-    if add_data:
-        data = h[{"Sample": "Data"}]
-
-    # signal
     signal = [h[{"Sample": label}] for label in signal_labels]
-    # scale signal for non-log plots
-    if mult is not None:
-        if logy:
-            mult_factor = 1
-        else:
-            mult_factor = mult
-        signal_mult = [s * mult_factor for s in signal]
+    signal_mult = [s * mult for s in signal]
 
-    # background
+    tot_signal = None
+    for i, sig in enumerate(signal_mult):
+        if tot_signal is None:
+            tot_signal = signal[i].copy()
+        else:
+            tot_signal = tot_signal + signal[i]
+    tot_signal_mult = tot_signal * mult
+
+    # get bkg
+    bkg_labels = [label for label in samples if (label and label not in signal_labels and (label not in ["Data"]))]
     bkg = [h[{"Sample": label}] for label in bkg_labels]
 
+    # sum all of the background
+    if len(bkg) > 0:
+
+        tot_val_MC = np.array(bkg).sum(axis=0)
+        tot_val_MC_zero_mask = tot_val_MC == 0  # check if this is for the ratio or not
+        tot_val_MC[tot_val_MC_zero_mask] = 1
+
+        if use_postfit_errors is True:
+            tot_err_MC = postfit_errors_mc
+        else:
+            tot_err_MC = np.sqrt(tot_val_MC)
+
+    # setup the figure
     fig, (ax, rax) = plt.subplots(
         nrows=2,
         ncols=1,
-        figsize=(8, 8),
+        figsize=(9, 9),
         gridspec_kw={"height_ratios": (4, 1), "hspace": 0.07},
         sharex=True,
     )
@@ -241,79 +182,39 @@ def plot_hists(
         "alpha": 0.4,
     }
 
-    # sum all of the background
-    if len(bkg) > 0:
-        tot = bkg[0].copy()
-        for i, b in enumerate(bkg):
-            if i > 0:
-                tot = tot + b
+    ##########################
+    # ax start
 
-        tot_val = tot.values()
-        tot_val_zero_mask = tot_val == 0  # check if this is for the ratio or not
-        tot_val[tot_val_zero_mask] = 1
+    # plot the data
+    data_err_opts = {
+        "linestyle": "none",
+        "marker": ".",
+        "markersize": 10.0,
+        "elinewidth": 1,
+    }
 
-        tot_err_MC = np.sqrt(tot.values())
+    if blind_region:
+        massbins = data.axes[-1].edges
+        lv = int(np.searchsorted(massbins, blind_region[0], "right"))
+        rv = int(np.searchsorted(massbins, blind_region[1], "left") + 1)
 
-    if add_data and data:
-        data_err_opts = {
-            "linestyle": "none",
-            "marker": ".",
-            "markersize": 10.0,
-            "elinewidth": 1,
-        }
+        data.view(flow=True)[lv:rv].value = 0
+        data.view(flow=True)[lv:rv].variance = 0
 
-        if blind_region:
-            massbins = data.axes[-1].edges
-            lv = int(np.searchsorted(massbins, blind_region[0], "right"))
-            rv = int(np.searchsorted(massbins, blind_region[1], "left") + 1)
-
-            data.view(flow=True)[lv:rv].value = 0
-            data.view(flow=True)[lv:rv].variance = 0
-
-        hep.histplot(
-            data,
-            ax=ax,
-            histtype="errorbar",
-            color="k",
-            capsize=4,
-            yerr=True,
-            label="Data",
-            **data_err_opts,
-            flow="none",
-        )
-
-        if len(bkg) > 0:
-
-            data_val = data.values()
-            data_val[tot_val_zero_mask] = 1
-
-            # from hist.intervals import ratio_uncertainty
-            # yerr = ratio_uncertainty(data_val, tot_val, "poisson")
-            yerr = np.sqrt(data_val) / tot_val
-
-            hep.histplot(
-                data_val / tot_val,
-                tot.axes[0].edges,
-                yerr=yerr,
-                ax=rax,
-                histtype="errorbar",
-                color="k",
-                capsize=4,
-                flow="none",
-            )
-            rax.stairs(
-                values=1 + tot_err_MC / tot_val,
-                baseline=1 - tot_err_MC / tot_val,
-                edges=tot.axes[0].edges,
-                **errps,
-                label="Stat. unc.",
-            )
-
-            rax.axhline(1, ls="--", color="k")
-            rax.set_ylim(0.2, 1.8)
+    hep.histplot(
+        data,
+        ax=ax,
+        histtype="errorbar",
+        color="k",
+        capsize=4,
+        yerr=True,
+        label="Data",
+        **data_err_opts,
+        flow="none",
+    )
 
     # plot the background
-    if len(bkg) > 0 and not only_sig:
+    if len(bkg) > 0 and ax_plot_bkg:
         hep.histplot(
             bkg,
             ax=ax,
@@ -326,60 +227,265 @@ def plot_hists(
             color=[color_by_sample[bkg_label] for bkg_label in bkg_labels],
             flow="none",
         )
+
+        ax.stairs(
+            values=tot_val_MC + tot_err_MC,
+            baseline=tot_val_MC - tot_err_MC,
+            edges=bkg[0].copy().axes[0].edges,
+            **errps,
+            label="Syst. unc.",
+        )
+
+    # plot the signal
+    if len(signal) > 0 and ax_plot_sig:
+        for i, sig in enumerate(signal_mult):
+            if mult == 1:
+                lab_sig_mult = f"{plot_labels[signal_labels[i]]}"
+            else:
+                lab_sig_mult = f"{mult} * {plot_labels[signal_labels[i]]}"
+
+            hep.histplot(
+                sig,
+                ax=ax,
+                label=lab_sig_mult,
+                linewidth=3,
+                color=color_by_sample[signal_labels[i]],
+                flow="none",
+            )
+
+    # plot total sig
+    if len(signal) > 0 and ax_plot_tot_sig:
+
+        if mult == 1:
+            siglabel = r"Total Signal"
+        else:
+            siglabel = r"Total Signal $\times$" + f"{mult}"
+
+        hep.histplot(
+            tot_signal_mult,
+            ax=ax,
+            label=siglabel,
+            linewidth=2,
+            color="tab:red",
+            flow="none",
+        )
+        # # add MC stat errors
         # ax.stairs(
-        #     values=tot.values() + tot_err_MC,
-        #     baseline=tot.values() - tot_err_MC,
-        #     edges=tot.axes[0].edges,
+        #     values=tot_signal_mult.values() + np.sqrt(tot_signal_mult.values()),
+        #     baseline=tot_signal_mult.values() - np.sqrt(tot_signal_mult.values()),
+        #     edges=sig.axes[0].edges,
         #     **errps,
-        #     label="Stat. unc.",
         # )
 
-    # ax.text(0.5, 0.9, text_, fontsize=14, transform=ax.transAxes, weight="bold")
+    # plot total sig+bkg
+    if len(signal) > 0 and ax_plot_tot_bkg_sig:
 
-    # plot the signal (times 10)
-    if len(signal) > 0:
-        tot_signal = None
-        for i, sig in enumerate(signal_mult):
-            if tot_signal is None:
-                tot_signal = signal[i].copy()
+        sig_plus_bkg = tot_signal + np.array(bkg).sum(axis=0)
+        hep.histplot(
+            sig_plus_bkg,
+            ax=ax,
+            label=r"Background + Signal",
+            linewidth=2,
+            color="tab:red",
+            flow="none",
+        )
+        # add MC stat errors
+        ax.stairs(
+            values=sig_plus_bkg.values() + np.sqrt(sig_plus_bkg.values()),
+            baseline=sig_plus_bkg.values() - np.sqrt(sig_plus_bkg.values()),
+            edges=sig.axes[0].edges,
+            **errps,
+        )
+
+    ax.set_ylabel("Events")
+    ax.set_xlabel("")
+
+    # ax end
+    ##########################
+
+    ##########################
+    # rax start
+
+    if ratio_plot == "Pulls":
+        rax.axhline(0, ls="--", color="k")
+        rax.set_ylim(-4, 4)
+        rax.set_ylabel(r"Pull: $\frac{Data-MC}{\sigma_{data}}$", fontsize=18, labelpad=10)
+    elif ratio_plot == "Data/MC":
+        rax.axhline(1, ls="--", color="k")
+        rax.set_ylim(0.2, 1.8)
+        rax.set_ylabel("Data/MC", fontsize=20, labelpad=10)
+    elif ratio_plot == "Data-MC":
+        rax.axhline(0, ls="--", color="k")
+        rax.set_ylim(-15, 15)
+        # rax.set_ylim(-120, 120)
+        rax.set_ylabel("Data-MC", fontsize=20, labelpad=10)
+
+    if len(bkg) > 0 and rax_plot_bkg:
+
+        if ratio_plot == "Pulls":
+
+            data_val = data.values()
+            data_val[tot_val_MC_zero_mask] = 1
+
+            if use_postfit_errors is True:
+                sigma_data = postfit_errors_data
             else:
-                tot_signal = tot_signal + signal[i]
+                from scipy.stats import chi2
 
-        tot_signal *= mult_factor
+                def garwood_interval(n, cl=0.68):
+                    """Calculate Garwood's 68% CL asymmetric confidence interval for binomial proportion."""
+                    alpha = 1 - cl
+                    lower = chi2.ppf(alpha / 2, 2 * n) / 2 if n > 0 else 0
+                    upper = chi2.ppf(1 - alpha / 2, 2 * (n + 1)) / 2
+                    return (lower, upper)
 
-        if mult is not None:
-            if mult_factor == 1:
-                siglabel = r"Background + Signal"
-            else:
-                siglabel = r"Background + Signal $\times$" + f"{mult_factor}"
+                # Calculate uncertainties using Garwood interval
+                data_uncertainties = np.array([garwood_interval(n) for n in data_val])
+                data_errors = np.vstack(data_uncertainties).T
+                data_errors[0] = data_val - data_errors[0]
+                data_errors[1] = data_errors[1] - data_val
 
-            tot_signal += np.array(bkg).sum(axis=0)
+                sigma_data = np.sqrt(data_errors.mean(axis=0))
+
+            pulls = (data_val - tot_val_MC) / sigma_data
+
             hep.histplot(
-                tot_signal,
-                ax=ax,
-                label=siglabel,
+                pulls,
+                bkg[0].copy().axes[0].edges,
+                yerr=1,
+                ax=rax,
+                histtype="errorbar",
+                color="k",
+                capsize=4,
+                flow="none",
+            )
+
+            rax.stairs(
+                values=0 + tot_err_MC / sigma_data,
+                baseline=0 - tot_err_MC / sigma_data,
+                edges=bkg[0].copy().axes[0].edges,
+                **errps,
+                label=r"$\sigma_{syst}/\sigma_{data}$",
+            )
+
+        elif ratio_plot == "Data/MC":
+
+            data_val = data.values()
+            data_val[tot_val_MC_zero_mask] = 1
+
+            yerr = np.sqrt(data_val) / tot_val_MC
+
+            hep.histplot(
+                data_val / tot_val_MC,
+                bkg[0].copy().axes[0].edges,
+                yerr=yerr,
+                ax=rax,
+                histtype="errorbar",
+                color="k",
+                capsize=4,
+                flow="none",
+            )
+            rax.stairs(
+                values=1 + tot_err_MC / tot_val_MC,
+                baseline=1 - tot_err_MC / tot_val_MC,
+                edges=bkg[0].copy().axes[0].edges,
+                **errps,
+                label=r"$\sigma_{syst}/MC$",
+            )
+
+        elif ratio_plot == "Data-MC":
+
+            data_val = data.values()
+            data_val[tot_val_MC_zero_mask] = 1
+
+            yerr = np.sqrt(data_val) / tot_val_MC
+
+            hep.histplot(
+                data_val - tot_val_MC,
+                bkg[0].copy().axes[0].edges,
+                yerr=yerr,
+                ax=rax,
+                histtype="errorbar",
+                color="k",
+                capsize=4,
+                flow="none",
+            )
+            rax.stairs(
+                values=0 + tot_err_MC,
+                baseline=0 - tot_err_MC,
+                edges=bkg[0].copy().axes[0].edges,
+                **errps,
+                label=r"$\sigma_{syst}$",
+            )
+
+    # plot the signal
+    if len(signal) > 0 and rax_plot_sig:
+
+        if ratio_plot == "Pulls":
+
+            for i, sig in enumerate(signal_mult):
+                hep.histplot(
+                    sig / sigma_data,
+                    ax=rax,
+                    linewidth=3,
+                    color=color_by_sample[signal_labels[i]],
+                    flow="none",
+                )
+
+        elif ratio_plot == "Data-MC":
+            for i, sig in enumerate(signal_mult):
+
+                hep.histplot(
+                    sig,
+                    ax=rax,
+                    linewidth=3,
+                    color=color_by_sample[signal_labels[i]],
+                    flow="none",
+                )
+
+    # plot total signal
+    if len(signal) > 0 and rax_plot_tot_sig:
+        if ratio_plot == "Pulls":
+
+            hep.histplot(
+                tot_signal / (sigma_data),
+                ax=rax,
+                label=r"Signal/$\sigma_{data}$",
                 linewidth=2,
                 color="tab:red",
                 flow="none",
-            )
-            # add MC stat errors
-            ax.stairs(
-                values=tot_signal.values() + np.sqrt(tot_signal.values()),
-                baseline=tot_signal.values() - np.sqrt(tot_signal.values()),
-                edges=sig.axes[0].edges,
-                **errps,
+                histtype="fill",
             )
 
-    ax.set_ylabel("Events")
+        elif ratio_plot == "Data-MC":
 
-    ax.set_xlabel("")
+            hep.histplot(
+                tot_signal,
+                ax=rax,
+                label=r"Total Signal",
+                linewidth=2,
+                color="tab:red",
+                flow="none",
+                histtype="fill",
+            )
+
+    rax.legend(fontsize=14, loc="upper right", ncol=2)
     rax.set_xlabel(f"{h.axes[-1].label}")  # assumes the variable to be plotted is at the last axis
-    rax.set_ylabel("Data-MC", fontsize=20, labelpad=10)
+
+    # rax end
+    ##########################
 
     # get handles and labels of legend
     handles, labels = ax.get_legend_handles_labels()
 
     # append legend labels in order to a list
+
+    # get total yield of backgrounds per label
+    # (sort by yield in fixed fj_pt histogram after pre-sel)
+    order_dic = {}
+    for bkg_label in bkg_labels:
+        order_dic[plot_labels[bkg_label]] = h[{"Sample": bkg_label}].sum()
+
     summ = []
     for label in labels[: len(bkg_labels)]:
         summ.append(order_dic[label])
@@ -389,18 +495,14 @@ def plot_hists(
         order.append(np.argmax(np.array(summ)))
         summ[np.argmax(np.array(summ))] = -100
 
-    # plot data first, then bkg, then signal
-    hand = [handles[-1]] + [handles[i] for i in order] + handles[len(bkg) : -1]
-    lab = [labels[-1]] + [labels[i] for i in order] + labels[len(bkg) : -1]
-
     # plot bkg, then signal, then data
     hand = [handles[i] for i in order] + handles[len(bkg) : -1] + [handles[-1]]
     lab = [labels[i] for i in order] + labels[len(bkg) : -1] + [labels[-1]]
 
     lab_new, hand_new = [], []
     for i in range(len(lab)):
-        if "Stat" in lab[i]:
-            continue
+        # if "Stat" in lab[i]:
+        #     continue
 
         lab_new.append(lab[i])
         hand_new.append(hand[i])
@@ -408,9 +510,9 @@ def plot_hists(
     ax.legend(
         [hand_new[idx] for idx in range(len(hand_new))],
         [lab_new[idx] for idx in range(len(lab_new))],
-        title=text_,
-        ncol=2,
-        fontsize=14,
+        title=legend_title,
+        ncol=3,
+        fontsize=12,
     )
 
     _, a = ax.get_ylim()
@@ -421,16 +523,24 @@ def plot_hists(
         ax.set_ylim(0, a * 1.7)
 
     # ax.set_xlim(45, 210)
-    ax.set_xlim(55, 235)
+    ax.set_xlim(75, 235)
 
-    hep.cms.lumitext("%.0f " % luminosity + r"fb$^{-1}$ (13 TeV)", ax=ax, fontsize=20)
+    hep.cms.lumitext("%.0f " % get_lumi(years, channels) + r"fb$^{-1}$ (13 TeV)", ax=ax, fontsize=20)
     hep.cms.text("Work in Progress", ax=ax, fontsize=15)
 
-    # save plot
-    if not os.path.exists(outpath):
-        os.makedirs(outpath)
+    if "prefit" in label_on_plot:
+        label_on_plot = "Prefit"
+    elif "shapes_fit_b" in label_on_plot:
+        label_on_plot = "B-only fit"
+    elif "shapes_fit_s" in label_on_plot:
+        label_on_plot = "S+B fit"
 
-    if save_as:
-        plt.savefig(f"{outpath}/stacked_hists_{save_as}.pdf", bbox_inches="tight")
+    ax.text(0.05, 0.95, label_on_plot, transform=ax.transAxes, verticalalignment="top", fontweight="bold")
+
+    # save plot
+    os.makedirs(out_dir, exist_ok=True)
+
+    if out_fname:
+        plt.savefig(f"{out_dir}/stacked_hists_{out_fname}.pdf", bbox_inches="tight")
     else:
-        plt.savefig(f"{outpath}/stacked_hists.pdf", bbox_inches="tight")
+        plt.savefig(f"{out_dir}/stacked_hists.pdf", bbox_inches="tight")

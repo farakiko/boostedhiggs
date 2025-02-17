@@ -65,6 +65,14 @@ def make_events_dict(years, channels, samples_dir, samples, presel, THWW_path=No
                 # get a combined label to combine samples of the same process
                 sample_to_use = utils.get_common_sample_name(sample)
 
+                if ("ggF" in sample_to_use) or ("VBF" in sample_to_use):
+                    if "Rivet" not in sample:
+                        continue
+
+                if "WJetsLNu" in sample_to_use:
+                    if "HT" in sample:
+                        continue
+
                 if sample_to_use not in samples:
                     continue
 

@@ -394,15 +394,11 @@ def get_templates(years, channels, samples, samples_dir, regions_sel, model_path
         "mu": {
             "fj_mass": "fj_mass>40",
             "tagger>0.75": "THWW>0.75",
-            # "jetvetomap": "jetvetomap==1",
             "lepmiso": "(lep_pt<55) | ( (lep_pt>=55) & (lep_misolation<0.8))",  # needed for the fakes
-            # "vveto": "VH_fj_VScore<0.9",
         },
         "ele": {
             "fj_mass": "fj_mass>40",
             "tagger>0.75": "THWW>0.75",
-            # "jetvetomap": "jetvetomap==1",
-            # "vveto": "VH_fj_VScore<0.9",
         },
     }
 
@@ -413,7 +409,8 @@ def get_templates(years, channels, samples, samples_dir, regions_sel, model_path
         hist2.axis.StrCategory([], name="Systematic", growth=True),
         hist2.axis.StrCategory([], name="Region", growth=True),
         hist2.axis.Variable(
-            list(range(55, 255, mass_binning)),
+            # list(range(55, 255, mass_binning)),
+            list(range(75, 255, mass_binning)),
             name="mass_observable",
             label=r"Higgs reconstructed mass [GeV]",
             overflow=True,
@@ -430,7 +427,14 @@ def get_templates(years, channels, samples, samples_dir, regions_sel, model_path
 
             for sample in os.listdir(samples_dir[year]):
 
+                # if "Rivet" in sample:
+                #     continue
+
                 sample_to_use = get_common_sample_name(sample)
+
+                if ("ggF" in sample_to_use) or ("VBF" in sample_to_use):
+                    if "Rivet" not in sample:
+                        continue
 
                 if sample_to_use not in samples:
                     continue
@@ -472,6 +476,10 @@ def get_templates(years, channels, samples, samples_dir, regions_sel, model_path
                     logging.info(f"Applying {selection} selection on {len(data)} events")
                     data = data.query(presel[ch][selection])
 
+                # apply genlep recolep matching
+                if not is_data:
+                    data = data[data["dR_genlep_recolep"] < 0.005]
+
                 # get the xsecweight
                 xsecweight, sumgenweights, sumpdfweights, sumscaleweights = get_xsecweight(
                     pkl_files, year, sample, sample_to_use, is_data, luminosity
@@ -479,15 +487,26 @@ def get_templates(years, channels, samples, samples_dir, regions_sel, model_path
 
                 if sample_to_use == "ggF":
 
-                    stxs_dict = {
-                        "ggFpt200to300": (200, 300),
-                        "ggFpt300to450": (300, 450),
-                        "ggFpt450toInf": (450, 2000),
-                    }
+                    stxs_list = [
+                        "ggFpt200to300",
+                        "ggFpt300to450",
+                        "ggFpt450toInf",
+                    ]
 
-                    for genprocess, genHbin in stxs_dict.items():
+                    for stxs_bin in stxs_list:
                         df1 = data.copy()
-                        msk_gen = (df1["fj_genH_pt"] > genHbin[0]) & (df1["fj_genH_pt"] < genHbin[1])
+                        if stxs_bin == "ggFpt200to300":
+                            msk_gen = (df1["STXS_finecat"] % 100 == 1) | (df1["STXS_finecat"] % 100 == 5)
+                        elif stxs_bin == "ggFpt300to450":
+                            msk_gen = (df1["STXS_finecat"] % 100 == 2) | (df1["STXS_finecat"] % 100 == 6)
+                        elif stxs_bin == "ggFpt450toInf":
+                            msk_gen = (
+                                (df1["STXS_finecat"] % 100 == 3)
+                                | (df1["STXS_finecat"] % 100 == 7)
+                                | (df1["STXS_finecat"] % 100 == 4)
+                                | (df1["STXS_finecat"] % 100 == 8)
+                            )
+
                         df1 = df1[msk_gen]
 
                         fill_systematics(
@@ -499,7 +518,39 @@ def get_templates(years, channels, samples, samples_dir, regions_sel, model_path
                             regions_sel,
                             is_data,
                             sample,
-                            genprocess,  # use genprocess as label
+                            stxs_bin,  # use genprocess as label
+                            xsecweight,
+                            sumpdfweights,
+                            sumgenweights,
+                            sumscaleweights,
+                        )
+                elif sample_to_use == "VBF":
+                    stxs_list = [
+                        "mjj1000toInf",
+                    ]
+
+                    for stxs_bin in stxs_list:
+                        df1 = data.copy()
+                        if stxs_bin == "mjj1000toInf":
+                            msk_gen = (
+                                (df1["STXS_finecat"] % 100 == 21)
+                                | (df1["STXS_finecat"] % 100 == 22)
+                                | (df1["STXS_finecat"] % 100 == 23)
+                                | (df1["STXS_finecat"] % 100 == 24)
+                            )
+
+                        df1 = df1[msk_gen]
+
+                        fill_systematics(
+                            df1,
+                            hists,
+                            years,
+                            year,
+                            ch,
+                            regions_sel,
+                            is_data,
+                            sample,
+                            stxs_bin,  # use genprocess as label
                             xsecweight,
                             sumpdfweights,
                             sumgenweights,

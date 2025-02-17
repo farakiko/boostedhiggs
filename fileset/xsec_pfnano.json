@@ -1,4 +1,6 @@
 {
+    "GluGluHToWW_Pt-200ToInf_M-125_Rivet": 0.10078092000000001,
+    "VBFHToWWToAny_M-125_TuneCP5_withDipoleRecoil_Rivet": 0.8082134,
     "GluGluHToWW_Pt-200ToInf_M-125": 0.10078092000000001,
     "GluGluHToWWToLNuQQ": 4.498172726490241,
     "GluGluHToWWToLNuQQ_M-125_TuneCP5_13TeV_powheg_jhugen751_pythia8": 4.498172726490241,

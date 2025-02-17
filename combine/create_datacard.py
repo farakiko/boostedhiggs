@@ -16,10 +16,11 @@ import math
 import os
 import warnings
 
+import numpy as np
 import pandas as pd
 import rhalphalib as rl
 from datacard_systematics import systs_from_parquets, systs_not_from_parquets
-from systematics import bkgs, sigs
+from systematics import CONTROL_regions, SIG_regions, bkgs, sigs
 from utils import get_template, labels, load_templates, shape_to_num
 
 rl.ParametericSample.PreferRooParametricHist = True
@@ -41,10 +42,6 @@ def create_datacard(
     # define the model
     model = rl.Model("testModel")
 
-    # define the signal and control regions
-    SIG_regions = ["VBF", "ggFpt250to350", "ggFpt350to500", "ggFpt500toInf"]
-    CONTROL_regions = ["TopCR", "WJetsCR"]
-
     if add_ttbar_constraint:
         ttbarnormSF = rl.IndependentParameter("ttbarnormSF", 1.0, 0, 10)
 
@@ -54,10 +51,21 @@ def create_datacard(
     samples = sigs + bkgs
     if do_unfolding:
         samples.remove("ggF")
+        samples.remove("VBF")
     else:
         samples.remove("ggFpt200to300")
         samples.remove("ggFpt300to450")
         samples.remove("ggFpt450toInf")
+        samples.remove("mjj1000toInf")
+
+    n_thww = {}
+    n_thww["VBF"] = rl.NuisanceParameter(f"{CMS_PARAMS_LABEL}_taggereff_VBF", "lnN")
+    n_thww["ggF"] = rl.NuisanceParameter(f"{CMS_PARAMS_LABEL}_taggereff_ggF", "lnN")
+
+    thww_unc = {
+        "VBF": (1 + 0.093, 1 - 0.244),
+        "ggF": (1 + 0.100233, 1 - 0.28017),
+    }
 
     # fill datacard with systematics and rates
     for ChName in SIG_regions + CONTROL_regions:
@@ -66,9 +74,6 @@ def create_datacard(
         model.addChannel(ch)
 
         for sName in samples:
-
-            if (sName in sigs) and (ChName in CONTROL_regions):
-                continue
 
             templ = get_template(hists_templates, sName, ChName)
             if templ == 0:
@@ -89,8 +94,10 @@ def create_datacard(
                         )
 
             # SYSTEMATICS FROM PARQUETS
-            for sys_value, (sys_name, list_of_samples) in sys_from_parquets.items():
-                if sName in list_of_samples:
+            for sys_value, (sys_name, samples_to_cover, regions_to_cover) in sys_from_parquets.items():
+
+                if (sName in samples_to_cover) and (ChName in regions_to_cover):
+
                     syst_up = hists_templates[{"Sample": sName, "Region": ChName, "Systematic": sys_name + "_up"}].values()
                     syst_do = hists_templates[{"Sample": sName, "Region": ChName, "Systematic": sys_name + "_down"}].values()
                     nominal = hists_templates[{"Sample": sName, "Region": ChName, "Systematic": "nominal"}].values()
@@ -105,45 +112,68 @@ def create_datacard(
                             sample.setParamEffect(sys_value, max(eff_up, eff_do), min(eff_up, eff_do))
 
                     else:
+
                         nominal[nominal == 0] = 1  # to avoid invalid value encountered in true_divide in "syst_up/nominal"
+
+                        if "weight_pileup_2018" in sys_name:
+                            # must smoothen weight_pileup_2018
+                            max_variation = np.maximum(abs(nominal - syst_up), abs(nominal - syst_do))
+
+                            syst_up = nominal + max_variation
+                            syst_do = nominal - max_variation
+
                         sample.setParamEffect(sys_value, (syst_up / nominal), (syst_do / nominal))
 
+            if sName in sigs:
+                # THWW unc.
+                if ("VBF" in ChName) or ("mjj" in ChName):
+                    sample.setParamEffect(
+                        n_thww["VBF"],
+                        thww_unc["VBF"][0],
+                        thww_unc["VBF"][1],
+                    )
+                elif "ggF" in ChName:
+                    sample.setParamEffect(
+                        n_thww["ggF"],
+                        thww_unc["ggF"][0],
+                        thww_unc["ggF"][1],
+                    )
+
             ch.addSample(sample)
-
-        # add Fake
-        sName = "Fake"
-        templ = get_template(hists_templates, sName, ChName)
-        if templ == 0:
-            continue
-        sample = rl.TemplateSample(ch.name + "_" + labels[sName], rl.Sample.BACKGROUND, templ)
-
-        # add Fake unc.
-        sample.setParamEffect(rl.NuisanceParameter(f"{CMS_PARAMS_LABEL}_Fake_SF_uncertainty", "lnN"), 1.5)
-
-        name_in_card = {
-            "FR_stat": f"{CMS_PARAMS_LABEL}_FakeRate_statistical_uncertainty",
-            "EWK_SF": f"{CMS_PARAMS_LABEL}_FakeRate_EWK_SF_statistical_uncertainty",
-        }
-        for sys_name in ["FR_stat", "EWK_SF"]:
-
-            sys_value = rl.NuisanceParameter(name_in_card[sys_name], "shape")
-            syst_up = hists_templates[{"Sample": "Fake", "Region": ChName, "Systematic": sys_name + "_Up"}].values()
-            syst_do = hists_templates[{"Sample": "Fake", "Region": ChName, "Systematic": sys_name + "_Down"}].values()
-            nominal = hists_templates[{"Sample": "Fake", "Region": ChName, "Systematic": "nominal"}].values()
-
-            nominal[nominal == 0] = 1  # to avoid invalid value encountered in true_divide in "syst_up/nominal"
-            sample.setParamEffect(sys_value, (syst_up / nominal), (syst_do / nominal))
-
-        ch.addSample(sample)
-
-        # add data
-        data_obs = get_template(hists_templates, "Data", ChName)
-        ch.setObservation(data_obs)
 
         # add mcstats
         ch.autoMCStats(
             channel_name=f"{CMS_PARAMS_LABEL}_{ChName}",
         )
+
+        # add Fake
+        sName = "Fake"
+        templ = get_template(hists_templates, sName, ChName)
+        if templ != 0:
+            sample = rl.TemplateSample(ch.name + "_" + labels[sName], rl.Sample.BACKGROUND, templ)
+
+            # add Fake unc.
+            sample.setParamEffect(rl.NuisanceParameter(f"{CMS_PARAMS_LABEL}_Fake_SF_uncertainty", "lnN"), 1.25)
+
+            name_in_card = {
+                "FR_stat": f"{CMS_PARAMS_LABEL}_FakeRate_statistical_uncertainty",
+                "EWK_SF": f"{CMS_PARAMS_LABEL}_FakeRate_EWK_SF_statistical_uncertainty",
+            }
+            for sys_name in ["FR_stat", "EWK_SF"]:
+
+                sys_value = rl.NuisanceParameter(name_in_card[sys_name], "shape")
+                syst_up = hists_templates[{"Sample": "Fake", "Region": ChName, "Systematic": sys_name + "_Up"}].values()
+                syst_do = hists_templates[{"Sample": "Fake", "Region": ChName, "Systematic": sys_name + "_Down"}].values()
+                nominal = hists_templates[{"Sample": "Fake", "Region": ChName, "Systematic": "nominal"}].values()
+
+                nominal[nominal == 0] = 1  # to avoid invalid value encountered in true_divide in "syst_up/nominal"
+                sample.setParamEffect(sys_value, (syst_up / nominal), (syst_do / nominal))
+
+            ch.addSample(sample)
+
+        # add data
+        data_obs = get_template(hists_templates, "Data", ChName)
+        ch.setObservation(data_obs)
 
     if add_ttbar_constraint:
         failCh = model["TopCR"]

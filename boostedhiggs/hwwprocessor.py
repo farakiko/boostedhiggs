@@ -717,18 +717,9 @@ class HwwProcessor(processor.ProcessorABC):
                 # add corrections for plotting
                 variables["weight_ewkcorr"] = ewk_corr
                 variables["weight_qcdcorr"] = qcd_corr
-                variables["weight_altqcdcorr"] = alt_qcd_corr
-
-                if (
-                    ("GluGluHToWWToLNuQQ_M-125_TuneCP5_13TeV_powheg_jhugen751_pythia8" in dataset)
-                    or ("ttHToNonbb_M125" in dataset)
-                    # or ("HZJ_HToWW_M-125" in dataset)
-                    or ("HWplusJ_HToWW_M-125" in dataset)
-                    or ("HWminusJ_HToWW_M-125" in dataset)
-                ):
-                    # get stxs var
-                    variables["stxs"] = events.HTXS.stage1_2_cat_pTjet30GeV % 100
-                    variables["stxs_mode"] = events.HTXS.stage1_2_cat_pTjet30GeV / 100
+                variables["weight_altqcdcorr"] = alt_qcd_corr["nominal"]
+                variables["weight_altqcdcorr_up"] = alt_qcd_corr["up"]
+                variables["weight_altqcdcorr_down"] = alt_qcd_corr["down"]
 
                 # add top_reweighting
                 # https://twiki.cern.ch/twiki/bin/viewauth/CMS/TopPtReweighting

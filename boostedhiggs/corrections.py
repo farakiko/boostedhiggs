@@ -153,7 +153,10 @@ def add_VJets_kFactors(weights, genpart, dataset, events):
 
     # alternative QCD NLO correction (for WJets)
     # derived from https://cms.cern.ch/iCMS/jsp/db_notes/noteInfo.jsp?cmsnoteid=CMS%20AN-2019/229
-    alt_qcdcorr = np.ones_like(vpt)
+    alt_qcdcorr = {}
+    alt_qcdcorr["nominal"] = np.ones_like(vpt)
+    alt_qcdcorr["up"] = np.ones_like(vpt)
+    alt_qcdcorr["down"] = np.ones_like(vpt)
 
     if "ZJetsToQQ_HT" in dataset or "DYJetsToLL_M-" in dataset:
         qcdcorr = vjets_kfactors["ULZ_MLMtoFXFX"].evaluate(vpt)
@@ -192,9 +195,18 @@ def add_VJets_kFactors(weights, genpart, dataset, events):
         nB1 = (ak.sum(goodgenjets.hadronFlavour == 5, axis=1) == 1).to_numpy()
         nB2 = (ak.sum(goodgenjets.hadronFlavour == 5, axis=1) == 2).to_numpy()
 
-        alt_qcdcorr[nB0] = 1.628 - (1.339 * 1e-3 * vpt[nB0])
-        alt_qcdcorr[nB1] = 1.586 - (1.531 * 1e-3 * vpt[nB1])
-        alt_qcdcorr[nB2] = 1.440 - (0.925 * 1e-3 * vpt[nB2])
+        alt_qcdcorr["nominal"][nB0] = 1.628 - (1.339 * 1e-3 * vpt[nB0])
+        alt_qcdcorr["nominal"][nB1] = 1.586 - (1.531 * 1e-3 * vpt[nB1])
+        alt_qcdcorr["nominal"][nB2] = 1.440 - (0.925 * 1e-3 * vpt[nB2])
+
+        # added by farouk on Feb 13, 2025
+        alt_qcdcorr["up"][nB0] = 1.628 + 0.005 - ((1.339 + 0.020) * 1e-3 * vpt[nB0])
+        alt_qcdcorr["up"][nB1] = 1.586 + 0.027 - ((1.531 + 0.112) * 1e-3 * vpt[nB1])
+        alt_qcdcorr["up"][nB2] = 1.440 + 0.048 - ((0.925 + 0.203) * 1e-3 * vpt[nB2])
+
+        alt_qcdcorr["down"][nB0] = 1.628 - 0.005 - ((1.339 - 0.02) * 1e-3 * vpt[nB0])
+        alt_qcdcorr["down"][nB1] = 1.586 - 0.027 - ((1.531 - 0.112) * 1e-3 * vpt[nB1])
+        alt_qcdcorr["down"][nB2] = 1.440 - 0.048 - ((0.925 - 0.203) * 1e-3 * vpt[nB2])
 
     return ewcorr, qcdcorr, alt_qcdcorr
 

@@ -15,18 +15,21 @@ samples:
 
 regions_sel:
 
-    "VBF": (n_bjets_T==0) & (THWW>0.905) & ( (mjj>1000) & (deta>3.5) ) & (rec_higgs_pt>250)
-    "ggFpt250to350": (n_bjets_T==0) & (THWW>0.93) & ( (mjj<1000) | (deta<3.5) ) & (rec_higgs_pt>250) & (rec_higgs_pt<350) & (VH_fj_VScore<0.9)
-    "ggFpt350to500": (n_bjets_T==0) & (THWW>0.93) & ( (mjj<1000) | (deta<3.5) ) & (rec_higgs_pt>350) & (rec_higgs_pt<500) & (VH_fj_VScore<0.9)
-    "ggFpt500toInf": (n_bjets_T==0) & (THWW>0.93) & ( (mjj<1000) | (deta<3.5) ) & (rec_higgs_pt>500) & (VH_fj_VScore<0.9)
+    "VBF": (n_bjets_T==0) & (THWW>0.905) & ( (mjj>1000) & (deta>3.5) & (NumOtherJets>=2) ) & (rec_higgs_pt>250)
+    "ggFpt250to350": (n_bjets_T==0) & (THWW>0.93) & ( (mjj<1000) | (deta<3.5) | (NumOtherJets<2) ) & (rec_higgs_pt>250) & (rec_higgs_pt<350) & (VH_fj_VScore<0.9)
+    "ggFpt350to500": (n_bjets_T==0) & (THWW>0.93) & ( (mjj<1000) | (deta<3.5) | (NumOtherJets<2) ) & (rec_higgs_pt>350) & (rec_higgs_pt<500) & (VH_fj_VScore<0.9)
+    "ggFpt500toInf": (n_bjets_T==0) & (THWW>0.93) & ( (mjj<1000) | (deta<3.5) | (NumOtherJets<2) ) & (rec_higgs_pt>500) & (VH_fj_VScore<0.9)
 
-    "WJetsCR": (n_bjets_T==0) & (THWW<0.905) & (rec_higgs_pt>250)
-    "TopCR": (n_bjets_T>0) & (rec_higgs_pt>250)
+    # "WJetsCR": (n_bjets_T==0) & (THWW<0.905) & (rec_higgs_pt>250)
+    "WJetsCR1": (n_bjets_T==0) & (THWW<0.905) & (rec_higgs_pt>250) & (rec_higgs_pt<350)
+    "WJetsCR2": (n_bjets_T==0) & (THWW<0.905) & (rec_higgs_pt>350) & (rec_higgs_pt<500)
+    "WJetsCR3": (n_bjets_T==0) & (THWW<0.905) & (rec_higgs_pt>500)
+    "TopCR": (n_bjets_T>0) & (rec_higgs_pt>250) & (THWW>0.90)
 
 samples_dir:
-    "2018": ../eos/Oct10_hww_2018
-    "2017": ../eos/Oct10_hww_2017
-    "2016": ../eos/Oct10_hww_2016
-    "2016APV": ../eos/Oct10_hww_2016APV
+    "2018": ../eos/Dec20_hww_2018
+    "2017": ../eos/Dec20_hww_2017
+    "2016": ../eos/Dec20_hww_2016
+    "2016APV": ../eos/Dec20_hww_2016APV
 
 model_path: ../../weaver-core-dev/experiments_finetuning/v35_30/model.onnx

@@ -1,4 +1,4 @@
-bkgs = ["TTbar", "WJetsLNu", "SingleTop", "DYJets", "WZQQ", "Diboson", "EWKvjets"]
+bkgs = ["TTbar", "WJetsLNu", "SingleTop", "DYJets", "Diboson", "EWKvjets", "WZQQ"]
 ttbar_list = [
     "TTbar_is_top_lq",
     "TTbar_is_top_lqq",
@@ -8,10 +8,13 @@ ttbar_list = [
     "TTbar_LP_is_top_lqq",
     "TTbar_LP_others",
 ]
-bkgs += ttbar_list
-sigs = ["ggFpt200to300", "ggFpt300to450", "ggFpt450toInf", "ggF", "VBF", "WH", "ZH", "ttH"]
+# bkgs += ttbar_list
+sigs = ["mjj1000toInf", "ggFpt200to300", "ggFpt300to450", "ggFpt450toInf", "ggF", "VBF", "WH", "ZH", "ttH"]
 
 samples = sigs + bkgs + ["Fake"]
+
+SIG_regions = ["VBF", "ggFpt250to350", "ggFpt350to500", "ggFpt500toInf"]
+CONTROL_regions = ["TopCR", "WJetsCR"]
 
 
 def get_systematic_dict(years):
@@ -137,6 +140,20 @@ def get_systematic_dict(years):
                     [year],
                     sigs + bkgs,
                     {"ele": "weight_ele_pileup", "mu": "weight_mu_pileup"},
+                ),
+            },
+            **{
+                f"weight_pileup_{year}": (
+                    [year],
+                    sigs + bkgs,
+                    {"ele": "weight_ele_pileup", "mu": "weight_mu_pileup"},
+                ),
+            },
+            **{
+                f"weight_PSFSR_wjets_{year}": (
+                    [year],
+                    ["WJetsLNu"],
+                    {"ele": "weight_ele_PSFSR", "mu": "weight_mu_PSFSR"},
                 ),
             },
         }

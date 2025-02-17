@@ -15,15 +15,18 @@ warnings.filterwarnings("ignore", message="Found duplicate branch ")
 
 combine_samples_by_name = {
     "GluGluHToWW_Pt-200ToInf_M-125": "ggF",
+    "GluGluHToWW_Pt-200ToInf_M-125_Rivet": "ggF",
     "GluGluHToWWToLNuQQ_M-125_TuneCP5_13TeV_powheg_jhugen751_pythia8": "ggF",  # inclusive sample
     "VBFHToWWToAny_M-125_TuneCP5_withDipoleRecoil": "VBF",
+    "VBFHToWWToAny_M-125_TuneCP5_withDipoleRecoil_Rivet": "VBF",
     "ttHToNonbb_M125": "ttH",
     "HWminusJ_HToWW_M-125": "WH",
     "HWplusJ_HToWW_M-125": "WH",
     "HZJ_HToWW_M-125": "ZH",
-    "GluGluZH_HToWW_M-125_TuneCP5_13TeV-powheg-pythia8": "ZH",  # TODO: skip
+    "GluGluZH_HToWW_M-125_TuneCP5_13TeV-powheg-pythia8": "ZH",
     "GluGluHToTauTau": "HTauTau",
 }
+
 
 combine_samples = {
     # data
@@ -40,9 +43,6 @@ combine_samples = {
     "EWK": "EWKvjets",
     "DYJets": "DYJets",
     "JetsToQQ": "WZQQ",
-    # TODO: make sure it's WZQQ is NLO in next iteration
-    # "DYJets": "WZQQorDYJets",
-    # "JetsToQQ": "WZQQorDYJets",
 }
 
 # (name in templates, name in cards)
@@ -56,16 +56,15 @@ labels = {
     "ttH": "ttH_hww",
     "WH": "WH_hww",
     "ZH": "ZH_hww",
+    "mjj1000toInf": "qqH_hww_mjj_1000_Inf",
     # BKGS
     "WJetsLNu": "wjets",
     "TTbar": "ttbar",
     "SingleTop": "singletop",
     "Diboson": "diboson",
     "EWKvjets": "ewkvjets",
-    # TODO: make sure it's WZQQ is NLO in next iteration
     "DYJets": "zjets",
     "WZQQ": "wzqq",
-    # "WZQQorDYJets": "vjets",
     "Fake": "fake",
 }
 
@@ -187,14 +186,10 @@ def shape_to_num(var, nom, clip=1.5):
 
 
 def get_template(h, sample, region):
-    # massbins = h.axes["mass_observable"].edges
-    # return (h[{"Sample": sample, "Systematic": "nominal", "Category": category}].values(), massbins, "mass_observable")
     return h[{"Sample": sample, "Systematic": "nominal", "Region": region}]
 
 
 def get_template_diffbins(h, sample):
-    # massbins = h.axes["mass_observable"].edges
-    # return (h[{"Sample": sample, "Systematic": "nominal", "Category": category}].values(), massbins, "mass_observable")
     if sample not in h.axes["Sample"]:
         return 0
 
@@ -236,12 +231,11 @@ def blindBins(h: Hist, blind_region: List = [90, 160], blind_samples: List[str] 
     if len(blind_samples) >= 1:
         for blind_sample in blind_samples:
             sample_index = np.argmax(np.array(list(h.axes[0])) == blind_sample)
-            # h.view(flow=True)[sample_index, :, :, lv:rv] = 0
+
             h.view(flow=True)[sample_index, :, :, lv:rv].value = 0
             h.view(flow=True)[sample_index, :, :, lv:rv].variance = 0
 
     else:
-        # h.view(flow=True)[:, :, :, lv:rv] = 0
         h.view(flow=True)[:, :, :, lv:rv].value = 0
         h.view(flow=True)[:, :, :, lv:rv].variance = 0
 
