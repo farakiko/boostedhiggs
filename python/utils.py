@@ -281,7 +281,7 @@ def get_axis(var, massbin=5):
             30, 250, 600, name="var", label=r"Sub-Leading AK8 jet $p_T$ [GeV]", overflow=True
         ),
         # "fj_pt": hist2.axis.Regular(30, 250, 600, name="var", label=r"Higgs candidate jet $p_T$ [GeV]", overflow=True),
-        "fj_pt": hist2.axis.Regular(10, 250, 600, name="var", label=r"Higgs candidate jet $p_T$ [GeV]", overflow=True),
+        "fj_pt": hist2.axis.Regular(20, 250, 600, name="var", label=r"Higgs candidate jet $p_T$ [GeV]", overflow=True),
         "lep_pt": hist2.axis.Regular(40, 30, 400, name="var", label=r"Lepton $p_T$ [GeV]", overflow=True),
         "pt_ratio": hist2.axis.Regular(40, 0, 2, name="var", label=r"Lepton $p_T$ / Jet $p_T$", overflow=True),
         "rho": hist2.axis.Regular(50, -1, -10, name="var", label=r"Rho", overflow=True),
@@ -294,7 +294,7 @@ def get_axis(var, massbin=5):
             35, 0.03, 0.8, name="var", label=r"$\Delta R(\ell, \mathrm{Higgs \ candidate \ jet})$", overflow=True
         ),
         # "met_pt": hist2.axis.Regular(40, 20, 250, name="var", label=r"MET [GeV]", overflow=True),
-        "met_pt": hist2.axis.Regular(10, 20, 250, name="var", label=r"MET [GeV]", overflow=True),
+        "met_pt": hist2.axis.Regular(20, 20, 250, name="var", label=r"MET [GeV]", overflow=True),
         "met_phi": hist2.axis.Regular(40, -3.14, 3.14, name="var", label=r"MET $\Phi$", overflow=True),
         "met_fj_dphi": hist2.axis.Regular(
             35,
