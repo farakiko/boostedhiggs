@@ -82,6 +82,10 @@ folders_to_index = {
         "/store/user/lpcpfnano/drankin/v2_2/2017/SingleTop/",
         "/store/user/lpcpfnano/drankin/v2_2/2018/SingleTop/",
         ##
+        "/store/user/lpcpfnano/cmantill/v2_3/2016/WJetsNLO",
+        "/store/user/lpcpfnano/cmantill/v2_3/2016APV/WJetsNLO",
+        "/store/user/lpcpfnano/cmantill/v2_3/2017/WJetsNLO",
+        "/store/user/lpcpfnano/cmantill/v2_3/2018/WJetsNLO",
         "/store/user/lpcpfnano/jdickins/v2_3/2016/WJetsToLNu",
         "/store/user/lpcpfnano/jdickins/v2_3/2016APV/WJetsToLNu",
         "/store/user/lpcpfnano/jdickins/v2_3/2017/WJetsToLNu",
@@ -91,7 +95,7 @@ folders_to_index = {
         # "/store/user/lpcpfnano/jiyoo/v2_3/2017/WJetsToLNu",
         "/store/user/lpcpfnano/jiyoo/v2_3/2018/WJetsToLNu",
         # WJets NLO (missing other years)
-        "/store/user/lpcpfnano/jiyoo/v2_3/2018/WJetsToLNu_NLO",
+        # "/store/user/lpcpfnano/jiyoo/v2_3/2018/WJetsToLNu_NLO",
         ##
         "/store/user/lpcpfnano/cmantill/v2_3/2016/DYJetsToLL",
         "/store/user/lpcpfnano/cmantill/v2_3/2016APV/DYJetsToLL",
