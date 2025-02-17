@@ -1,7 +1,7 @@
-# Datacard for <Channel (ggFpt500toInf) instance at 0x7f0205b9f6a0> generated on 2025-02-17 09:09:02.063519
+# Datacard for <Channel (ggFpt500toInf) instance at 0x7f337b074ee0> generated on 2025-02-17 10:11:30.484496
 imax 1 # number of categories ('bins' but here we are using shape templates)
 jmax 13 # number of samples minus 1
-kmax 157 # number of nuisance parameters
+kmax 158 # number of nuisance parameters
 shapes * ggFpt500toInf testModel.root testModel:ggFpt500toInf_$PROCESS testModel:ggFpt500toInf_$PROCESS_$SYSTEMATIC
 bin ggFpt500toInf
 observation 162.000
@@ -114,6 +114,7 @@ PDF_WH_ACCEPT_CMS_HWW_boosted shape                                             
 PDF_ZH_ACCEPT_CMS_HWW_boosted shape                                               -                -                -                -              -         1.0000              -              -              -              -              -              -              -              -
 PDF_ggH_pt300to450_ACCEPT_CMS_HWW_boosted shape                                   -                -           1.0000                -              -              -              -              -              -              -              -              -              -              -
 PDF_ggH_pt450toInf_ACCEPT_CMS_HWW_boosted shape                                   -                -                -           1.0000              -              -              -              -              -              -              -              -              -              -
+PDF_qqH_mjj1000toInf_ACCEPT_CMS_HWW_boosted shape                            1.0000                -                -                -              -              -              -              -              -              -              -              -              -              -
 PDF_ttH_ACCEPT_CMS_HWW_boosted shape                                              -                -                -                -              -              -         1.0000              -              -              -              -              -              -              -
 PDF_ttbar_ACCEPT_CMS_HWW_boosted shape                                            -                -                -                -              -              -              -         1.0000              -              -              -              -              -              -
 PDF_wjets_ACCEPT_CMS_HWW_boosted shape                                            -                -                -                -              -              -              -              -         1.0000              -              -              -              -              -
