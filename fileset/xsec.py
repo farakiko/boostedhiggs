@@ -153,6 +153,11 @@ xs["WJetsToLNu_0J"] = 52780.0
 xs["WJetsToLNu_1J"] = 8832.0
 xs["WJetsToLNu_2J"] = 3276.0
 
+# From running xsecanalyzer on one file ~4GB
+xs["WJetsToLNu_LHEFilterPtW-250To400"] = 27.85
+xs["WJetsToLNu_LHEFilterPtW-400To600"] = 3.622
+xs["WJetsToLNu_LHEFilterPtW-600ToInf"] = 0.5501
+
 # Z+jets Z(qq)
 xs["ZJetsToQQ_HT-200to400"] = 1012.0
 xs["ZJetsToQQ_HT-400to600"] = 1.145e02
