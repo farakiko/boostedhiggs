@@ -101,6 +101,9 @@ v2_2:
     WJetsToLNu_0J: 15
     WJetsToLNu_1J: 15
     WJetsToLNu_2J: 15
+    WJetsToLNu_LHEFilterPtW-250To400: 15
+    WJetsToLNu_LHEFilterPtW-400To600: 15
+    WJetsToLNu_LHEFilterPtW-600ToInf: 15
     WJetsToLNu_TuneCP5_13TeV-madgraphMLM: 15
     WJetsToLNu_HT-70To100: 10
     WJetsToLNu_HT-100To200: 10
