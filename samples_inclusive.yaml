@@ -66,8 +66,11 @@ mc:
 vjetsnlo:
   - WJetsToLNu_1J
   - WJetsToLNu_2J
-vjetsnlo0J:
+vjetsnloOTHER:
   - WJetsToLNu_0J
+  - WJetsToLNu_LHEFilterPtW-250To400
+  - WJetsToLNu_LHEFilterPtW-400To600
+  - WJetsToLNu_LHEFilterPtW-600ToInf
 extra:
   - GluGluZH_HToWW_M-125_TuneCP5_13TeV-powheg-pythia8
   - TTZToQQ
