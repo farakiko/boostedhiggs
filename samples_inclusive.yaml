@@ -66,6 +66,8 @@ mc:
 vjetsnlo:
   - WJetsToLNu_1J
   - WJetsToLNu_2J
+vjetsnlo0J:
+  - WJetsToLNu_0J
 extra:
   - GluGluZH_HToWW_M-125_TuneCP5_13TeV-powheg-pythia8
   - TTZToQQ
