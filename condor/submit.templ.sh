@@ -11,7 +11,7 @@ mkdir outfiles
 
 # run code
 # pip install --user onnxruntime
-python SCRIPTNAME --year YEAR --processor PROCESSOR PFNANO INFERENCE SYSTEMATICS GETLPWEIGHTS LOOSELEP --n NUMJOBS --starti ${jobid} --sample SAMPLE --config METADATAFILE --channels CHANNELS
+python SCRIPTNAME --year YEAR --processor PROCESSOR PFNANO INFERENCE SYSTEMATICS GETLPWEIGHTS LOOSELEP TRIGGER PRESELECTION --n NUMJOBS --starti ${jobid} --sample SAMPLE --config METADATAFILE --channels CHANNELS
 
 # remove incomplete jobs
 rm -rf outfiles/*mu

@@ -127,6 +127,16 @@ def main(args):
                 else:
                     line = line.replace("LOOSELEP", "--no-uselooselep")
 
+                if args.no_trigger:
+                    line = line.replace("TRIGGER", "--no-trigger")
+                else:
+                    line = line.replace("TRIGGER", "--trigger")
+
+                if args.no_selection:
+                    line = line.replace("PRESELECTION", "--no-selection")
+                else:
+                    line = line.replace("PRESELECTION", "--selection")
+
                 line = line.replace("LABEL", args.label)
                 line = line.replace("REGION", args.region)
 
