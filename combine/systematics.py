@@ -1,4 +1,4 @@
-bkgs = ["TTbar", "WJetsLNu", "SingleTop", "DYJets", "Diboson", "EWKvjets", "WZQQ"]
+bkgs = ["TTbar", "WJetsLNu", "SingleTop", "DYJets", "Diboson", "EWKvjets"]
 ttbar_list = [
     "TTbar_is_top_lq",
     "TTbar_is_top_lqq",
@@ -12,9 +12,6 @@ ttbar_list = [
 sigs = ["mjj1000toInf", "ggFpt200to300", "ggFpt300to450", "ggFpt450toInf", "ggF", "VBF", "WH", "ZH", "ttH"]
 
 samples = sigs + bkgs + ["Fake"]
-
-SIG_regions = ["VBF", "ggFpt250to350", "ggFpt350to500", "ggFpt500toInf"]
-CONTROL_regions = ["TopCR", "WJetsCR"]
 
 
 def get_systematic_dict(years):
