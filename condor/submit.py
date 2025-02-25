@@ -191,6 +191,11 @@ if __name__ == "__main__":
     parser.add_argument("--uselooselep", dest="uselooselep", action="store_true")
     parser.add_argument("--no-uselooselep", dest="uselooselep", action="store_false")
 
+    parser.add_argument("--no-trigger", dest="no_trigger", action="store_true")
+    parser.add_argument("--trigger", dest="no_trigger", action="store_false")
+    parser.add_argument("--no-selection", dest="no_selection", action="store_true")
+    parser.add_argument("--selection", dest="no_selection", action="store_false")
+
     parser.set_defaults(inference=True)
     args = parser.parse_args()
 
