@@ -420,6 +420,14 @@ class HwwProcessor(processor.ProcessorABC):
         leptonic_taus = (loose_taus["decayMode"] == ELE_PDGID) | (loose_taus["decayMode"] == MU_PDGID)
         msk_leptonic_taus = ~ak.any(leptonic_taus, axis=1)
 
+        # store gen jet flavors that amey be useful for studying NLO WJets
+        genjets = events.GenJet
+        goodgenjets = genjets[(genjets.pt > 20.0) & (np.abs(genjets.eta) < 2.4)]
+
+        nB0 = (ak.sum(goodgenjets.hadronFlavour == 5, axis=1) == 0).to_numpy()
+        nB1 = (ak.sum(goodgenjets.hadronFlavour == 5, axis=1) == 1).to_numpy()
+        nB2 = (ak.sum(goodgenjets.hadronFlavour == 5, axis=1) == 2).to_numpy()
+
         ######################
         # Store variables
         ######################
@@ -479,6 +487,9 @@ class HwwProcessor(processor.ProcessorABC):
             ).miniPFRelIso_all,
             "loose_lep1_pt": ak.firsts(muons[loose_muons1][ak.argsort(muons[loose_muons1].pt, ascending=False)]).pt,
             "msk_leptonic_taus": msk_leptonic_taus,
+            "nB0": nB0,
+            "nB1": nB1,
+            "nB2": nB2,
         }
 
         # get the dR(genlep, recolep) to check the matching
