@@ -646,20 +646,19 @@ class HwwProcessor(processor.ProcessorABC):
             pw_pass = self.pileup_cutoff(events, self._year, self._yearmod, cutoff=4)
             self.add_selection(name="PU_cutoff", sel=pw_pass)
 
-        if self._apply_selection:
+        if self._apply_trigger:
             for ch in self._channels:
+                if ch == "mu":
+                    self.add_selection(
+                        name="Trigger",
+                        sel=((candidatelep.pt < 55) & trigger["mu_lowpt"])
+                        | ((candidatelep.pt >= 55) & trigger["mu_highpt"]),
+                        channel=ch,
+                    )
+                else:
+                    self.add_selection(name="Trigger", sel=trigger[ch], channel=ch)
 
-                if self._apply_trigger:
-                    if ch == "mu":
-                        self.add_selection(
-                            name="Trigger",
-                            sel=((candidatelep.pt < 55) & trigger["mu_lowpt"])
-                            | ((candidatelep.pt >= 55) & trigger["mu_highpt"]),
-                            channel=ch,
-                        )
-                    else:
-                        self.add_selection(name="Trigger", sel=trigger[ch], channel=ch)
-
+        if self._apply_selection:
             self.add_selection(name="METFilters", sel=metfilters)
             self.add_selection(name="OneLep", sel=(n_good_muons == 1) & (n_loose_electrons == 0), channel="mu")
             self.add_selection(name="OneLep", sel=(n_loose_muons1 == 0) & (n_good_electrons == 1), channel="ele")
