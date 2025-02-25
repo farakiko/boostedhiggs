@@ -69,10 +69,6 @@ def make_events_dict(years, channels, samples_dir, samples, presel, THWW_path=No
                     if "Rivet" not in sample:
                         continue
 
-                if "WJetsLNu" in sample_to_use:
-                    if "HT" in sample:
-                        continue
-
                 if sample_to_use not in samples:
                     continue
 
@@ -98,6 +94,14 @@ def make_events_dict(years, channels, samples_dir, samples, presel, THWW_path=No
                         data = data[data["fj_genH_pt"] < 200]
                     else:
                         data = data[data["fj_genH_pt"] >= 200]
+
+                if "WJetsLNu_NLO" in sample_to_use:
+                    if ("WJetsToLNu_1J" in sample) or ("WJetsToLNu_2J" in sample):
+                        print("Will apply gen_V_pt<250 selection on", sample)
+                        data = data[data["gen_V_pt"] < 250]
+                    else:
+                        print("Will apply gen_V_pt>250 selection on", sample)
+                        data = data[data["gen_V_pt"] > 250]
 
                 if "met_fj_dphi" in data.keys():
                     data["abs_met_fj_dphi"] = np.abs(data["met_fj_dphi"])

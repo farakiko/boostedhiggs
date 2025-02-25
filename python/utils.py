@@ -50,7 +50,7 @@ combine_samples = {
     # bkg
     "QCD_Pt": "QCD",
     "TT": "TTbar",
-    "WJetsToLNu_": "WJetsLNu",
+    "WJetsToLNu_HT": "WJetsLNu",
     "ST_": "SingleTop",
     "WW": "Diboson",
     "WZ": "Diboson",
@@ -60,6 +60,16 @@ combine_samples = {
     "JetsToQQ": "WZQQ",
     # "DYJets": "WZQQorDYJets",
     # "JetsToQQ": "WZQQorDYJets",
+    # NLO:
+    # "WJetsToLNu_1J": "WJetsLNu_NLO",
+    # "WJetsToLNu_2J": "WJetsLNu_NLO",
+    # "WJetsToLNu_LHEFilterPtW": "WJetsLNu_NLO",
+    # stitching
+    "WJetsToLNu_1J": "WJetsToLNu_1J",
+    "WJetsToLNu_2J": "WJetsToLNu_2J",
+    "WJetsToLNu_LHEFilterPtW-250To400": "WJetsToLNu_LHEFilterPtW-250To400",
+    "WJetsToLNu_LHEFilterPtW-400To600": "WJetsToLNu_LHEFilterPtW-400To600",
+    "WJetsToLNu_LHEFilterPtW-600ToInf": "WJetsToLNu_LHEFilterPtW-600ToInf",
 }
 
 signals = ["VBF", "ggF", "WH", "ZH", "ttH"]
@@ -158,6 +168,7 @@ color_by_sample = {
     "Fake_FR_stat_Down": "orange",
     # "Fake": "navajowhite",
     "WJetsLNu": "tab:green",
+    "WJetsLNu_NLO": "tab:green",
     "TTbar": "tab:blue",
     "Diboson": "orchid",
     "SingleTop": "tab:cyan",
@@ -199,6 +210,7 @@ plot_labels = {
     "Fake_FR_stat_Down": "Fake_FR_stat_Down",
     "Diboson": "VV",
     "WJetsLNu": r"W$(\ell\nu)$+jets",
+    "WJetsLNu_NLO": r"W$(\ell\nu)$+jets (NLO)",
     "SingleTop": r"Single T",
     "EWKvjets": "EWK VJets",
     "DYJets": r"Z$(\ell\ell)$+jets",
