@@ -456,6 +456,10 @@ class HwwProcessor(processor.ProcessorABC):
         nB1 = (ak.sum(goodgenjets.hadronFlavour == 5, axis=1) == 1).to_numpy()
         nB2 = (ak.sum(goodgenjets.hadronFlavour == 5, axis=1) == 2).to_numpy()
 
+        nC0 = (ak.sum(goodgenjets.hadronFlavour == 4, axis=1) == 0).to_numpy()
+        nC1 = (ak.sum(goodgenjets.hadronFlavour == 4, axis=1) == 1).to_numpy()
+        nC2 = (ak.sum(goodgenjets.hadronFlavour == 4, axis=1) == 2).to_numpy()
+
         ######################
         # Store variables
         ######################
@@ -519,6 +523,9 @@ class HwwProcessor(processor.ProcessorABC):
             "nB0": nB0,
             "nB1": nB1,
             "nB2": nB2,
+            "nC0": nC0,
+            "nC1": nC1,
+            "nC2": nC2,
         }
 
         # store the genweight as a column
