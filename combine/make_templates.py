@@ -457,8 +457,8 @@ def get_templates(years, channels, samples, samples_dir, regions_sel, model_path
                 if len(data) == 0:
                     continue
 
-                data["rec_higgs_m"][data["rec_higgs_m"] < low_mass_bin] = low_mass_bin
-                data["rec_higgs_m"][data["rec_higgs_m"] > high_mass_bin] = high_mass_bin
+                # data["rec_higgs_m"][data["rec_higgs_m"] < low_mass_bin] = low_mass_bin
+                # data["rec_higgs_m"][data["rec_higgs_m"] > high_mass_bin] = high_mass_bin
 
                 if sample_to_use == "ggF":
                     if "GluGluHToWWToLNuQQ_M-125_TuneCP5_13TeV_powheg_jhugen751_pythia8" in sample:
