@@ -35,7 +35,7 @@ combine_samples = {
     "EGamma_": "Data",
     # bkg
     "TT": "TTbar",
-    "WJetsToLNu_": "WJetsLNu",
+    "WJetsToLNu_HT": "WJetsLNu",
     "ST_": "SingleTop",
     "WW": "Diboson",
     "WZ": "Diboson",
@@ -43,6 +43,11 @@ combine_samples = {
     "EWK": "EWKvjets",
     "DYJets": "DYJets",
     "JetsToQQ": "WZQQ",
+    "WJetsToLNu_1J": "WJetsToLNu_1J",
+    "WJetsToLNu_2J": "WJetsToLNu_2J",
+    "WJetsToLNu_LHEFilterPtW-250To400": "WJetsToLNu_LHEFilterPtW-250To400",
+    "WJetsToLNu_LHEFilterPtW-400To600": "WJetsToLNu_LHEFilterPtW-400To600",
+    "WJetsToLNu_LHEFilterPtW-600ToInf": "WJetsToLNu_LHEFilterPtW-600ToInf",    
 }
 
 # (name in templates, name in cards)

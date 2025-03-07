@@ -66,8 +66,9 @@ def make_events_dict(years, channels, samples_dir, samples, presel, THWW_path=No
                 sample_to_use = utils.get_common_sample_name(sample)
 
                 if ("ggF" in sample_to_use) or ("VBF" in sample_to_use):
-                    if "Rivet" not in sample:
-                        continue
+                    if "LP" not in samples_dir[year]:
+                        if "Rivet" not in sample:
+                            continue
 
                 if sample_to_use not in samples:
                     continue

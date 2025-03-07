@@ -58,8 +58,6 @@ combine_samples = {
     "EWK": "EWKvjets",
     "DYJets": "DYJets",
     "JetsToQQ": "WZQQ",
-    # "DYJets": "WZQQorDYJets",
-    # "JetsToQQ": "WZQQorDYJets",
     # NLO:
     # "WJetsToLNu_1J": "WJetsLNu_NLO",
     # "WJetsToLNu_2J": "WJetsLNu_NLO",
@@ -190,6 +188,15 @@ color_by_sample = {
     "TTbar_LP_is_top_lqq": "tab:blue",
     "TTbar_LP_others": "darkblue",
     "TTbar_LP": "tab:blue",
+    # split WJets by b/c hads
+    "WJetsLNu_nB0": "tab:green",
+    "WJetsLNu_nB1": "springgreen",
+    "WJetsLNu_nB2": "greenyellow",
+    "WJetsLNu_nBother": "lime",
+    "WJetsLNu_nC0": "tab:green",
+    "WJetsLNu_nC1": "springgreen",
+    "WJetsLNu_nC2": "greenyellow",
+    "WJetsLNu_nCother": "lime",
 }
 
 plot_labels = {
@@ -238,6 +245,15 @@ plot_labels = {
     "TTbar_LP_is_top_lbq": r"$t^{{\ell}bq}$ (after LP reweighting)",
     "TTbar_LP_is_top_lbqq": r"$t^{{\ell}bqq}$ (after LP reweighting)",
     "TTbar_LP_others": r"$t\bar{t}$+jets (other)",
+    # split WJets by b/c hads
+    "WJetsLNu_nB0": r"W$(\ell\nu)$+jets (nB=0)",
+    "WJetsLNu_nB1": r"W$(\ell\nu)$+jets (nB=1)",
+    "WJetsLNu_nB2": r"W$(\ell\nu)$+jets (nB=2)",
+    "WJetsLNu_nBother": r"W$(\ell\nu)$+jets (other)",
+    "WJetsLNu_nC0": r"W$(\ell\nu)$+jets (nC=0)",
+    "WJetsLNu_nC1": r"W$(\ell\nu)$+jets (nC=1)",
+    "WJetsLNu_nC2": r"W$(\ell\nu)$+jets (nC=2)",
+    "WJetsLNu_nCother": r"W$(\ell\nu)$+jets (other)",
 }
 
 label_by_ch = {"mu": "Muon", "ele": "Electron"}
@@ -292,8 +308,8 @@ def get_axis(var, massbin=5):
         "SecondFatjet_pt": hist2.axis.Regular(
             30, 250, 600, name="var", label=r"Sub-Leading AK8 jet $p_T$ [GeV]", overflow=True
         ),
-        # "fj_pt": hist2.axis.Regular(30, 250, 600, name="var", label=r"Higgs candidate jet $p_T$ [GeV]", overflow=True),
-        "fj_pt": hist2.axis.Regular(20, 250, 600, name="var", label=r"Higgs candidate jet $p_T$ [GeV]", overflow=True),
+        "fj_pt": hist2.axis.Regular(30, 250, 600, name="var", label=r"Higgs candidate jet $p_T$ [GeV]", overflow=True),
+        # "fj_pt": hist2.axis.Regular(20, 250, 600, name="var", label=r"Higgs candidate jet $p_T$ [GeV]", overflow=True),
         "lep_pt": hist2.axis.Regular(40, 30, 400, name="var", label=r"Lepton $p_T$ [GeV]", overflow=True),
         "pt_ratio": hist2.axis.Regular(40, 0, 2, name="var", label=r"Lepton $p_T$ / Jet $p_T$", overflow=True),
         "rho": hist2.axis.Regular(50, -1, -10, name="var", label=r"Rho", overflow=True),
@@ -305,8 +321,8 @@ def get_axis(var, massbin=5):
         "lep_fj_dr": hist2.axis.Regular(
             35, 0.03, 0.8, name="var", label=r"$\Delta R(\ell, \mathrm{Higgs \ candidate \ jet})$", overflow=True
         ),
-        # "met_pt": hist2.axis.Regular(40, 20, 250, name="var", label=r"MET [GeV]", overflow=True),
-        "met_pt": hist2.axis.Regular(20, 20, 250, name="var", label=r"MET [GeV]", overflow=True),
+        "met_pt": hist2.axis.Regular(40, 20, 250, name="var", label=r"MET [GeV]", overflow=True),
+        # "met_pt": hist2.axis.Regular(20, 20, 250, name="var", label=r"MET [GeV]", overflow=True),
         "met_phi": hist2.axis.Regular(40, -3.14, 3.14, name="var", label=r"MET $\Phi$", overflow=True),
         "met_fj_dphi": hist2.axis.Regular(
             35,
@@ -382,6 +398,8 @@ def plot_hists(
     add_soverb=False,
     legend_ncol=2,
     seperate_Fake_unc=False,
+    plot_totsig=True,
+    plot_sig_components=False,
 ):
     # luminosity
     luminosity = 0
@@ -699,14 +717,15 @@ def plot_hists(
             else:
                 siglabel = r"ggF+VBF+WH+ZH+ttH $\times$" + f"{mult_factor}"
 
-            hep.histplot(
-                tot_signal,
-                ax=ax,
-                label=siglabel,
-                linewidth=2,
-                color="tab:red",
-                flow="none",
-            )
+            if plot_totsig:
+                hep.histplot(
+                    tot_signal,
+                    ax=ax,
+                    label=siglabel,
+                    linewidth=2,
+                    color="tab:red",
+                    flow="none",
+                )
             # # add MC stat errors
             # ax.stairs(
             #     values=tot_signal.values() + np.sqrt(tot_signal.values()),
@@ -715,7 +734,7 @@ def plot_hists(
             #     **errps_signal,
             # )
 
-            if add_soverb:
+            if plot_sig_components:
                 # plot individual signal
                 for i, sig in enumerate(signal_mult):
                     hep.histplot(
