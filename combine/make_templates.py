@@ -54,9 +54,7 @@ def fill_systematics(
     for region, region_sel in regions_sel.items():  # e.g. pass, fail, top control region, etc.
 
         df = data.copy()
-        logging.info(f"Applying {region} selection on {len(df)} events")
         df = df.query(region_sel)
-        logging.info(f"Will fill the histograms with the remaining {len(df)} events")
 
         # ------------------- Nominal -------------------
         if is_data:
@@ -371,7 +369,7 @@ def fill_systematics(
                 )
 
 
-def get_templates(years, channels, samples, samples_dir, regions_sel, model_path, add_fake=False):
+def get_templates(years, channels, samples, samples_dir, regions_sel, model_path):
     """
     Postprocesses the parquets by applying preselections, and fills templates for different regions.
 
@@ -382,7 +380,6 @@ def get_templates(years, channels, samples, samples_dir, regions_sel, model_path
         samples_dir [dict]: points to the path of the parquets for each region
         regions_sel [dict]: key is the name of the region; value is the selection (e.g. `{"pass": (THWW>0.90)}`)
         model_path [str]: path to the ParT finetuned model.onnx
-        add_fake [Bool]: if True will include Fake as an additional sample in the output hists
 
     Returns
         a dict() object hists[region] that contains histograms with 4 axes (Sample, Systematic, Region, mass_observable)
@@ -439,8 +436,6 @@ def get_templates(years, channels, samples, samples_dir, regions_sel, model_path
 
                 is_data = True if sample_to_use == "Data" else False
 
-                logging.info(f"Finding {sample} samples and should combine them under {sample_to_use}")
-
                 out_files = f"{samples_dir[year]}/{sample}/outfiles/"
                 parquet_files = glob.glob(f"{out_files}/*_{ch}.parquet")
                 pkl_files = glob.glob(f"{out_files}/*.pkl")
@@ -474,7 +469,6 @@ def get_templates(years, channels, samples, samples_dir, regions_sel, model_path
 
                 # apply selection
                 for selection in presel[ch]:
-                    logging.info(f"Applying {selection} selection on {len(data)} events")
                     data = data.query(presel[ch][selection])
 
                 # apply genlep recolep matching
@@ -574,49 +568,44 @@ def get_templates(years, channels, samples, samples_dir, regions_sel, model_path
                     sumscaleweights,
                 )
 
-    if add_fake:
+    fake_SF = {
+        "ele": 0.75,
+        "mu": 1.0,
+    }
+    for variation in ["FR_Nominal", "FR_stat_Up", "FR_stat_Down", "EWK_SF_Up", "EWK_SF_Down"]:
 
-        fake_SF = {
-            "ele": 0.75,
-            "mu": 1.0,
-        }
-        for variation in ["FR_Nominal", "FR_stat_Up", "FR_stat_Down", "EWK_SF_Up", "EWK_SF_Down"]:
+        for year in years:
+            for ch in channels:
 
-            for year in years:
-                for ch in channels:
+                data = pd.read_parquet(f"{samples_dir[year]}/fake_{year}_{ch}_{variation}.parquet")
 
-                    data = pd.read_parquet(f"{samples_dir[year]}/fake_{year}_{ch}_{variation}.parquet")
+                # apply selection
+                for selection in presel[ch]:
+                    data = data.query(presel[ch][selection])
 
-                    # apply selection
-                    for selection in presel[ch]:
-                        logging.info(f"Applying {selection} selection on {len(data)} events")
-                        data = data.query(presel[ch][selection])
+                data["nominal"] *= fake_SF[ch]  # the closure test SF
 
-                    data["nominal"] *= fake_SF[ch]  # the closure test SF
+                for region in hists.axes["Region"]:
+                    df = data.copy()
 
-                    for region in hists.axes["Region"]:
-                        df = data.copy()
+                    df = df.query(regions_sel[region])
 
-                        logging.info(f"Applying {region} selection on {len(df)} events")
-                        df = df.query(regions_sel[region])
-                        logging.info(f"Will fill the histograms with the remaining {len(df)} events")
-
-                        if variation == "FR_Nominal":
-                            hists.fill(
-                                Sample="Fake",
-                                Systematic="nominal",
-                                Region=region,
-                                mass_observable=df["rec_higgs_m"],
-                                weight=df["nominal"],
-                            )
-                        else:
-                            hists.fill(
-                                Sample="Fake",
-                                Systematic=variation,
-                                Region=region,
-                                mass_observable=df["rec_higgs_m"],
-                                weight=df["nominal"],
-                            )
+                    if variation == "FR_Nominal":
+                        hists.fill(
+                            Sample="Fake",
+                            Systematic="nominal",
+                            Region=region,
+                            mass_observable=df["rec_higgs_m"],
+                            weight=df["nominal"],
+                        )
+                    else:
+                        hists.fill(
+                            Sample="Fake",
+                            Systematic=variation,
+                            Region=region,
+                            mass_observable=df["rec_higgs_m"],
+                            weight=df["nominal"],
+                        )
 
     logging.info(hists)
 
@@ -666,7 +655,6 @@ def main(args):
         config["samples_dir"],
         config["regions_sel"],
         config["model_path"],
-        args.add_fake,
     )
 
     fix_neg_yields(hists)
@@ -677,13 +665,12 @@ def main(args):
 
 if __name__ == "__main__":
     # e.g.
-    # python make_templates.py --years 2016,2016APV,2017,2018 --channels mu,ele --outdir templates/v1 --add-fake
+    # python make_templates.py --years 2016,2016APV,2017,2018 --channels mu,ele --outdir templates/v1
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--years", dest="years", default="2017", help="years separated by commas")
     parser.add_argument("--channels", dest="channels", default="mu", help="channels separated by commas (e.g. mu,ele)")
     parser.add_argument("--outdir", dest="outdir", default="templates/test", type=str, help="path of the output")
-    parser.add_argument("--add-fake", dest="add_fake", action="store_true")
 
     args = parser.parse_args()
 
