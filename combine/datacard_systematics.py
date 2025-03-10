@@ -358,21 +358,26 @@ def systs_from_parquets(years):
         ),
         # FSR systematics
         # specefic handling of ps_fsr_wjets per region
-        rl.NuisanceParameter("ps_fsr_wjets_ggFpt250to350", "lnN"): (
+        # rl.NuisanceParameter("ps_fsr_wjets_ggFpt250to350", "lnN"): (
+        #     "weight_PSFSR",
+        #     ["WJetsLNu"],
+        #     ["ggFpt250to350"],
+        # ),
+        # rl.NuisanceParameter("ps_fsr_wjets_ggFpt350to500", "lnN"): (
+        #     "weight_PSFSR",
+        #     ["WJetsLNu"],
+        #     ["ggFpt350to500"],
+        # ),
+        # rl.NuisanceParameter("ps_fsr_wjets_ggFpt500toInf", "lnN"): (
+        #     "weight_PSFSR",
+        #     ["WJetsLNu"],
+        #     ["ggFpt500toInf"],
+        # ),
+        rl.NuisanceParameter("ps_fsr_wjets", "lnN"): (
             "weight_PSFSR",
             ["WJetsLNu"],
-            ["ggFpt250to350"],
-        ),
-        rl.NuisanceParameter("ps_fsr_wjets_ggFpt350to500", "lnN"): (
-            "weight_PSFSR",
-            ["WJetsLNu"],
-            ["ggFpt350to500"],
-        ),
-        rl.NuisanceParameter("ps_fsr_wjets_ggFpt500toInf", "lnN"): (
-            "weight_PSFSR",
-            ["WJetsLNu"],
-            ["ggFpt500toInf"],
-        ),
+            SIG_regions + CONTROL_regions,
+        ),        
         ######################
         rl.NuisanceParameter("ps_fsr_ttbar", "shape"): (
             "weight_PSFSR",
@@ -515,12 +520,11 @@ def systs_from_parquets(years):
                     sigs + bkgs,
                     SIG_regions + CONTROL_regions,
                 ),
-                rl.NuisanceParameter(f"ps_fsr_wjets_{year}", "shape"): (
-                    f"weight_PSFSR_wjets_{year}",  # TODO
-                    # f"weight_PSFSR_{year}",  #TODO
-                    ["WJetsLNu"],
-                    SIG_regions + CONTROL_regions,
-                ),
+                # rl.NuisanceParameter(f"ps_fsr_wjets_{year}", "shape"): (
+                #     f"weight_PSFSR_wjets_{year}",  # TODO
+                #     ["WJetsLNu"],
+                #     SIG_regions + CONTROL_regions,
+                # ),
             },
         }
         if year != "2018":
