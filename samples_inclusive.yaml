@@ -67,6 +67,11 @@ vjetsnlo:
   - WJetsToLNu_LHEFilterPtW-250To400
   - WJetsToLNu_LHEFilterPtW-400To600
   - WJetsToLNu_LHEFilterPtW-600ToInf
+  - WJetsToLNu_012JetsNLO_34JetsLO_EWNLOcorr
+  - WJetsToLNu_Pt-100To250_MatchEWPDG20
+  - WJetsToLNu_Pt-250To400_MatchEWPDG20
+  - WJetsToLNu_Pt-400To600_MatchEWPDG20
+  - WJetsToLNu_Pt-600ToInf_MatchEWPDG20
 vjetsnloOTHER:
   - WJetsToLNu_0J
 extra:
