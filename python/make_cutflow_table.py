@@ -26,8 +26,8 @@ import yaml
 sys.path
 sys.path.append("../python/")
 
-import utils
-from utils import get_xsecweight
+import utils_diffBins
+from utils_diffBins import get_xsecweight
 
 plt.style.use(hep.style.CMS)
 plt.rcParams.update({"font.size": 20})
@@ -139,16 +139,16 @@ def make_cutflow_dict(years, channels, samples_dir, samples):
 
                 # first: check if the sample is in one of combine_samples_by_name
                 sample_to_use = None
-                for key in utils.combine_samples_by_name:
+                for key in utils_diffBins.combine_samples_by_name:
                     if key in sample:
-                        sample_to_use = utils.combine_samples_by_name[key]
+                        sample_to_use = utils_diffBins.combine_samples_by_name[key]
                         break
 
                 # second: if not, combine under common label
                 if sample_to_use is None:
-                    for key in utils.combine_samples:
+                    for key in utils_diffBins.combine_samples:
                         if key in sample:
-                            sample_to_use = utils.combine_samples[key]
+                            sample_to_use = utils_diffBins.combine_samples[key]
                             break
                         else:
                             sample_to_use = sample

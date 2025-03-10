@@ -22,7 +22,7 @@ import numpy as np
 import pandas as pd
 import rhalphalib as rl
 from combine.datacard_systematics import systs_from_parquets, systs_not_from_parquets
-from utils import (
+from utils_diffBins import (
     blindBins,
     get_template,
     labels,

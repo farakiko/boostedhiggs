@@ -336,7 +336,7 @@ def get_axis(var, massbin=5):
         "ht": hist2.axis.Regular(30, 400, 1400, name="var", label=r"ht [GeV]", overflow=True),
         "rec_W_qq_m": hist2.axis.Regular(40, 0, 160, name="var", label=r"Reconstructed $W_{qq}$ mass [GeV]", overflow=True),
         "rec_higgs_m": hist2.axis.Variable(
-            list(range(75, 235, massbin)), name="var", label=r"Higgs reconstructed mass [GeV]", overflow=True
+            list(range(35, 295, massbin)), name="var", label=r"Higgs reconstructed mass [GeV]", overflow=True
         ),
         "rec_W_lnu_m": hist2.axis.Regular(
             40, 0, 160, name="var", label=r"Reconstructed $W_{\ell \nu}$ mass [GeV]", overflow=True

@@ -26,7 +26,7 @@ from datacard_systematics import (
     systs_not_from_parquets,
 )
 from systematics import bkgs, sigs
-from utils import get_template, labels, load_templates, shape_to_num
+from utils_diffBins import get_template, labels, load_templates, shape_to_num
 
 rl.ParametericSample.PreferRooParametricHist = True
 logging.basicConfig(level=logging.INFO)
@@ -105,9 +105,9 @@ def create_datacard(
 
                 if (sName in samples_to_cover) and (ChName in regions_to_cover):
 
-                    syst_up = hists_templates[ChName][{"Sample": sName, "Systematic": sys_name + "_up"}].values()
-                    syst_do = hists_templates[ChName][{"Sample": sName, "Systematic": sys_name + "_down"}].values()
-                    nominal = hists_templates[ChName][{"Sample": sName, "Systematic": "nominal"}].values()
+                    syst_up = hists_templates[{"Sample": sName, "Region": ChName, "Systematic": sys_name + "_up"}].values()
+                    syst_do = hists_templates[{"Sample": sName, "Region": ChName, "Systematic": sys_name + "_down"}].values()
+                    nominal = hists_templates[{"Sample": sName, "Region": ChName, "Systematic": "nominal"}].values()
 
                     if sys_value.combinePrior == "lnN":
                         eff_up = shape_to_num(syst_up, nominal)
@@ -169,9 +169,9 @@ def create_datacard(
             for sys_name in ["FR_stat", "EWK_SF"]:
 
                 sys_value = rl.NuisanceParameter(name_in_card[sys_name], "shape")
-                syst_up = hists_templates[ChName][{"Sample": "Fake", "Systematic": sys_name + "_Up"}].values()
-                syst_do = hists_templates[ChName][{"Sample": "Fake", "Systematic": sys_name + "_Down"}].values()
-                nominal = hists_templates[ChName][{"Sample": "Fake", "Systematic": "nominal"}].values()
+                syst_up = hists_templates[{"Sample": "Fake", "Region": ChName, "Systematic": sys_name + "_Up"}].values()
+                syst_do = hists_templates[{"Sample": "Fake", "Region": ChName, "Systematic": sys_name + "_Down"}].values()
+                nominal = hists_templates[{"Sample": "Fake", "Region": ChName, "Systematic": "nominal"}].values()
 
                 nominal[nominal == 0] = 1  # to avoid invalid value encountered in true_divide in "syst_up/nominal"
                 sample.setParamEffect(sys_value, (syst_up / nominal), (syst_do / nominal))

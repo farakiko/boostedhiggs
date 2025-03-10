@@ -15,7 +15,7 @@ samples:
 
 regions_sel:
 
-    "VBF": (n_bjets_T==0) & (THWW>0.905) & ( (mjj>1000) & (deta>3.5) & (NumOtherJets>=2) ) & (rec_higgs_pt>250)
+    "VBF": (n_bjets_T==0) & (THWW>0.905) & ( (mjj>1000) & (deta>3.5) & (NumOtherJets>=2) ) & (rec_higgs_pt>250) & (rec_higgs_m>=75)
     "ggFpt250to350": (n_bjets_T==0) & (THWW>0.93) & ( (mjj<1000) | (deta<3.5) | (NumOtherJets<2) ) & (rec_higgs_pt>250) & (rec_higgs_pt<350) & (VH_fj_VScore<0.9)
     "ggFpt350to500": (n_bjets_T==0) & (THWW>0.93) & ( (mjj<1000) | (deta<3.5) | (NumOtherJets<2) ) & (rec_higgs_pt>350) & (rec_higgs_pt<500) & (VH_fj_VScore<0.9)
     "ggFpt500toInf": (n_bjets_T==0) & (THWW>0.93) & ( (mjj<1000) | (deta<3.5) | (NumOtherJets<2) ) & (rec_higgs_pt>500) & (VH_fj_VScore<0.9)
@@ -24,12 +24,12 @@ regions_sel:
 
 regions_binning:  # (low_range, high_range, binning)
 
-    "VBF": [75, 255, 20]
-    "ggFpt250to350": [75, 255, 20]
-    "ggFpt350to500": [75, 255, 20]
-    "ggFpt500toInf": [75, 255, 20]
-    "WJetsCR": [75, 255, 20]
-    "TopCR": [75, 255, 20]
+    "VBF": [55, 255, 20]
+    "ggFpt250to350": [55, 255, 20]
+    "ggFpt350to500": [55, 255, 20]
+    "ggFpt500toInf": [55, 255, 20]
+    "WJetsCR": [55, 255, 20]
+    "TopCR": [55, 255, 20]
 
 samples_dir:
     "2018": ../eos/hww/Dec20_hww_2018

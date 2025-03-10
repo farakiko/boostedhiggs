@@ -18,7 +18,7 @@ import hist as hist2
 import numpy as np
 import pandas as pd
 import pyarrow
-import utils
+import utils_diffBins
 import yaml
 
 logging.basicConfig(level=logging.INFO)
@@ -111,9 +111,9 @@ def get_templates(years, channels, samples, samples_dir, regions_sel, model_path
                     print(f"Skipping sample {sample}")
                     continue
 
-                for key in utils.combine_samples:  # get a combined label to combine samples of the same process
+                for key in utils_diffBins.combine_samples:  # get a combined label to combine samples of the same process
                     if key in sample:
-                        sample_to_use = utils.combine_samples[key]
+                        sample_to_use = utils_diffBins.combine_samples[key]
                         break
                     else:
                         sample_to_use = sample
@@ -143,7 +143,7 @@ def get_templates(years, channels, samples, samples_dir, regions_sel, model_path
                     continue
 
                 # use hidNeurons to get the finetuned scores
-                data["fj_ParT_score_finetuned"] = utils.get_finetuned_score(data, model_path)
+                data["fj_ParT_score_finetuned"] = utils_diffBins.get_finetuned_score(data, model_path)
 
                 # drop hidNeurons which are not needed anymore
                 data = data[data.columns.drop(list(data.filter(regex="hidNeuron")))]
@@ -157,7 +157,7 @@ def get_templates(years, channels, samples, samples_dir, regions_sel, model_path
 
                 # get event_weight
                 if sample_to_use != "Data":
-                    event_weight = utils.get_xsecweight(pkl_files, year, sample, False, luminosity)
+                    event_weight = utils_diffBins.get_xsecweight(pkl_files, year, sample, False, luminosity)
 
                 for region, region_sel in regions_sel.items():  # e.g. pass, fail, top control region, etc.
                     logging.info(f"Applying {region} selection on {len(data)} events")

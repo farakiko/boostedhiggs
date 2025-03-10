@@ -191,7 +191,7 @@ def shape_to_num(var, nom, clip=1.5):
 
 
 def get_template(h, sample, region):
-    return h[region][{"Sample": sample, "Systematic": "nominal"}]
+    return h[{"Sample": sample, "Systematic": "nominal", "Region": region}]
 
 
 def load_templates(years, lep_channels, outdir):
