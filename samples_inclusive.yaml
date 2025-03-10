@@ -409,3 +409,5 @@ signal:
 mcrivet:
   - GluGluHToWW_Pt-200ToInf_M-125_Rivet
   - VBFHToWWToAny_M-125_TuneCP5_withDipoleRecoil_Rivet
+vjetsnlohighpt:
+  - WJetsToLNu_LHEFilterPtW-600
