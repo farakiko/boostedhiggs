@@ -302,7 +302,7 @@ prompt_old:
 - DYJetsToLL_M-50_HT-800to1200
 - DYJetsToLL_M-50_HT-1200to2500
 - DYJetsToLL_M-50_HT-2500toInf
-wjets:
+vjets:  # was renamed from wjets
   - WJetsToLNu_HT-70To100
   - WJetsToLNu_HT-100To200
   - WJetsToLNu_HT-200To400
