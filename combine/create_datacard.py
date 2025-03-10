@@ -53,11 +53,6 @@ def create_datacard(
     if add_wjets_constraint:
         wjetsnormSF = rl.IndependentParameter("wjetsnormSF", 1.0, 0, 10)
 
-        # wjetsnormSF = {}
-        # wjetsnormSF["1"] = rl.IndependentParameter("wjetsnormSF1", 1.0, 0, 10)
-        # wjetsnormSF["2"] = rl.IndependentParameter("wjetsnormSF2", 1.0, 0, 10)
-        # wjetsnormSF["3"] = rl.IndependentParameter("wjetsnormSF3", 1.0, 0, 10)
-
     samples = sigs + bkgs
     if do_unfolding:
         samples.remove("ggF")
@@ -110,9 +105,9 @@ def create_datacard(
 
                 if (sName in samples_to_cover) and (ChName in regions_to_cover):
 
-                    syst_up = hists_templates[{"Sample": sName, "Region": ChName, "Systematic": sys_name + "_up"}].values()
-                    syst_do = hists_templates[{"Sample": sName, "Region": ChName, "Systematic": sys_name + "_down"}].values()
-                    nominal = hists_templates[{"Sample": sName, "Region": ChName, "Systematic": "nominal"}].values()
+                    syst_up = hists_templates[ChName][{"Sample": sName, "Systematic": sys_name + "_up"}].values()
+                    syst_do = hists_templates[ChName][{"Sample": sName, "Systematic": sys_name + "_down"}].values()
+                    nominal = hists_templates[ChName][{"Sample": sName, "Systematic": "nominal"}].values()
 
                     if sys_value.combinePrior == "lnN":
                         eff_up = shape_to_num(syst_up, nominal)
@@ -211,25 +206,6 @@ def create_datacard(
 
             wjetspass = passCh["wjets"]
             wjetspass.setParamEffect(wjetsnormSF, 1 * wjetsnormSF)
-
-        # for i, sig_region in enumerate(["ggFpt250to350", "ggFpt350to500", "ggFpt500toInf"]):
-        #     i += 1
-
-        #     failCh = model[f"WJetsCR{i}"]
-
-        #     wjetsfail = failCh["wjets"]
-        #     wjetsfail.setParamEffect(wjetsnormSF[str(i)], 1 * wjetsnormSF[str(i)])
-
-        #     passCh = model[sig_region]
-
-        #     wjetspass = passCh["wjets"]
-        #     wjetspass.setParamEffect(wjetsnormSF[str(i)], 1 * wjetsnormSF[str(i)])
-
-        #     if i == 2:
-        #         passCh = model["VBF"]
-
-        #         wjetspass = passCh["wjets"]
-        #         wjetspass.setParamEffect(wjetsnormSF[str(i)], 1 * wjetsnormSF[str(i)])
 
     return model
 
