@@ -404,34 +404,16 @@ class VjetsProcessor(processor.ProcessorABC):
         genjets = events.GenJet
         goodgenjets = genjets[(genjets.pt > 20.0) & (np.abs(genjets.eta) < 2.4)]
 
-        nB0 = (ak.sum(goodgenjets.hadronFlavour == 5, axis=1) == 0).to_numpy()
-        nB1 = (ak.sum(goodgenjets.hadronFlavour == 5, axis=1) == 1).to_numpy()
-        nB2 = (ak.sum(goodgenjets.hadronFlavour == 5, axis=1) == 2).to_numpy()
-        nB2_new = (ak.num(goodgenjets.hadronFlavour == 5, axis=1)).to_numpy()
-
-        print("axis=1", ak.sum(goodgenjets.hadronFlavour == 5, axis=1))
-        print("axis=0", ak.num(goodgenjets.hadronFlavour == 5, axis=0))
-        print("nB0", ak.sum(goodgenjets.hadronFlavour == 5, axis=1) == 0)
-        print("nB1", ak.sum(goodgenjets.hadronFlavour == 5, axis=1) == 1)
-        print("nB2", ak.sum(goodgenjets.hadronFlavour == 5, axis=1) == 2)
-        print("goodgenjets.hadronFlavour == 5", goodgenjets.hadronFlavour == 5)
-
-        nC0 = (ak.sum(goodgenjets.hadronFlavour == 4, axis=1) == 0).to_numpy()
-        nC1 = (ak.sum(goodgenjets.hadronFlavour == 4, axis=1) == 1).to_numpy()
-        nC2 = (ak.sum(goodgenjets.hadronFlavour == 4, axis=1) == 2).to_numpy()
+        nBjets = (ak.sum(goodgenjets.hadronFlavour == 5, axis=1)).to_numpy()
+        nCjets = (ak.sum(goodgenjets.hadronFlavour == 4, axis=1)).to_numpy()
 
         ######################
         # Store variables
         ######################
 
         variables = {
-            # "nB0": nB0,
-            # "nB1": nB1,
-            "nB2_new": nB2_new,
-            "nB2": nB2,
-            "nC0": nC0,
-            "nC1": nC1,
-            "nC2": nC2,
+            "nBjets": nBjets,
+            "nCjets": nCjets,
         }
 
         # store the genweight as a column
