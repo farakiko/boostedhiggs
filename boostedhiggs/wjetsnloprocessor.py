@@ -62,7 +62,7 @@ def build_p4(cand):
     )
 
 
-class NLOProcessor(processor.ProcessorABC):
+class VJetsNLOProcessor(processor.ProcessorABC):
     def __init__(
         self,
         year="2017",
