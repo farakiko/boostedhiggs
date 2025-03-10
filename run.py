@@ -119,6 +119,23 @@ def main(args):
             no_selection=args.no_selection,
         )
 
+    elif args.processor == "nlo":
+        from boostedhiggs.NLOprocessor import NLOprocessor
+
+        p = NLOprocessor(
+            year=year,
+            yearmod=yearmod,
+            channels=channels,
+            inference=args.inference,
+            systematics=args.systematics,
+            getLPweights=args.getLPweights,
+            uselooselep=args.uselooselep,
+            fakevalidation=args.fakevalidation,
+            output_location="./outfiles" + job_name,
+            no_trigger=args.no_trigger,
+            no_selection=args.no_selection,
+        )
+
     elif args.processor == "lumi":
         from boostedhiggs.lumi_processor import LumiProcessor
 
