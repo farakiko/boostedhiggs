@@ -577,7 +577,7 @@ def get_templates(years, channels, samples, samples_dir, regions_sel, model_path
         for year in years:
             for ch in channels:
 
-                data = pd.read_parquet(f"{samples_dir[year]}/fake_{year}_{ch}_{variation}.parquet")
+                data = pd.read_parquet(f"{samples_dir[year]}/Fake/fake_{year}_{ch}_{variation}.parquet")
 
                 # apply selection
                 for selection in presel[ch]:
