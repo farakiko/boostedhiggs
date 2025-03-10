@@ -404,9 +404,10 @@ class VjetsProcessor(processor.ProcessorABC):
         genjets = events.GenJet
         goodgenjets = genjets[(genjets.pt > 20.0) & (np.abs(genjets.eta) < 2.4)]
 
-        nB0 = (ak.sum(goodgenjets.hadronFlavour == 5, axis=1) == 0).to_numpy()
-        nB1 = (ak.sum(goodgenjets.hadronFlavour == 5, axis=1) == 1).to_numpy()
-        nB2 = (ak.sum(goodgenjets.hadronFlavour == 5, axis=1) == 2).to_numpy()
+        # nB0 = (ak.sum(goodgenjets.hadronFlavour == 5, axis=1) == 0).to_numpy()
+        # nB1 = (ak.sum(goodgenjets.hadronFlavour == 5, axis=1) == 1).to_numpy()
+        # nB2 = (ak.sum(goodgenjets.hadronFlavour == 5, axis=1) == 2).to_numpy()
+        nB2 = (ak.len(goodgenjets.hadronFlavour == 5, axis=1)).to_numpy()
 
         nC0 = (ak.sum(goodgenjets.hadronFlavour == 4, axis=1) == 0).to_numpy()
         nC1 = (ak.sum(goodgenjets.hadronFlavour == 4, axis=1) == 1).to_numpy()
@@ -417,8 +418,8 @@ class VjetsProcessor(processor.ProcessorABC):
         ######################
 
         variables = {
-            "nB0": nB0,
-            "nB1": nB1,
+            # "nB0": nB0,
+            # "nB1": nB1,
             "nB2": nB2,
             "nC0": nC0,
             "nC1": nC1,
