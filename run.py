@@ -120,9 +120,9 @@ def main(args):
         )
 
     elif args.processor == "vjetsnlo":
-        from boostedhiggs.wjetsnloprocessor import VJetsNLOprocessor
+        from boostedhiggs.wjetsnloprocessor import VjetsProcessor
 
-        p = VJetsNLOprocessor(
+        p = VjetsProcessor(
             year=year,
             yearmod=yearmod,
             channels=channels,
