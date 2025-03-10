@@ -236,16 +236,6 @@ class VjetsProcessor(processor.ProcessorABC):
         # OBJECT DEFINITION
         ######################
 
-        # OBJECT: taus
-        loose_taus_mu = (events.Tau.pt > 20) & (abs(events.Tau.eta) < 2.3) & (events.Tau.idAntiMu >= 1)  # loose antiMu ID
-        loose_taus_ele = (
-            (events.Tau.pt > 20)
-            & (abs(events.Tau.eta) < 2.3)
-            & (events.Tau.idAntiEleDeadECal >= 2)  # loose Anti-electron MVA discriminator V6 (2018) ?
-        )
-        n_loose_taus_mu = ak.sum(loose_taus_mu, axis=1)
-        n_loose_taus_ele = ak.sum(loose_taus_ele, axis=1)
-
         # OBJECT: muons
         muons = ak.with_field(events.Muon, 0, "flavor")
 
@@ -267,14 +257,10 @@ class VjetsProcessor(processor.ProcessorABC):
             & (np.abs(muons.dxy) < 0.02)
         )
 
-        n_loose_muons1 = ak.sum(loose_muons1, axis=1)
-
         if self._uselooselep:
             good_muons = loose_muons1
         else:
             good_muons = tight_muons
-
-        n_good_muons = ak.sum(good_muons, axis=1)
 
         # OBJECT: electrons
         electrons = ak.with_field(events.Electron, 1, "flavor")
@@ -299,14 +285,10 @@ class VjetsProcessor(processor.ProcessorABC):
             & (electrons.sip3d <= 4.0)
         )
 
-        n_loose_electrons = ak.sum(loose_electrons, axis=1)
-
         if self._uselooselep:
             good_electrons = loose_electrons
         else:
             good_electrons = tight_electrons
-
-        n_good_electrons = ak.sum(good_electrons, axis=1)
 
         # OBJECT: candidate lepton
         goodleptons = ak.concatenate([muons[good_muons], electrons[good_electrons]], axis=1)  # concat muons and electrons
@@ -361,14 +343,7 @@ class VjetsProcessor(processor.ProcessorABC):
         # OBJECT: b-jets (only for jets with abs(eta)<2.5)
         bjet_selector = (jets.delta_r(candidatefj) > 0.8) & (abs(jets.eta) < 2.5)
 
-        NumFatjets = ak.num(good_fatjets)
         FirstFatjet = ak.firsts(good_fatjets[:, 0:1])
-
-        # delta R between AK8 jet and lepton
-        lep_fj_dr = candidatefj.delta_r(candidatelep_p4)
-
-        # delta phi MET and higgs candidate
-        met_fj_dphi = candidatefj.delta_phi(met)
 
         # leptonic tau veto
         from boostedhiggs.utils import ELE_PDGID, MU_PDGID
@@ -541,69 +516,8 @@ class VjetsProcessor(processor.ProcessorABC):
             pw_pass = self.pileup_cutoff(events, self._year, self._yearmod, cutoff=4)
             self.add_selection(name="PU_cutoff", sel=pw_pass)
 
-        if self._apply_trigger:
-            for ch in self._channels:
-                if ch == "mu":
-                    self.add_selection(
-                        name="Trigger",
-                        sel=((candidatelep.pt < 55) & trigger["mu_lowpt"])
-                        | ((candidatelep.pt >= 55) & trigger["mu_highpt"]),
-                        channel=ch,
-                    )
-                else:
-                    self.add_selection(name="Trigger", sel=trigger[ch], channel=ch)
-
-        if self._apply_selection:
-            self.add_selection(name="METFilters", sel=metfilters)
-            self.add_selection(name="OneLep", sel=(n_good_muons == 1) & (n_loose_electrons == 0), channel="mu")
-            self.add_selection(name="OneLep", sel=(n_loose_muons1 == 0) & (n_good_electrons == 1), channel="ele")
-            self.add_selection(name="NoTaus", sel=(n_loose_taus_mu == 0), channel="mu")
-            self.add_selection(name="NoTaus", sel=(n_loose_taus_ele == 0), channel="ele")
-            self.add_selection(name="AtLeastOneFatJet", sel=(NumFatjets >= 1))
-
-            fj_pt_sel = candidatefj.pt > 250
-            if self.isMC:  # make an OR of all the JECs
-                for k, v in self.jecs.items():
-                    for var in ["up", "down"]:
-                        fj_pt_sel = fj_pt_sel | (candidatefj[v][var].pt > 250)
-            self.add_selection(name="CandidateJetpT", sel=(fj_pt_sel == 1))
-
-            self.add_selection(name="LepInJet", sel=(lep_fj_dr < 0.8))
-            self.add_selection(name="JetLepOverlap", sel=(lep_fj_dr > 0.03))
-            self.add_selection(name="dPhiJetMET", sel=(np.abs(met_fj_dphi) < 1.57))
-
-            if self._fakevalidation:
-                self.add_selection(name="MET", sel=(met.pt < 20))
-            else:
-                self.add_selection(name="MET", sel=(met.pt > 20))
-
-            # hem-cleaning selection
-            if self._year == "2018":
-                hem_veto = ak.any(
-                    ((jets.eta > -3.2) & (jets.eta < -1.3) & (jets.phi > -1.57) & (jets.phi < -0.87)),
-                    -1,
-                ) | ak.any(
-                    (
-                        (electrons.pt > 30)
-                        & (electrons.eta > -3.2)
-                        & (electrons.eta < -1.3)
-                        & (electrons.phi > -1.57)
-                        & (electrons.phi < -0.87)
-                    ),
-                    -1,
-                )
-
-                hem_cleaning = (
-                    ((events.run >= 319077) & (not self.isMC))  # if data check if in Runs C or D
-                    # else for MC randomly cut based on lumi fraction of C&D
-                    | ((np.random.rand(len(events)) < 0.632) & self.isMC)
-                ) & (hem_veto)
-
-                self.add_selection(name="HEMCleaning", sel=~hem_cleaning)
-
-        else:
-            # apply dummy selection
-            self.add_selection(name="dummy", sel=(ht > -99999))
+        # apply dummy selection
+        self.add_selection(name="dummy", sel=(ht > -99999))
 
         if self.isMC:
             for ch in self._channels:
