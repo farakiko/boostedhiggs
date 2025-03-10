@@ -105,22 +105,39 @@ v2_2:
     WJetsToLNu_LHEFilterPtW-400To600: 1
     WJetsToLNu_LHEFilterPtW-600ToInf: 1
     WJetsToLNu_TuneCP5_13TeV-madgraphMLM: 1
-    WJetsToLNu_HT-70To100: 10
-    WJetsToLNu_HT-100To200: 10
-    WJetsToLNu_HT-200To400: 10
-    WJetsToLNu_HT-400To600: 10
-    WJetsToLNu_HT-600To800: 10
-    WJetsToLNu_HT-800To1200: 10
-    WJetsToLNu_HT-1200To2500: 10
-    WJetsToLNu_HT-2500ToInf: 10
-    WJetsToQQ_HT-200to400: 12
-    WJetsToQQ_HT-400to600: 12
-    WJetsToQQ_HT-600to800: 12
-    WJetsToQQ_HT-800toInf: 12
-    ZJetsToQQ_HT-200to400: 12
-    ZJetsToQQ_HT-400to600: 12
-    ZJetsToQQ_HT-600to800: 12
-    ZJetsToQQ_HT-800toInf: 12
+    # WJetsToLNu_HT-70To100: 10
+    # WJetsToLNu_HT-100To200: 10
+    # WJetsToLNu_HT-200To400: 10
+    # WJetsToLNu_HT-400To600: 10
+    # WJetsToLNu_HT-600To800: 10
+    # WJetsToLNu_HT-800To1200: 10
+    # WJetsToLNu_HT-1200To2500: 10
+    # WJetsToLNu_HT-2500ToInf: 10
+    # WJetsToQQ_HT-200to400: 12
+    # WJetsToQQ_HT-400to600: 12
+    # WJetsToQQ_HT-600to800: 12
+    # WJetsToQQ_HT-800toInf: 12
+    # ZJetsToQQ_HT-200to400: 12
+    # ZJetsToQQ_HT-400to600: 12
+    # ZJetsToQQ_HT-600to800: 12
+    # ZJetsToQQ_HT-800toInf: 12
+    # WJetsToLNu_HT-70To100: 10
+    WJetsToLNu_HT-70To100: 1
+    WJetsToLNu_HT-100To200: 1
+    WJetsToLNu_HT-200To400: 1
+    WJetsToLNu_HT-400To600: 1
+    WJetsToLNu_HT-600To800: 1
+    WJetsToLNu_HT-800To1200: 1
+    WJetsToLNu_HT-1200To2500: 1
+    WJetsToLNu_HT-2500ToInf: 1
+    WJetsToQQ_HT-200to400: 1
+    WJetsToQQ_HT-400to600: 1
+    WJetsToQQ_HT-600to800: 1
+    WJetsToQQ_HT-800toInf: 1
+    ZJetsToQQ_HT-200to400: 1
+    ZJetsToQQ_HT-400to600: 1
+    ZJetsToQQ_HT-600to800: 1
+    ZJetsToQQ_HT-800toInf: 1    
     WW: 8
     ZZ: 8
     WZ: 8
