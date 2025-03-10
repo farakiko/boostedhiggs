@@ -169,7 +169,7 @@ if __name__ == "__main__":
         default="hww",
         help="which processor",
         type=str,
-        choices=["hww", "trigger", "lumi", "vh", "zll", "input", "fakes"],
+        choices=["hww", "trigger", "lumi", "vh", "zll", "input", "fakes", "vjetsnlo"],
     )
     parser.add_argument("--config", dest="config", required=True, help="path to config yaml", type=str)
     parser.add_argument("--key", dest="configkey", required=True, help="config key: [data, mc, ... ]", type=str)
