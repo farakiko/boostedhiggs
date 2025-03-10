@@ -409,8 +409,7 @@ class VjetsProcessor(processor.ProcessorABC):
         nB2 = (ak.sum(goodgenjets.hadronFlavour == 5, axis=1) == 2).to_numpy()
         nB2_new = (ak.num(goodgenjets.hadronFlavour == 5, axis=1)).to_numpy()
 
-        print("axis=2", ak.num(goodgenjets.hadronFlavour == 5, axis=2))
-        print("axis=1", ak.num(goodgenjets.hadronFlavour == 5, axis=1))
+        print("axis=1", ak.sum(goodgenjets.hadronFlavour == 5, axis=1))
         print("axis=0", ak.num(goodgenjets.hadronFlavour == 5, axis=0))
         print("nB0", ak.sum(goodgenjets.hadronFlavour == 5, axis=1) == 0)
         print("nB1", ak.sum(goodgenjets.hadronFlavour == 5, axis=1) == 1)
