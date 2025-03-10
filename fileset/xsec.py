@@ -20,6 +20,8 @@ BR_WW_lnuqq = (0.1046 + 0.1050 + 0.1075) * (0.6832) * 2
 BR_WW_qqqq = 0.6832**2
 # Branching ratio of WW to LNuLNu (0.1005)
 BR_WW_lnulnu = (0.1046 + 0.1050 + 0.1075) ** 2
+# Branching ratio of Z to LL
+BR_Z_ll = 3 * 0.033658
 
 BR_THadronic = 0.667
 BR_TLeptonic = 1 - BR_THadronic
@@ -73,17 +75,14 @@ xs["VBFHToWWToLNuQQ_M-125_withDipoleRecoil"] = vbf_xsec
 
 xs["VBFHToWWToAny_M-125_TuneCP5_withDipoleRecoil"] = 3.782 * BR_HWW
 
-xs["ttHToNonbb_M125"] = 5.013e-01 * (1 - BR_HBB)
-
-# Cross xcheck the following numbers
-xs["HWminusJ_HToWW_M-125"] = 0.5445 * BR_HWW
-xs["HWplusJ_HToWW_M-125"] = 0.8720 * BR_HWW
-xs["HZJ_HToWW_M-125"] = 0.9595 * BR_HWW
-# cross check -  this in xsdb is 0.006185
-xs["GluGluZH_HToWW_ZTo2L_M-125"] = 0.1223 * 3 * 0.033658 * BR_HWW  # 0.002639
-# xs["GluGluZH_HToWW_M-125_TuneCP5_13TeV-powheg-pythia8"] = xs["GluGluZH_HToWW_ZTo2L_M-125"]
-xs["GluGluZH_HToWW_M-125_TuneCP5_13TeV-powheg-pythia8"] = 0.0616 * BR_HWW
-xs["GluGluZH_HToWW_M-125"] = 0.0616 * BR_HWW
+# Using LHCXS numbers
+xs["HWminusJ_HToWW_M-125"] = 0.5328 * BR_HWW
+xs["HWplusJ_HToWW_M-125"] = 0.84 * BR_HWW
+xs["HZJ_HToWW_M-125"] = 0.8839 * BR_HWW
+xs["GluGluZH_HToWW_ZTo2L_M-125"] = 0.1227 * BR_Z_ll * BR_HWW  # 0.002639
+xs["GluGluZH_HToWW_M-125_TuneCP5_13TeV-powheg-pythia8"] = 0.1227 * BR_HWW
+xs["GluGluZH_HToWW_M-125"] = 0.1227 * BR_HWW
+xs["ttHToNonbb_M125"] = 0.5071 * (1 - BR_HBB)
 
 # QCD
 xs["QCD_HT500to700"] = 3.033e04
@@ -153,10 +152,18 @@ xs["WJetsToLNu_0J"] = 52780.0
 xs["WJetsToLNu_1J"] = 8832.0
 xs["WJetsToLNu_2J"] = 3276.0
 
+# from xsdb, note this is sherpa
+xs["WJetsToLNu_012JetsNLO_34JetsLO_EWNLOcorr"] = 62070.0
+
 # From running xsecanalyzer on one file ~4GB
 xs["WJetsToLNu_LHEFilterPtW-250To400"] = 27.85
 xs["WJetsToLNu_LHEFilterPtW-400To600"] = 3.622
 xs["WJetsToLNu_LHEFilterPtW-600ToInf"] = 0.5501
+
+xs["WJetsToLNu_Pt-100To250_MatchEWPDG20"] = 763.7
+xs["WJetsToLNu_Pt-250To400_MatchEWPDG20"] = 27.55
+xs["WJetsToLNu_Pt-400To600_MatchEWPDG20"] = 3.477
+xs["WJetsToLNu_Pt-600ToInf_MatchEWPDG20"] = 0.5415
 
 # Z+jets Z(qq)
 xs["ZJetsToQQ_HT-200to400"] = 1012.0

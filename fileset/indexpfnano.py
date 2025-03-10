@@ -199,6 +199,7 @@ for pyear in ["2016", "2016APV", "2017", "2018"]:
                     print("   Ext1")
 
                 subsample_short = subsample_short.replace("_ext1", "")
+                subsample_short = subsample_short.replace("_ext", "")
                 # print(f"  {subsample_short}")
 
                 if subsample_short not in index[year][sample_short]:

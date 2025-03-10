@@ -104,6 +104,11 @@ v2_2:
     WJetsToLNu_LHEFilterPtW-250To400: 1
     WJetsToLNu_LHEFilterPtW-400To600: 1
     WJetsToLNu_LHEFilterPtW-600ToInf: 1
+    WJetsToLNu_012JetsNLO_34JetsLO_EWNLOcorr: 1
+    WJetsToLNu_Pt-100To250_MatchEWPDG20: 1
+    WJetsToLNu_Pt-250To400_MatchEWPDG20: 1
+    WJetsToLNu_Pt-400To600_MatchEWPDG20: 1
+    WJetsToLNu_Pt-600ToInf_MatchEWPDG20: 1
     WJetsToLNu_TuneCP5_13TeV-madgraphMLM: 1
     # WJetsToLNu_HT-70To100: 10
     # WJetsToLNu_HT-100To200: 10
