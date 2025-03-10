@@ -26,7 +26,7 @@ from datacard_systematics import (
     systs_not_from_parquets,
 )
 from systematics import bkgs, sigs
-from utils_diffBins import get_template, labels, load_templates, shape_to_num
+from utils import get_template, labels, load_templates, shape_to_num
 
 rl.ParametericSample.PreferRooParametricHist = True
 logging.basicConfig(level=logging.INFO)

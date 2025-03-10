@@ -18,7 +18,7 @@ import pandas as pd
 import pyarrow
 import yaml
 from systematics import get_systematic_dict, sigs
-from utils_diffBins import get_common_sample_name, get_finetuned_score, get_xsecweight
+from utils import get_common_sample_name, get_finetuned_score, get_xsecweight
 
 logging.basicConfig(level=logging.INFO)
 
