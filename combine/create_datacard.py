@@ -19,8 +19,13 @@ import warnings
 import numpy as np
 import pandas as pd
 import rhalphalib as rl
-from datacard_systematics import systs_from_parquets, systs_not_from_parquets
-from systematics import CONTROL_regions, SIG_regions, bkgs, sigs
+from datacard_systematics import (
+    CONTROL_regions,
+    SIG_regions,
+    systs_from_parquets,
+    systs_not_from_parquets,
+)
+from systematics import bkgs, sigs
 from utils import get_template, labels, load_templates, shape_to_num
 
 rl.ParametericSample.PreferRooParametricHist = True
@@ -36,7 +41,7 @@ def create_datacard(
     hists_templates, years, lep_channels, add_ttbar_constraint=True, add_wjets_constraint=True, do_unfolding=False
 ):
     # define the systematics
-    systs_dict, systs_dict_values = systs_not_from_parquets(years, lep_channels)
+    systs_dict, systs_dict_values = systs_not_from_parquets(years, lep_channels, do_unfolding)
     sys_from_parquets = systs_from_parquets(years)
 
     # define the model
@@ -74,6 +79,8 @@ def create_datacard(
         model.addChannel(ch)
 
         for sName in samples:
+            # if (ChName in CONTROL_regions) and (sName in sigs):
+            # continue
 
             templ = get_template(hists_templates, sName, ChName)
             if templ == 0:

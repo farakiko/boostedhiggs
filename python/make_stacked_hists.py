@@ -17,7 +17,7 @@ import hist as hist2
 import numpy as np
 import pandas as pd
 import pyarrow
-import utils
+import utils_diffBins
 import yaml
 
 logging.basicConfig(level=logging.INFO)
@@ -63,15 +63,12 @@ def make_events_dict(years, channels, samples_dir, samples, presel, THWW_path=No
             for sample in os.listdir(samples_dir[year]):
 
                 # get a combined label to combine samples of the same process
-                sample_to_use = utils.get_common_sample_name(sample)
+                sample_to_use = utils_diffBins.get_common_sample_name(sample)
 
                 if ("ggF" in sample_to_use) or ("VBF" in sample_to_use):
-                    if "Rivet" not in sample:
-                        continue
-
-                if "WJetsLNu" in sample_to_use:
-                    if "HT" in sample:
-                        continue
+                    if "LP" not in samples_dir[year]:
+                        if "Rivet" not in sample:
+                            continue
 
                 if sample_to_use not in samples:
                     continue
@@ -99,13 +96,21 @@ def make_events_dict(years, channels, samples_dir, samples, presel, THWW_path=No
                     else:
                         data = data[data["fj_genH_pt"] >= 200]
 
+                if "WJetsLNu_NLO" in sample_to_use:
+                    if ("WJetsToLNu_1J" in sample) or ("WJetsToLNu_2J" in sample):
+                        print("Will apply gen_V_pt<250 selection on", sample)
+                        data = data[data["gen_V_pt"] < 250]
+                    else:
+                        print("Will apply gen_V_pt>250 selection on", sample)
+                        data = data[data["gen_V_pt"] > 250]
+
                 if "met_fj_dphi" in data.keys():
                     data["abs_met_fj_dphi"] = np.abs(data["met_fj_dphi"])
 
                 # get event_weight
                 if sample_to_use != "Data":
                     try:
-                        data["xsecweight"] = utils.get_xsecweight(pkl_files, year, sample, False, luminosity)
+                        data["xsecweight"] = utils_diffBins.get_xsecweight(pkl_files, year, sample, False, luminosity)
                     except EOFError:
                         continue
                     data["nominal"] = data["xsecweight"] * data[f"weight_{ch}"]
@@ -116,7 +121,7 @@ def make_events_dict(years, channels, samples_dir, samples, presel, THWW_path=No
 
                 if THWW_path is not None:
                     # use hidNeurons to get the finetuned scores
-                    data["THWW"] = utils.get_finetuned_score(data, THWW_path)
+                    data["THWW"] = utils_diffBins.get_finetuned_score(data, THWW_path)
 
                     # drop hidNeuron columns for memory purposes
                     data = data[data.columns.drop(list(data.filter(regex="hidNeuron")))]
@@ -197,7 +202,7 @@ def plot_hists_from_events_dict(events_dict, plot_config):
         for var_to_plot in plot_config["vars_to_plot"]:
             hists[var_to_plot] = hist2.Hist(
                 hist2.axis.StrCategory([], name="samples", growth=True),
-                utils.get_axis(var_to_plot, plot_config["massbin"]),
+                utils_diffBins.get_axis(var_to_plot, plot_config["massbin"]),
                 storage=hist2.storage.Weight(),
             )
 
@@ -281,7 +286,7 @@ def plot_hists_from_events_dict(events_dict, plot_config):
             if plot_config["plot_syst_unc"]:
                 SYST_UNC_up[var_to_plot], SYST_UNC_down[var_to_plot] = get_total_syst_unc(SYST_hists[var_to_plot])
 
-        utils.plot_hists(
+        utils_diffBins.plot_hists(
             hists,
             plot_config["years_to_plot"],
             plot_config["channels_to_plot"],

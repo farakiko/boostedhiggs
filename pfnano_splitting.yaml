@@ -98,10 +98,13 @@ v2_2:
     ST_tW_top_5f_inclusiveDecays: 5
     ST_s-channel_4f_hadronicDecays: 5
     ST_s-channel_4f_leptonDecays: 5
-    WJetsToLNu_0J: 15
-    WJetsToLNu_1J: 15
-    WJetsToLNu_2J: 15
-    WJetsToLNu_TuneCP5_13TeV-madgraphMLM: 15
+    WJetsToLNu_0J: 1
+    WJetsToLNu_1J: 1
+    WJetsToLNu_2J: 1
+    WJetsToLNu_LHEFilterPtW-250To400: 1
+    WJetsToLNu_LHEFilterPtW-400To600: 1
+    WJetsToLNu_LHEFilterPtW-600ToInf: 1
+    WJetsToLNu_TuneCP5_13TeV-madgraphMLM: 1
     WJetsToLNu_HT-70To100: 10
     WJetsToLNu_HT-100To200: 10
     WJetsToLNu_HT-200To400: 10

@@ -1,6 +1,6 @@
 import hist as hist2
 import numpy as np
-import utils
+import utils_diffBins
 
 
 def initialize_syst_unc_hists(SYST_DICT, plot_config):
@@ -20,7 +20,7 @@ def initialize_syst_unc_hists(SYST_DICT, plot_config):
 
         # instantiate the nominal hist
         SYST_hists[var_to_plot]["nominal"] = hist2.Hist(
-            utils.get_axis(var_to_plot, plot_config["massbin"]),
+            utils_diffBins.get_axis(var_to_plot, plot_config["massbin"]),
             storage=hist2.storage.Weight(),
         )
 
@@ -33,11 +33,11 @@ def initialize_syst_unc_hists(SYST_DICT, plot_config):
             #     continue
 
             SYST_hists[var_to_plot]["up"][syst] = hist2.Hist(
-                utils.get_axis(var_to_plot, plot_config["massbin"]),
+                utils_diffBins.get_axis(var_to_plot, plot_config["massbin"]),
                 storage=hist2.storage.Weight(),
             )
             SYST_hists[var_to_plot]["down"][syst] = hist2.Hist(
-                utils.get_axis(var_to_plot, plot_config["massbin"]),
+                utils_diffBins.get_axis(var_to_plot, plot_config["massbin"]),
                 storage=hist2.storage.Weight(),
             )
 
@@ -47,11 +47,11 @@ def initialize_syst_unc_hists(SYST_DICT, plot_config):
                     continue
 
                 SYST_hists[var_to_plot]["up"][syst] = hist2.Hist(
-                    utils.get_axis(var_to_plot, plot_config["massbin"]),
+                    utils_diffBins.get_axis(var_to_plot, plot_config["massbin"]),
                     storage=hist2.storage.Weight(),
                 )
                 SYST_hists[var_to_plot]["down"][syst] = hist2.Hist(
-                    utils.get_axis(var_to_plot, plot_config["massbin"]),
+                    utils_diffBins.get_axis(var_to_plot, plot_config["massbin"]),
                     storage=hist2.storage.Weight(),
                 )
 
@@ -61,7 +61,7 @@ def initialize_syst_unc_hists(SYST_DICT, plot_config):
 def fill_syst_unc_hists(SYST_DICT, SYST_hists, year, ch, sample, var_to_plot, df):
 
     # only get systematic uncertainty on MC samples
-    if ("Fake" in sample) or ("Data" in sample) or (sample in utils.signals):
+    if ("Fake" in sample) or ("Data" in sample) or (sample in utils_diffBins.signals):
         return SYST_hists
 
     # get the nominal

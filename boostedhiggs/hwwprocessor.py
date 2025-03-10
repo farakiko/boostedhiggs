@@ -75,6 +75,8 @@ class HwwProcessor(processor.ProcessorABC):
         getLPweights=False,
         uselooselep=False,
         fakevalidation=False,
+        no_trigger=False,
+        no_selection=False,
     ):
         self._year = year
         self._yearmod = yearmod
@@ -83,6 +85,9 @@ class HwwProcessor(processor.ProcessorABC):
         self._getLPweights = getLPweights
         self._uselooselep = uselooselep
         self._fakevalidation = fakevalidation
+
+        self._apply_trigger = not no_trigger
+        self._apply_selection = not no_selection
 
         self._output_location = output_location
 
@@ -420,6 +425,41 @@ class HwwProcessor(processor.ProcessorABC):
         leptonic_taus = (loose_taus["decayMode"] == ELE_PDGID) | (loose_taus["decayMode"] == MU_PDGID)
         msk_leptonic_taus = ~ak.any(leptonic_taus, axis=1)
 
+        # get the dR(genlep, recolep) to check the matching
+        if self.isMC:
+            genlep = events.GenPart[
+                get_pid_mask(events.GenPart, [ELE_PDGID, MU_PDGID], byall=False)
+                * events.GenPart.hasFlags(["fromHardProcess", "isLastCopy", "isPrompt"])
+            ]
+
+            GenLep = ak.zip(
+                {
+                    "pt": genlep.pt,
+                    "eta": genlep.eta,
+                    "phi": genlep.phi,
+                    "mass": genlep.mass,
+                },
+                with_name="PtEtaPhiMCandidate",
+                behavior=candidate.behavior,
+            )
+
+            # get the dR between the recolep and the genlep that is closest to the reco lep
+            dR_genlep_recolep = GenLep.delta_r(candidatelep_p4)
+            genlep_idx = ak.argmin(dR_genlep_recolep, axis=1, keepdims=True)
+            dR_genlep_recolep = ak.firsts(dR_genlep_recolep[genlep_idx])
+
+        # store gen jet flavors that may be useful for studying NLO WJets
+        genjets = events.GenJet
+        goodgenjets = genjets[(genjets.pt > 20.0) & (np.abs(genjets.eta) < 2.4)]
+
+        nB0 = (ak.sum(goodgenjets.hadronFlavour == 5, axis=1) == 0).to_numpy()
+        nB1 = (ak.sum(goodgenjets.hadronFlavour == 5, axis=1) == 1).to_numpy()
+        nB2 = (ak.sum(goodgenjets.hadronFlavour == 5, axis=1) == 2).to_numpy()
+
+        nC0 = (ak.sum(goodgenjets.hadronFlavour == 4, axis=1) == 0).to_numpy()
+        nC1 = (ak.sum(goodgenjets.hadronFlavour == 4, axis=1) == 1).to_numpy()
+        nC2 = (ak.sum(goodgenjets.hadronFlavour == 4, axis=1) == 2).to_numpy()
+
         ######################
         # Store variables
         ######################
@@ -479,37 +519,20 @@ class HwwProcessor(processor.ProcessorABC):
             ).miniPFRelIso_all,
             "loose_lep1_pt": ak.firsts(muons[loose_muons1][ak.argsort(muons[loose_muons1].pt, ascending=False)]).pt,
             "msk_leptonic_taus": msk_leptonic_taus,
+            "dR_genlep_recolep": dR_genlep_recolep,
+            "nB0": nB0,
+            "nB1": nB1,
+            "nB2": nB2,
+            "nC0": nC0,
+            "nC1": nC1,
+            "nC2": nC2,
         }
-
-        # get the dR(genlep, recolep) to check the matching
-        if self.isMC:
-            genlep = events.GenPart[
-                get_pid_mask(events.GenPart, [ELE_PDGID, MU_PDGID], byall=False)
-                * events.GenPart.hasFlags(["fromHardProcess", "isLastCopy", "isPrompt"])
-            ]
-
-            GenLep = ak.zip(
-                {
-                    "pt": genlep.pt,
-                    "eta": genlep.eta,
-                    "phi": genlep.phi,
-                    "mass": genlep.mass,
-                },
-                with_name="PtEtaPhiMCandidate",
-                behavior=candidate.behavior,
-            )
-
-            # get the dR between the recolep and the genlep that is closest to the reco lep
-            dR_genlep_recolep = GenLep.delta_r(candidatelep_p4)
-            genlep_idx = ak.argmin(dR_genlep_recolep, axis=1, keepdims=True)
-            dR_genlep_recolep = ak.firsts(dR_genlep_recolep[genlep_idx])
-
-            variables["dR_genlep_recolep"] = dR_genlep_recolep
 
         # store the genweight as a column
         for ch in self._channels:
             variables[f"weight_{ch}_genweight"] = self.weights[ch].partial_weight(["genweight"])
 
+        # store additional relevant jet variables
         fatjetvars = {
             "fj_pt": candidatefj.pt,
             "fj_eta": candidatefj.eta,
@@ -590,51 +613,7 @@ class HwwProcessor(processor.ProcessorABC):
             jmsrvariables = getJMSRVariables(fatjetvars, candidatelep_p4, met, mass_shift=shift)
             variables = {**variables, **jmsrvariables}
 
-        ######################
-        # Selection
-        ######################
-
-        if self.isMC:
-            # remove events with pileup weights un-physically large
-            pw_pass = self.pileup_cutoff(events, self._year, self._yearmod, cutoff=4)
-            self.add_selection(name="PU_cutoff", sel=pw_pass)
-
-        for ch in self._channels:
-
-            # trigger
-            if ch == "mu":
-                self.add_selection(
-                    name="Trigger",
-                    sel=((candidatelep.pt < 55) & trigger["mu_lowpt"]) | ((candidatelep.pt >= 55) & trigger["mu_highpt"]),
-                    channel=ch,
-                )
-            else:
-                self.add_selection(name="Trigger", sel=trigger[ch], channel=ch)
-
-        self.add_selection(name="METFilters", sel=metfilters)
-        self.add_selection(name="OneLep", sel=(n_good_muons == 1) & (n_loose_electrons == 0), channel="mu")
-        self.add_selection(name="OneLep", sel=(n_loose_muons1 == 0) & (n_good_electrons == 1), channel="ele")
-        self.add_selection(name="NoTaus", sel=(n_loose_taus_mu == 0), channel="mu")
-        self.add_selection(name="NoTaus", sel=(n_loose_taus_ele == 0), channel="ele")
-        self.add_selection(name="AtLeastOneFatJet", sel=(NumFatjets >= 1))
-
-        fj_pt_sel = candidatefj.pt > 250
-        if self.isMC:  # make an OR of all the JECs
-            for k, v in self.jecs.items():
-                for var in ["up", "down"]:
-                    fj_pt_sel = fj_pt_sel | (candidatefj[v][var].pt > 250)
-        self.add_selection(name="CandidateJetpT", sel=(fj_pt_sel == 1))
-
-        self.add_selection(name="LepInJet", sel=(lep_fj_dr < 0.8))
-        self.add_selection(name="JetLepOverlap", sel=(lep_fj_dr > 0.03))
-        self.add_selection(name="dPhiJetMET", sel=(np.abs(met_fj_dphi) < 1.57))
-
-        if self._fakevalidation:
-            self.add_selection(name="MET", sel=(met.pt < 20))
-        else:
-            self.add_selection(name="MET", sel=(met.pt > 20))
-
-        # gen-level matching
+        # syore gen-level matching variables
         signal_mask = None
         if self.isMC:
             if self.isSignal:
@@ -649,7 +628,6 @@ class HwwProcessor(processor.ProcessorABC):
                     genVars["STXS_Higgs_pt"] = events.HTXS.Higgs_pt
                     genVars["STXS_cat"] = events.HTXS.stage1_2_cat_pTjet30GeV
                     genVars["STXS_finecat"] = events.HTXS.stage1_2_fine_cat_pTjet30GeV
-
             elif "HToTauTau" in dataset:
                 genVars, signal_mask = match_H(events.GenPart, candidatefj, dau_pdgid=15)
                 self.add_selection(name="Signal", sel=signal_mask)
@@ -666,29 +644,78 @@ class HwwProcessor(processor.ProcessorABC):
             genVars["fj_genjetpt"] = candidatefj.matched_gen.pt
             variables = {**variables, **genVars}
 
-        # hem-cleaning selection
-        if self._year == "2018":
-            hem_veto = ak.any(
-                ((jets.eta > -3.2) & (jets.eta < -1.3) & (jets.phi > -1.57) & (jets.phi < -0.87)),
-                -1,
-            ) | ak.any(
-                (
-                    (electrons.pt > 30)
-                    & (electrons.eta > -3.2)
-                    & (electrons.eta < -1.3)
-                    & (electrons.phi > -1.57)
-                    & (electrons.phi < -0.87)
-                ),
-                -1,
-            )
+        ######################
+        # Selection
+        ######################
 
-            hem_cleaning = (
-                ((events.run >= 319077) & (not self.isMC))  # if data check if in Runs C or D
-                # else for MC randomly cut based on lumi fraction of C&D
-                | ((np.random.rand(len(events)) < 0.632) & self.isMC)
-            ) & (hem_veto)
+        if self.isMC:
+            # remove events with pileup weights un-physically large
+            pw_pass = self.pileup_cutoff(events, self._year, self._yearmod, cutoff=4)
+            self.add_selection(name="PU_cutoff", sel=pw_pass)
 
-            self.add_selection(name="HEMCleaning", sel=~hem_cleaning)
+        if self._apply_trigger:
+            for ch in self._channels:
+                if ch == "mu":
+                    self.add_selection(
+                        name="Trigger",
+                        sel=((candidatelep.pt < 55) & trigger["mu_lowpt"])
+                        | ((candidatelep.pt >= 55) & trigger["mu_highpt"]),
+                        channel=ch,
+                    )
+                else:
+                    self.add_selection(name="Trigger", sel=trigger[ch], channel=ch)
+
+        if self._apply_selection:
+            self.add_selection(name="METFilters", sel=metfilters)
+            self.add_selection(name="OneLep", sel=(n_good_muons == 1) & (n_loose_electrons == 0), channel="mu")
+            self.add_selection(name="OneLep", sel=(n_loose_muons1 == 0) & (n_good_electrons == 1), channel="ele")
+            self.add_selection(name="NoTaus", sel=(n_loose_taus_mu == 0), channel="mu")
+            self.add_selection(name="NoTaus", sel=(n_loose_taus_ele == 0), channel="ele")
+            self.add_selection(name="AtLeastOneFatJet", sel=(NumFatjets >= 1))
+
+            fj_pt_sel = candidatefj.pt > 250
+            if self.isMC:  # make an OR of all the JECs
+                for k, v in self.jecs.items():
+                    for var in ["up", "down"]:
+                        fj_pt_sel = fj_pt_sel | (candidatefj[v][var].pt > 250)
+            self.add_selection(name="CandidateJetpT", sel=(fj_pt_sel == 1))
+
+            self.add_selection(name="LepInJet", sel=(lep_fj_dr < 0.8))
+            self.add_selection(name="JetLepOverlap", sel=(lep_fj_dr > 0.03))
+            self.add_selection(name="dPhiJetMET", sel=(np.abs(met_fj_dphi) < 1.57))
+
+            if self._fakevalidation:
+                self.add_selection(name="MET", sel=(met.pt < 20))
+            else:
+                self.add_selection(name="MET", sel=(met.pt > 20))
+
+            # hem-cleaning selection
+            if self._year == "2018":
+                hem_veto = ak.any(
+                    ((jets.eta > -3.2) & (jets.eta < -1.3) & (jets.phi > -1.57) & (jets.phi < -0.87)),
+                    -1,
+                ) | ak.any(
+                    (
+                        (electrons.pt > 30)
+                        & (electrons.eta > -3.2)
+                        & (electrons.eta < -1.3)
+                        & (electrons.phi > -1.57)
+                        & (electrons.phi < -0.87)
+                    ),
+                    -1,
+                )
+
+                hem_cleaning = (
+                    ((events.run >= 319077) & (not self.isMC))  # if data check if in Runs C or D
+                    # else for MC randomly cut based on lumi fraction of C&D
+                    | ((np.random.rand(len(events)) < 0.632) & self.isMC)
+                ) & (hem_veto)
+
+                self.add_selection(name="HEMCleaning", sel=~hem_cleaning)
+
+        else:
+            # apply dummy selection
+            self.add_selection(name="dummy", sel=(ht > -99999))
 
         if self.isMC:
             for ch in self._channels:
@@ -805,7 +832,10 @@ class HwwProcessor(processor.ProcessorABC):
                         ),
                     }
 
-        # initialize pandas dataframe
+        ###############################
+        # Initialize pandas dataframe
+        ###############################
+
         output = {}
         for ch in self._channels:
             selection_ch = self.selections[ch].all(*self.selections[ch].names)

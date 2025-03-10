@@ -20,7 +20,7 @@ import numpy as np
 import pandas as pd
 import rhalphalib as rl
 from combine.datacard_systematics import systs_not_from_parquets
-from utils import get_template, labels, load_templates, samples, sigs
+from utils_diffBins import get_template, labels, load_templates, samples, sigs
 
 rl.ParametericSample.PreferRooParametricHist = True
 logging.basicConfig(level=logging.INFO)

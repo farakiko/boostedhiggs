@@ -3,8 +3,6 @@ mc:
   - GluGluHToWW_Pt-200ToInf_M-125_Rivet
   - VBFHToWWToAny_M-125_TuneCP5_withDipoleRecoil_Rivet
   - GluGluHToWWToLNuQQ_M-125_TuneCP5_13TeV_powheg_jhugen751_pythia8
-  - GluGluHToWW_Pt-200ToInf_M-125
-  - VBFHToWWToAny_M-125_TuneCP5_withDipoleRecoil
   - HWminusJ_HToWW_M-125
   - HWplusJ_HToWW_M-125
   - HZJ_HToWW_M-125
@@ -66,6 +64,11 @@ mc:
 vjetsnlo:
   - WJetsToLNu_1J
   - WJetsToLNu_2J
+  - WJetsToLNu_LHEFilterPtW-250To400
+  - WJetsToLNu_LHEFilterPtW-400To600
+  - WJetsToLNu_LHEFilterPtW-600ToInf
+vjetsnloOTHER:
+  - WJetsToLNu_0J
 extra:
   - GluGluZH_HToWW_M-125_TuneCP5_13TeV-powheg-pythia8
   - TTZToQQ
@@ -397,8 +400,8 @@ wjetslep:
   - WJetsToLNu_HT-2500ToInf
 signal:
   - GluGluHToWWToLNuQQ_M-125_TuneCP5_13TeV_powheg_jhugen751_pythia8
-  - GluGluHToWW_Pt-200ToInf_M-125
-  - VBFHToWWToAny_M-125_TuneCP5_withDipoleRecoil
+  - GluGluHToWW_Pt-200ToInf_M-125_Rivet
+  - VBFHToWWToAny_M-125_TuneCP5_withDipoleRecoil_Rivet
   - HWminusJ_HToWW_M-125
   - HWplusJ_HToWW_M-125
   - HZJ_HToWW_M-125

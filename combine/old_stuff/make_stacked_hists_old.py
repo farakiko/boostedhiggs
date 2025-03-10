@@ -20,7 +20,7 @@ import onnxruntime as ort
 import pandas as pd
 import pyarrow
 import scipy
-import utils
+import utils_diffBins
 import yaml
 
 logging.basicConfig(level=logging.INFO)
@@ -114,9 +114,9 @@ def make_events_dict(
                     continue  # because tagger didnt run for it for one of the years
 
                 # get a combined label to combine samples of the same process
-                for key in utils.combine_samples:
+                for key in utils_diffBins.combine_samples:
                     if key in sample:
-                        sample_to_use = utils.combine_samples[key]
+                        sample_to_use = utils_diffBins.combine_samples[key]
                         break
                     else:
                         sample_to_use = sample
@@ -161,7 +161,7 @@ def make_events_dict(
 
                 # get event_weight
                 if sample_to_use != "Data":
-                    event_weight = utils.get_xsecweight(pkl_files, year, sample, False, luminosity)
+                    event_weight = utils_diffBins.get_xsecweight(pkl_files, year, sample, False, luminosity)
 
                     logging.info("---> Using already stored event weight")
                     event_weight *= data[f"weight_{ch}"]
@@ -242,7 +242,7 @@ def make_hists_from_events_dict(events_dict, samples_to_plot, vars_to_plot, sele
     for var in vars_to_plot:
         hists[var] = hist2.Hist(
             hist2.axis.StrCategory([], name="samples", growth=True),
-            utils.axis_dict[var],
+            utils_diffBins.axis_dict[var],
         )
 
         for sample in samples_to_plot:
@@ -305,7 +305,7 @@ def main(args):
 
         hists = make_hists_from_events_dict(events_dict, config["samples_to_plot"], config["vars_to_plot"], config["sel"])
 
-        utils.plot_hists(
+        utils_diffBins.plot_hists(
             years,
             channels,
             hists,

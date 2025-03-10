@@ -403,17 +403,18 @@ def get_templates(years, channels, samples, samples_dir, regions_sel, model_path
     }
 
     mass_binning = 20
+    low_mass_bin, high_mass_bin = 75, 255
 
     hists = hist2.Hist(
         hist2.axis.StrCategory([], name="Sample", growth=True),
         hist2.axis.StrCategory([], name="Systematic", growth=True),
         hist2.axis.StrCategory([], name="Region", growth=True),
         hist2.axis.Variable(
-            # list(range(55, 255, mass_binning)),
-            list(range(75, 255, mass_binning)),
+            list(range(low_mass_bin, high_mass_bin, mass_binning)),
             name="mass_observable",
             label=r"Higgs reconstructed mass [GeV]",
             overflow=True,
+            underflow=True,
         ),
         storage=hist2.storage.Weight(),
     )
@@ -426,9 +427,6 @@ def get_templates(years, channels, samples, samples_dir, regions_sel, model_path
                 luminosity = json.load(f)[ch][year]
 
             for sample in os.listdir(samples_dir[year]):
-
-                # if "Rivet" in sample:
-                #     continue
 
                 sample_to_use = get_common_sample_name(sample)
 
@@ -458,6 +456,9 @@ def get_templates(years, channels, samples, samples_dir, regions_sel, model_path
 
                 if len(data) == 0:
                     continue
+
+                # data["rec_higgs_m"][data["rec_higgs_m"] < low_mass_bin] = low_mass_bin
+                # data["rec_higgs_m"][data["rec_higgs_m"] > high_mass_bin] = high_mass_bin
 
                 if sample_to_use == "ggF":
                     if "GluGluHToWWToLNuQQ_M-125_TuneCP5_13TeV_powheg_jhugen751_pythia8" in sample:

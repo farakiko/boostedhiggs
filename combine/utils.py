@@ -35,7 +35,7 @@ combine_samples = {
     "EGamma_": "Data",
     # bkg
     "TT": "TTbar",
-    "WJetsToLNu_": "WJetsLNu",
+    "WJetsToLNu_HT": "WJetsLNu",
     "ST_": "SingleTop",
     "WW": "Diboson",
     "WZ": "Diboson",
@@ -43,6 +43,11 @@ combine_samples = {
     "EWK": "EWKvjets",
     "DYJets": "DYJets",
     "JetsToQQ": "WZQQ",
+    "WJetsToLNu_1J": "WJetsToLNu_1J",
+    "WJetsToLNu_2J": "WJetsToLNu_2J",
+    "WJetsToLNu_LHEFilterPtW-250To400": "WJetsToLNu_LHEFilterPtW-250To400",
+    "WJetsToLNu_LHEFilterPtW-400To600": "WJetsToLNu_LHEFilterPtW-400To600",
+    "WJetsToLNu_LHEFilterPtW-600ToInf": "WJetsToLNu_LHEFilterPtW-600ToInf",
 }
 
 # (name in templates, name in cards)
@@ -187,13 +192,6 @@ def shape_to_num(var, nom, clip=1.5):
 
 def get_template(h, sample, region):
     return h[{"Sample": sample, "Systematic": "nominal", "Region": region}]
-
-
-def get_template_diffbins(h, sample):
-    if sample not in h.axes["Sample"]:
-        return 0
-
-    return h[{"Sample": sample, "Systematic": "nominal"}]
 
 
 def load_templates(years, lep_channels, outdir):

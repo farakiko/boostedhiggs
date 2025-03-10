@@ -127,6 +127,16 @@ def main(args):
                 else:
                     line = line.replace("LOOSELEP", "--no-uselooselep")
 
+                if args.no_trigger:
+                    line = line.replace("TRIGGER", "--no-trigger")
+                else:
+                    line = line.replace("TRIGGER", "--trigger")
+
+                if args.no_selection:
+                    line = line.replace("PRESELECTION", "--no-selection")
+                else:
+                    line = line.replace("PRESELECTION", "--selection")
+
                 line = line.replace("LABEL", args.label)
                 line = line.replace("REGION", args.region)
 
@@ -180,6 +190,11 @@ if __name__ == "__main__":
     parser.add_argument("--maxfiles", default=-1, help="max number of files to run on", type=int)
     parser.add_argument("--uselooselep", dest="uselooselep", action="store_true")
     parser.add_argument("--no-uselooselep", dest="uselooselep", action="store_false")
+
+    parser.add_argument("--no-trigger", dest="no_trigger", action="store_true")
+    parser.add_argument("--trigger", dest="no_trigger", action="store_false")
+    parser.add_argument("--no-selection", dest="no_selection", action="store_true")
+    parser.add_argument("--selection", dest="no_selection", action="store_false")
 
     parser.set_defaults(inference=True)
     args = parser.parse_args()
