@@ -119,10 +119,10 @@ def main(args):
             no_selection=args.no_selection,
         )
 
-    elif args.processor == "nlo":
-        from boostedhiggs.NLOprocessor import NLOprocessor
+    elif args.processor == "vjetsnlo":
+        from boostedhiggs.wjetsnloprocessor import VJetsNLOprocessor
 
-        p = NLOprocessor(
+        p = VJetsNLOprocessor(
             year=year,
             yearmod=yearmod,
             channels=channels,
