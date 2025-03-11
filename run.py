@@ -161,7 +161,7 @@ def main(args):
         p = ZllProcessor(year=year, yearmod=yearmod, output_location=f"./outfiles/{job_name}")
 
     else:
-        from boostedhiggs.trigger_efficiencies_processor1 import (
+        from boostedhiggs.trigger_efficiencies_processor import (
             TriggerEfficienciesProcessor,
         )
 
@@ -242,13 +242,18 @@ def main(args):
 
 if __name__ == "__main__":
     # e.g.
-    # noqa: python run.py --executor iterative --year 2017 --processor trigger --pfnano v2_2 --n 100 --starti 0 --sample SingleElectron_Run2017C --local --channels ele --config samples_inclusive.yaml --key data
 
+    # for trigger efficiency studies
+    # noqa: python run.py --year 2017 --processor trigger --pfnano v2_2 --n 100 --starti 0 --sample SingleMuon_Run2017C --local --channels mu --config samples_inclusive.yaml --key data
+    # noqa: python run.py --year 2017 --processor trigger --pfnano v2_2 --n 100 --starti 0 --sample SingleElectron_Run2017C --local --channels ele --config samples_inclusive.yaml --key data
+    # noqa: python run.py --year 2017 --processor trigger --pfnano v2_2 --n 100 --starti 0 --sample GluGluHToWW_Pt-200ToInf_M-125 --local --channels mu,ele --config samples_inclusive.yaml --key data
+
+    # for hww processor studies
     # noqa: python run.py --year 2017 --processor hww --pfnano v2_2 --n 1 --starti 0 --sample GluGluHToWW_Pt-200ToInf_M-125 --local --channels ele --config samples_inclusive.yaml --key mc --executor iterative
 
+    # for LP studies
     # noqa LP: python run.py --executor iterative --year 2017 --processor hww --pfnano v2_2 --n 1 --starti 0 --sample GluGluHToWW_Pt-200ToInf_M-125 --local --channels ele,mu --config samples_inclusive.yaml --key mc --getLPweights --inference
     # noqa LP: python run.py --executor iterative --year 2017 --processor hww --pfnano v2_2 --sample TTToSemiLeptonic --local --channels ele,mu --config samples_inclusive.yaml --key mc --getLPweights --n 1 --starti 0
-
     # noqa LP: python run.py --executor iterative --year 2017 --processor hww --pfnano v2_2 --sample GluGluHToWW_Pt-200ToInf_M-125 --local --channels ele,mu --config samples_inclusive.yaml --key mc --getLPweights --n 1 --starti 0
 
     # noqa Fakes: python run.py --year 2017 --processor fakes --pfnano v2_2 --n 1 --starti 0 --sample GluGluHToWW_Pt-200ToInf_M-125 --local --channels ele,mu --config samples_inclusive.yaml --key mc
