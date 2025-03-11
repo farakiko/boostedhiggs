@@ -431,17 +431,17 @@ def systs_from_parquets(years):
             SIG_regions + CONTROL_regions,
         ),
         # systematics for muon channel
-        rl.NuisanceParameter(f"{CMS_PARAMS_LABEL}_mu_isolation", "lnN"): (
+        rl.NuisanceParameter(f"{CMS_PARAMS_LABEL}_mu_isolation_syst", "lnN"): (
             "weight_mu_isolation",
             sigs + bkgs,
             SIG_regions + CONTROL_regions,
-        ),
-        rl.NuisanceParameter(f"{CMS_PARAMS_LABEL}_mu_trigger_iso", "lnN"): (
+        ),        
+        rl.NuisanceParameter(f"{CMS_PARAMS_LABEL}_mu_trigger_iso_syst", "lnN"): (
             "weight_mu_trigger_iso",
             sigs + bkgs,
             SIG_regions + CONTROL_regions,
         ),
-        rl.NuisanceParameter(f"{CMS_PARAMS_LABEL}_mu_trigger", "lnN"): (
+        rl.NuisanceParameter(f"{CMS_PARAMS_LABEL}_mu_trigger_syst", "lnN"): (
             "weight_mu_trigger_noniso",
             sigs + bkgs,
             SIG_regions + CONTROL_regions,
@@ -451,6 +451,21 @@ def systs_from_parquets(years):
             sigs + bkgs,
             SIG_regions + CONTROL_regions,
         ),
+        rl.NuisanceParameter(f"{CMS_PARAMS_LABEL}_ele_identification_syst", "lnN"): (
+            "weight_ele_id_syst",
+            sigs + bkgs,
+            SIG_regions + CONTROL_regions,
+        ),        
+        rl.NuisanceParameter(f"{CMS_PARAMS_LABEL}_ele_reconstruction_syst", "lnN"): (
+            "weight_ele_reco",
+            sigs + bkgs,
+            SIG_regions + CONTROL_regions,
+        ),
+        rl.NuisanceParameter(f"{CMS_PARAMS_LABEL}_ele_trigger_syst", "shape"): (
+            "trigger_ele_SF",
+            sigs + bkgs,
+            SIG_regions + CONTROL_regions,
+        ),        
         # PDF acceptance
         rl.NuisanceParameter(f"PDF_wjets_ACCEPT_{CMS_PARAMS_LABEL}", "shape"): (
             "weight_pdf_acceptance",
@@ -498,33 +513,43 @@ def systs_from_parquets(years):
                     sigs + bkgs,
                     SIG_regions + CONTROL_regions,
                 ),
+                # systematics for muon channel
+                rl.NuisanceParameter(f"{CMS_PARAMS_LABEL}_mu_isolation_stat_{year}", "lnN"): (
+                    "weight_mu_isolation",
+                    sigs + bkgs,
+                    SIG_regions + CONTROL_regions,
+                ),                 
                 rl.NuisanceParameter(f"{CMS_PARAMS_LABEL}_mu_identification_stat_{year}", "lnN"): (
                     "weight_mu_id_stat",
                     sigs + bkgs,
                     SIG_regions + CONTROL_regions,
                 ),
+                rl.NuisanceParameter(f"{CMS_PARAMS_LABEL}_mu_trigger_iso_stat_{year}", "lnN"): (
+                    "weight_mu_trigger_iso",
+                    sigs + bkgs,
+                    SIG_regions + CONTROL_regions,
+                ),             
+                rl.NuisanceParameter(f"{CMS_PARAMS_LABEL}_mu_trigger_stat_{year}", "lnN"): (
+                    "weight_mu_trigger_noniso",
+                    sigs + bkgs,
+                    SIG_regions + CONTROL_regions,
+                ),                   
                 # systematics for electron channel
-                rl.NuisanceParameter(f"{CMS_PARAMS_LABEL}_ele_identification_{year}", "lnN"): (
-                    "weight_ele_id",
+                rl.NuisanceParameter(f"{CMS_PARAMS_LABEL}_ele_identification_stat_{year}", "lnN"): (
+                    "weight_ele_id_stat",
                     sigs + bkgs,
                     SIG_regions + CONTROL_regions,
                 ),
-                rl.NuisanceParameter(f"{CMS_PARAMS_LABEL}_ele_reconstruction_{year}", "lnN"): (
+                rl.NuisanceParameter(f"{CMS_PARAMS_LABEL}_ele_reconstruction_stat_{year}", "lnN"): (
                     "weight_ele_reco",
                     sigs + bkgs,
                     SIG_regions + CONTROL_regions,
                 ),
-                # trigger SF
-                rl.NuisanceParameter(f"{CMS_PARAMS_LABEL}_ele_trigger_stat_unc_{year}", "shape"): (
+                rl.NuisanceParameter(f"{CMS_PARAMS_LABEL}_ele_trigger_stat_{year}", "shape"): (
                     "trigger_ele_SF",
                     sigs + bkgs,
                     SIG_regions + CONTROL_regions,
                 ),
-                # rl.NuisanceParameter(f"ps_fsr_wjets_{year}", "shape"): (
-                #     f"weight_PSFSR_wjets_{year}",  # TODO
-                #     ["WJetsLNu"],
-                #     SIG_regions + CONTROL_regions,
-                # ),
             },
         }
         if year != "2018":
