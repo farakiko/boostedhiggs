@@ -41,8 +41,11 @@ def fill_systematics(
     sumgenweights,
     sumscaleweights,
 ):
-    with open("trg_eff_SF.pkl", "rb") as f:
-        TRIGGER_SF = pkl.load(f)
+    # with open("trg_eff_SF.pkl", "rb") as f:
+    #     TRIGGER_SF = pkl.load(f)
+
+    with open("../binder/trg_eff_SF_ARC.pkl", "rb") as f:
+        TRIGGER_SF = pkl.load(f)        
 
     THWW_SF = {
         "ggF": 0.948,
@@ -67,7 +70,8 @@ def fill_systematics(
 
             # apply trigger SF
             if ch == "ele":
-                ptbinning = [2000, 200, 120, 30]
+                # ptbinning = [2000, 200, 120, 30]
+                ptbinning = [2000, 200, 170, 150, 130, 110, 90, 70, 50, 30]
                 etabinning = [-2.5, -1.5, -0.5, 0.5, 1.5, 2.5]
 
                 for i in range(len(ptbinning) - 1):
@@ -451,9 +455,6 @@ def get_templates(years, channels, samples, samples_dir, regions_sel, model_path
 
                 if len(data) == 0:
                     continue
-
-                # data["rec_higgs_m"][data["rec_higgs_m"] < low_mass_bin] = low_mass_bin
-                # data["rec_higgs_m"][data["rec_higgs_m"] > high_mass_bin] = high_mass_bin
 
                 if sample_to_use == "ggF":
                     if "GluGluHToWWToLNuQQ_M-125_TuneCP5_13TeV_powheg_jhugen751_pythia8" in sample:
