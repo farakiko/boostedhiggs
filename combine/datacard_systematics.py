@@ -379,7 +379,7 @@ def systs_from_parquets(years):
             SIG_regions + CONTROL_regions,
         ),        
         ######################
-        rl.NuisanceParameter("ps_fsr_ttbar", "shape"): (
+        rl.NuisanceParameter("ps_fsr_ttbar", "lnN"): (
             "weight_PSFSR",
             ["TTbar"],
             SIG_regions + CONTROL_regions,
