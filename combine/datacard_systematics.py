@@ -239,12 +239,12 @@ def systs_from_parquets(years):
             ["VBF", "mjj1000toInf"],
             SIG_regions + CONTROL_regions,
         ),
-        rl.NuisanceParameter("ps_fsr_ggH", "shape"): (
+        rl.NuisanceParameter("ps_fsr_ggH", "lnN"): (
             "weight_PSFSR",
             ["ggF", "ggFpt200to300", "ggFpt300to450", "ggFpt450toInf"],
             SIG_regions + CONTROL_regions,
         ),
-        rl.NuisanceParameter("ps_fsr_qqH", "shape"): (
+        rl.NuisanceParameter("ps_fsr_qqH", "lnN"): (
             "weight_PSFSR",
             ["VBF", "mjj1000toInf"],
             SIG_regions + CONTROL_regions,
@@ -377,14 +377,14 @@ def systs_from_parquets(years):
             "weight_PSFSR",
             ["WJetsLNu"],
             SIG_regions + CONTROL_regions,
-        ),        
+        ),
         ######################
         rl.NuisanceParameter("ps_fsr_ttbar", "lnN"): (
             "weight_PSFSR",
             ["TTbar"],
             SIG_regions + CONTROL_regions,
         ),
-        rl.NuisanceParameter("ps_fsr_singletop", "shape"): (
+        rl.NuisanceParameter("ps_fsr_singletop", "lnN"): (
             "weight_PSFSR",
             ["SingleTop"],
             SIG_regions + CONTROL_regions,
