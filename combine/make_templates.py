@@ -632,7 +632,23 @@ def fix_neg_yields(h):
                     h.view(flow=True)[sample_index, :, region_index, neg_bin + 1].value = 1e-3
                     h.view(flow=True)[sample_index, :, region_index, neg_bin + 1].variance = 1e-3
 
+    for region in h.axes["Region"]:
+        for sample in h.axes["Sample"]:
+            for systematic in h.axes["Systematic"]:
+                neg_bins = np.where(h[{"Sample": sample, "Systematic": systematic, "Region": region}].values() < 0)[0]
 
+                if len(neg_bins) > 0:
+                    print(f"{region}, {sample}, has {len(neg_bins)} bins for {systematic} with negative yield.. will set them to 0")   # noqa
+
+                    sample_index = np.argmax(np.array(h.axes["Sample"]) == sample)
+                    region_index = np.argmax(np.array(h.axes["Region"]) == region)
+
+                    for neg_bin in neg_bins:
+                        msk = h.view(flow=True)[sample_index, :, region_index, neg_bin + 1].value < 0
+                        h.view(flow=True)[sample_index, :, region_index, neg_bin + 1].value[msk] = 0
+                        h.view(flow=True)[sample_index, :, region_index, neg_bin + 1].variance[msk] = 0
+
+    
 def main(args):
     years = args.years.split(",")
     channels = args.channels.split(",")
@@ -662,6 +678,8 @@ def main(args):
 
     with open(f"{args.outdir}/hists_templates_{save_as}.pkl", "wb") as fp:
         pkl.dump(hists, fp)
+
+    logging.info(f"hist object dumped at {args.outdir}/hists_templates_{save_as}.pkl")
 
 
 if __name__ == "__main__":

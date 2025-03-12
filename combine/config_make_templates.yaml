@@ -15,7 +15,7 @@ samples:
 
 regions_sel:
 
-    "VBF": (n_bjets_T==0) & (THWW>0.905) & ( (mjj>1000) & (deta>3.5) & (NumOtherJets>=2) ) & (rec_higgs_pt>250) & (rec_higgs_m>=75)
+    "VBF": (n_bjets_T==0) & (THWW>0.905) & ( (mjj>1000) & (deta>3.5) & (NumOtherJets>=2) ) & (rec_higgs_pt>250)
     "ggFpt250to350": (n_bjets_T==0) & (THWW>0.93) & ( (mjj<1000) | (deta<3.5) | (NumOtherJets<2) ) & (rec_higgs_pt>250) & (rec_higgs_pt<350) & (VH_fj_VScore<0.9)
     "ggFpt350to500": (n_bjets_T==0) & (THWW>0.93) & ( (mjj<1000) | (deta<3.5) | (NumOtherJets<2) ) & (rec_higgs_pt>350) & (rec_higgs_pt<500) & (VH_fj_VScore<0.9)
     "ggFpt500toInf": (n_bjets_T==0) & (THWW>0.93) & ( (mjj<1000) | (deta<3.5) | (NumOtherJets<2) ) & (rec_higgs_pt>500) & (VH_fj_VScore<0.9)
