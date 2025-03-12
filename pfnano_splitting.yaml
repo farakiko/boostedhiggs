@@ -98,17 +98,17 @@ v2_2:
     ST_tW_top_5f_inclusiveDecays: 5
     ST_s-channel_4f_hadronicDecays: 5
     ST_s-channel_4f_leptonDecays: 5
-    WJetsToLNu_0J: 5
-    WJetsToLNu_1J: 5
-    WJetsToLNu_2J: 5
-    WJetsToLNu_LHEFilterPtW-250To400: 5
-    WJetsToLNu_LHEFilterPtW-400To600: 5
-    WJetsToLNu_LHEFilterPtW-600ToInf: 5
-    WJetsToLNu_012JetsNLO_34JetsLO_EWNLOcorr: 5
-    WJetsToLNu_Pt-100To250_MatchEWPDG20: 5
-    WJetsToLNu_Pt-250To400_MatchEWPDG20: 5
-    WJetsToLNu_Pt-400To600_MatchEWPDG20: 5
-    WJetsToLNu_Pt-600ToInf_MatchEWPDG20: 5
+    WJetsToLNu_0J: 10
+    WJetsToLNu_1J: 10
+    WJetsToLNu_2J: 10
+    WJetsToLNu_LHEFilterPtW-250To400: 10
+    WJetsToLNu_LHEFilterPtW-400To600: 10
+    WJetsToLNu_LHEFilterPtW-600ToInf: 10
+    WJetsToLNu_012JetsNLO_34JetsLO_EWNLOcorr: 10
+    WJetsToLNu_Pt-100To250_MatchEWPDG20: 10
+    WJetsToLNu_Pt-250To400_MatchEWPDG20: 10
+    WJetsToLNu_Pt-400To600_MatchEWPDG20: 10
+    WJetsToLNu_Pt-600ToInf_MatchEWPDG20: 10
     WJetsToLNu_TuneCP5_13TeV-madgraphMLM: 5
     WJetsToLNu_HT-70To100: 10
     WJetsToLNu_HT-100To200: 10
