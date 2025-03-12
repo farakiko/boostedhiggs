@@ -13,9 +13,7 @@ from coffea.nanoevents.methods import candidate
 
 logger = logging.getLogger(__name__)
 
-from boostedhiggs.corrections import (
-    add_VJets_kFactors,
-)
+from boostedhiggs.corrections import add_VJets_kFactors, get_jec_jets, met_factory
 from boostedhiggs.utils import match_V
 
 warnings.filterwarnings("ignore", message="Found duplicate branch ")
@@ -67,6 +65,12 @@ class VjetsProcessor(processor.ProcessorABC):
         self._apply_selection = not no_selection
 
         self._output_location = output_location
+
+        self.jecs = {
+            "JES": "JES_jes",
+            "JER": "JER",
+            "JES_Total": "JES_Total",
+        }
 
     @property
     def accumulator(self):
@@ -199,6 +203,27 @@ class VjetsProcessor(processor.ProcessorABC):
 
         variables = {**variables, **fatjetvars}
 
+        jets, jec_shifted_jetvars = get_jec_jets(events, events.Jet, self._year, not self.isMC, self.jecs, fatjets=False)
+        met = met_factory.build(events.MET, jets, {}) if self.isMC else events.MET
+
+        candidateNeutrinoJet = ak.zip(
+            {
+                "pt": met.pt,
+                "eta": candidatefj.eta,
+                "phi": met.phi,
+                "mass": 0,
+                "charge": 0,
+            },
+            with_name="PtEtaPhiMCandidate",
+            behavior=candidate.behavior,
+        )
+
+        rec_W_lnu = candidatelep_p4 + candidateNeutrinoJet
+        rec_W_qq = candidatefj - candidatelep_p4
+        rec_higgs = rec_W_qq + rec_W_lnu
+
+        variables["rec_higgs_m"] = rec_higgs.mass
+
         # store gen-level matching variables
         if self.isMC:
             if ("WJets" in dataset) or ("ZJets" in dataset) or ("DYJets" in dataset):
@@ -272,6 +297,13 @@ class VjetsProcessor(processor.ProcessorABC):
         fname = "condor_" + fname
 
         for ch in self._channels:  # creating directories for each channel
+
+            for var_ in [
+                "rec_higgs_m",
+            ]:
+                if var_ in output[ch].keys():
+                    output[ch][var_] = np.nan_to_num(output[ch][var_], nan=-1)
+
             if not os.path.exists(self._output_location + ch):
                 os.makedirs(self._output_location + ch)
             if not os.path.exists(self._output_location + ch + "/parquet"):
