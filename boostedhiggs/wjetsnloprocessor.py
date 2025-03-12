@@ -208,8 +208,8 @@ class VjetsProcessor(processor.ProcessorABC):
             else:
                 genVars = {}
             # save gen jet mass (not msd)
-            genVars["fj_genjetmass"] = candidatefj.matched_gen.mass
-            genVars["fj_genjetpt"] = candidatefj.matched_gen.pt
+            # genVars["fj_genjetmass"] = candidatefj.matched_gen.mass
+            # genVars["fj_genjetpt"] = candidatefj.matched_gen.pt
             variables = {**variables, **genVars}
 
         # apply dummy selection
@@ -221,9 +221,9 @@ class VjetsProcessor(processor.ProcessorABC):
                 # add corrections for plotting
                 variables["weight_ewkcorr"] = ewk_corr
                 variables["weight_qcdcorr"] = qcd_corr
-                variables["weight_altqcdcorr"] = alt_qcd_corr["nominal"]
-                variables["weight_altqcdcorr_up"] = alt_qcd_corr["up"]
-                variables["weight_altqcdcorr_down"] = alt_qcd_corr["down"]
+                # variables["weight_altqcdcorr"] = alt_qcd_corr["nominal"]
+                # variables["weight_altqcdcorr_up"] = alt_qcd_corr["up"]
+                # variables["weight_altqcdcorr_down"] = alt_qcd_corr["down"]
 
                 # store the final weight per ch
                 variables[f"weight_{ch}"] = self.weights[ch].weight()
