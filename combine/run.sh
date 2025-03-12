@@ -32,6 +32,7 @@ workspace=0
 bfit=0
 limits=0
 significance=0
+obs=0
 multisig=0
 vbf=0
 ggf=0
@@ -40,15 +41,17 @@ dfit_asimov=0
 gofdata=0
 goftoys=0
 unfolding=0
+channelcompatibility=0
 impactsi=0
 unblind=0
+scanparam=0
 seed=444
 numtoys=100
 bias=-1
 mintol=0.5 # --cminDefaultMinimizerTolerance
 # maxcalls=1000000000  # --X-rtd MINIMIZER_MaxCalls
 
-options=$(getopt -o "wblsdrgti" --long "workspace,bfit,limits,significance,multisig,vbf,ggf,dfit,dfitasimov,resonant,gofdata,goftoys,unfolding,impactsi,unblind,bias:,seed:,numtoys:,mintol:" -- "$@")
+options=$(getopt -o "wblsdrgti" --long "workspace,bfit,limits,significance,obs,multisig,vbf,ggf,dfit,dfitasimov,resonant,gofdata,goftoys,unfolding,channelcompatibility,impactsi,unblind,scanparam,bias:,seed:,numtoys:,mintol:" -- "$@")
 eval set -- "$options"
 
 while true; do
@@ -65,6 +68,9 @@ while true; do
         -s|--significance)
             significance=1
             ;;
+        -sobs|--obs)
+            obs=1
+            ;;            
         --multisig)
             multisig=1
             ;;
@@ -76,7 +82,10 @@ while true; do
             ;; 
         -u|--unfolding)
             unfolding=1
-            ;;            
+            ;;
+        -ch|--channelcompatibility)
+            channelcompatibility=1
+            ;;
         -d|--dfit)
             dfit=1
             ;;
@@ -94,6 +103,9 @@ while true; do
             ;;
         --unblind)
             unblind=1
+            ;;
+        --scanparam)
+            scanparam=1
             ;;
         --seed)
             shift
@@ -127,7 +139,7 @@ while true; do
 done
 
 echo "Arguments: workspace=$workspace bfit=$bfit limits=$limits \
-significance=$significance multisig=$multisig vbf=$vbf ggf=$ggf unfolding=$unfolding unblind=$unblind \
+significance=$significance obs=$obs multisig=$multisig vbf=$vbf ggf=$ggf unfolding=$unfolding channelcompatibility=$channelcompatibility unblind=$unblind scanparam=$scanparam \
 dfit=$dfit gofdata=$gofdata goftoys=$goftoys \
 seed=$seed numtoys=$numtoys"
 
@@ -141,7 +153,7 @@ seed=$seed numtoys=$numtoys"
 ####################################################################################################
 
 dataset=data_obs
-cards_dir="templates/v13"
+cards_dir="templates/v14/"
 
 if [ $unfolding = 1 ]; then
     cards_dir+="/datacards_unfolding"
@@ -177,12 +189,16 @@ sr2="ggFpt250to350"
 sr3="ggFpt350to500"
 sr4="ggFpt500toInf"
 ccargs="SR1=${cards_dir}/${sr1}.txt SR2=${cards_dir}/${sr2}.txt SR3=${cards_dir}/${sr3}.txt SR4=${cards_dir}/${sr4}.txt"
-# ccargs="SR1=${cards_dir}/${sr1}.txt"
-# ccargs="SR2=${cards_dir}/${sr2}.txt SR3=${cards_dir}/${sr3}.txt SR4=${cards_dir}/${sr4}.txt"
 
 cr1="TopCR"
 cr2="WJetsCR"
 ccargs+=" CR1=${cards_dir}/${cr1}.txt CR2=${cards_dir}/${cr2}.txt"
+
+# cr1="TopCR"
+# cr2="WJetsCR1"
+# cr3="WJetsCR2"
+# cr4="WJetsCR3"
+# ccargs+=" CR1=${cards_dir}/${cr1}.txt CR2=${cards_dir}/${cr2}.txt CR3=${cards_dir}/${cr3}.txt CR4=${cards_dir}/${cr4}.txt"
 ######################################################################
 
 if [ $workspace = 1 ]; then
@@ -197,17 +213,18 @@ if [ $workspace = 1 ]; then
 
     if [ $unfolding = 1 ]; then
         echo "- Unfolding workspace"
-        text2workspace.py $combined_datacard -P HiggsAnalysis.CombinedLimit.PhysicsModel:multiSignalModel --PO verbose --PO 'map=.*/ggH_hww_200_300:r_ggH_pt200_300[1,-10,10]' --PO 'map=.*/ggH_hww_300_450:r_ggH_pt300_450[1,-10,10]' --PO 'map=.*/ggH_hww_450_Inf:r_ggH_pt450_inf[1,-10,10]' --PO 'map=.*/qqH_hww_mjj_1000_Inf:r_qqH_mjj_1000_inf[1,-10,10]' --PO 'map=.*/WH_hww:r_WH_hww[1,-10,10]' --PO 'map=.*/ZH_hww:r_ZH_hww[1,-10,10]' --PO 'map=.*/ttH_hww:r_ttH_hww[1,-10,10]' -o $ws 2>&1 | tee $logsdir/text2workspace.txt
+        text2workspace.py $combined_datacard -P HiggsAnalysis.CombinedLimit.PhysicsModel:multiSignalModel --channel-masks --PO verbose --PO 'map=.*/ggH_hww_200_300:r_ggH_pt200_300[1,-10,10]' --PO 'map=.*/ggH_hww_300_450:r_ggH_pt300_450[1,-10,10]' --PO 'map=.*/ggH_hww_450_Inf:r_ggH_pt450_inf[1,-10,10]' --PO 'map=.*/qqH_hww_mjj_1000_Inf:r_qqH_mjj_1000_inf[1,-10,10]' --PO 'map=.*/WH_hww:r_otherH[1,-10,10]' --PO 'map=.*/ZH_hww:r_otherH[1,-10,10]' --PO 'map=.*/ttH_hww:r_otherH[1,-10,10]' -o $ws 2>&1 | tee $logsdir/text2workspace.txt
     else
-        echo "- Inclusive workspace"
-        if [ $multisig = 1 ]; then
-            echo "- Multiple POIs workspace"
-            # seperate POIs (to make Table 30 in v11)
-            text2workspace.py $combined_datacard -P HiggsAnalysis.CombinedLimit.PhysicsModel:multiSignalModel --PO verbose --PO 'map=.*/ggH_hww:r_ggH_hww[1,0,10]' --PO 'map=.*/qqH_hww:r_qqH_hww[1,0,10]' --PO 'map=.*/WH_hww:r_WH_hww[1,0,10]' --PO 'map=.*/ZH_hww:r_ZH_hww[1,0,10]' --PO 'map=.*/ttH_hww:r_ttH_hww[1,0,10]' -o $ws 2>&1
+        if [ $channelcompatibility = 1 ]; then
+            echo "- Channel compatibality workspace"
+            text2workspace.py $combined_datacard -P HiggsAnalysis.CombinedLimit.PhysicsModel:multiSignalModel  --PO verbose  --PO 'map=SR1/.*H_hww:r[1,-20,20]'  --PO 'map=SR2/.*H_hww:r[1,-20,20]'  --PO 'map=SR3/.*H_hww:r[1,-20,20]'  --PO 'map=SR4/.*H_hww:r[1,-20,20]' -o $ws 2>&1 | tee $logsdir/text2workspace.txt
+            combine -M ChannelCompatibilityCheck -d $ws -m 125 -n HWW --setParameterRanges r=-20,20
+        elif [ $multisig = 1 ]; then
+            echo "- Two POIs workspace"
+            text2workspace.py $combined_datacard -P HiggsAnalysis.CombinedLimit.PhysicsModel:multiSignalModel --channel-masks --PO verbose --PO 'map=.*/ggH_hww:r_ggH_hww[1,0,10]' --PO 'map=.*/qqH_hww:r_qqH_hww[1,0,10]' --PO 'map=.*/WH_hww:r_otherH[1,0,10]' --PO 'map=.*/ZH_hww:r_otherH[1,0,10]' --PO 'map=.*/ttH_hww:r_otherH[1,0,10]' -o $ws 2>&1
         else
             echo "- Single POI workspace"
-            # single POI
-            text2workspace.py $combined_datacard --channel-masks -o $ws 2>&1 | tee $logsdir/text2workspace.txt    
+            text2workspace.py $combined_datacard --channel-masks -o $ws 2>&1 | tee $logsdir/text2workspace.txt
         fi
     fi
     echo "-------------------------"
@@ -220,59 +237,142 @@ fi
 
 
 if [ $significance = 1 ]; then
-    echo "Expected significance"
+    
+    if [ $obs = 1 ]; then
+        echo "Observed significance"
 
-    if [ $multisig = 1 ]; then
-        
-        if [ $vbf = 1 ]; then
+        if [ $multisig = 1 ]; then
             
-            echo "VBF significance"
-            combine -M Significance -d $ws -t -1 --redefineSignalPOIs r_qqH_hww --setParameters r_ggH_hww=1,r_qqH_hww=1,r_WH_hww=1,r_ZH_hww=1,r_ttH_hww=1 --freezeParameters r_WH_hww,r_ZH_hww,r_ttH_hww
-        
-        elif [ $ggf = 1 ]; then
+            if [ $vbf = 1 ]; then
+                
+                echo "VBF significance"
+                combine -M Significance -d $ws --redefineSignalPOIs r_qqH_hww --setParameters r_ggH_hww=1,r_qqH_hww=1,r_otherH=1 --freezeParameters r_otherH
             
-            echo "ggF Significance"
-            combine -M Significance -d $ws -t -1 --redefineSignalPOIs r_ggH_hww --setParameters r_ggH_hww=1,r_qqH_hww=1,r_WH_hww=1,r_ZH_hww=1,r_ttH_hww=1 --freezeParameters r_WH_hww,r_ZH_hww,r_ttH_hww
+            elif [ $ggf = 1 ]; then
+                
+                echo "ggF Significance"
+                combine -M Significance -d $ws --redefineSignalPOIs r_ggH_hww --setParameters r_ggH_hww=1,r_qqH_hww=1,r_otherH=1 --freezeParameters r_otherH
+            else
+                echo "must provide either --ggf or --vbf"
+            fi
         else
-            echo "must provide either --ggf or --vbf"
+            echo "Total significance"
+            combine -M Significance -d $ws
+
+            # combine -M MultiDimFit --algo singles -d $ws  --rMax 10  --rMin -10
         fi
+
     else
-        echo "Total significance"
-        combine -M Significance -d $ws -m 125 --expectSignal=1 --rMin -1 --rMax 5 -t -1
+        echo "Expected significance"
+
+        if [ $multisig = 1 ]; then
+            
+            if [ $vbf = 1 ]; then
+                
+                echo "VBF significance"
+                combine -M Significance -d $ws -t -1 --redefineSignalPOIs r_qqH_hww --setParameters r_ggH_hww=1,r_qqH_hww=1,r_otherH=1 --freezeParameters r_otherH
+            
+            elif [ $ggf = 1 ]; then
+                
+                echo "ggF Significance"
+                combine -M Significance -d $ws -t -1 --redefineSignalPOIs r_ggH_hww --setParameters r_ggH_hww=1,r_qqH_hww=1,r_otherH=1 --freezeParameters r_otherH
+            else
+                echo "must provide either --ggf or --vbf"
+            fi
+        else
+            echo "Total significance"
+            combine -M Significance -d $ws -m 125 --expectSignal=1 --rMin -10 --rMax 10 -t -1 
+            #--setParameters mask_SR2=1,mask_SR3=1,mask_SR4=1
+        fi
     fi
 fi
 
+if [ $bfit = 1 ]; then
+
+    combine -M FitDiagnostics -d $ws -m 125 --rMin -10 --rMax 10 --ignoreCovWarning --cminDefaultMinimizerStrategy 0 --saveWithUncertainties --saveOverallShapes --saveShapes --saveNormalizations -n Unblinded
+
+    echo "Fit Shapes"
+    PostFitShapesFromWorkspace --dataset data_obs -w $ws --output FitShapesB.root -m 125 -f fitDiagnosticsUnblinded.root:fit_b --postfit --print
+fi
+
+
 if [ $dfit = 1 ]; then
 
-    # combine -M MultiDimFit -d $ws -n _paramFit_test_wjetsnormSF --algo impact --redefineSignalPOIs r -P wjetsnormSF --floatOtherPOIs 1 --saveInactivePOI 1 --robustFit 1 --rMin -10 --rMax 10 -m 125 -v2 --setParameters ps_fsr_wjets=1 --freezeParameters ps_fsr_wjets
-    
-    # combine -M MultiDimFit -d $ws -n _paramFit_test_CMS_HWW_boosted_WJetsCR_mcstat_bin4 --algo impact --redefineSignalPOIs r -P CMS_HWW_boosted_WJetsCR_mcstat_bin4 --floatOtherPOIs 1 --saveInactivePOI 1 --robustFit 1 --rMin -20 --rMax 20 -m 125 -v2
 
-    # combine -M MultiDimFit -d $ws --algo grid  -m 125 --rMin -10 --rMax 10 --points 20 -P CMS_HWW_boosted_taggereff --redefineSignalPOIs r --floatOtherPOIs 1 --setParameterRanges name=min,max[:CMS_HWW_boosted_taggereff=-3,3:]
-    # combine -M MultiDimFit -d $ws --algo grid -n test_ -m 125 --rMin -10 --rMax 10 --points 30 --freezeParameters allConstrainedNuisances
-
-    combine -M MultiDimFit -d $ws -n test_ --algo grid -P CMS_HWW_boosted_taggereff_ggF -m 125 --rMin 0 --rMax 10 --setParameterRanges name=min,max[:CMS_HWW_boosted_taggereff_ggF=-3,3:] --points 60 --floatOtherPOIs 1  --setParameters mask_SR1=1
+    # # scan weird NP (if you need to mask a region: --setParameters mask_SR1=1)
+    # combine -M MultiDimFit -d $ws -n test_ --algo grid -P r_qqH_hww -m 125 --rMin -10 --rMax 10 --setParameterRanges name=min,max[:r_qqH_hww=-6,6:] --points 100 --floatOtherPOIs 1
 
     # plot 1D scan
-    # python3 CMSSW_14_1_0_pre4/src/HiggsAnalysis/CombinedLimit/scripts/plot1DScan.py higgsCombinetest_.MultiDimFit.mH125.root -o output --POI CMS_HWW_boosted_taggereff 
+    # python3 CMSSW_14_1_0_pre4/src/HiggsAnalysis/CombinedLimit/scripts/plot1DScan.py higgsCombinetest_.MultiDimFit.mH125.root -o output --POI r_qqH_hww 
+
+    if [ $unfolding = 1 ]; then 
+        combine -M FitDiagnostics -d $ws -m 125 --rMin -10 --rMax 10 --ignoreCovWarning --cminDefaultMinimizerStrategy 0 --saveWithUncertainties --saveOverallShapes --saveShapes --saveNormalizations -n Unblinded_unfolding --setParameters r_ggH_pt200_300=1,r_ggH_pt300_450=1,r_ggH_pt450_inf=1,r_qqH_mjj_1000_inf=1,r_otherH=1 --freezeParameters r_otherH
+        # to print the rs
+        combine -M MultiDimFit --algo singles -d $ws --setParameters r_ggH_pt200_300=1,r_ggH_pt300_450=1,r_ggH_pt450_inf=1,r_qqH_mjj_1000_inf=1,r_otherH=1 --freezeParameters r_otherH
+    else
+
+        if [ $multisig = 1 ]; then
+            if [ $vbf = 1 ]; then
+                
+                echo "VBF fit"
+                combine -M FitDiagnostics -d $ws -m 125 --rMin -10 --rMax 10 --ignoreCovWarning --cminDefaultMinimizerStrategy 0 --saveWithUncertainties --saveOverallShapes --saveShapes --saveNormalizations -n Unblinded_multiPOI_vbf --redefineSignalPOIs r_qqH_hww --setParameters r_ggH_hww=1,r_qqH_hww=1,r_otherH=1 --freezeParameters r_otherH
+                # PostFitShapesFromWorkspace --dataset data_obs -w $ws --output FitShapesS.root -m 125 -f fitDiagnosticsUnblinded.root:fit_s --postfit --print
+
+            elif [ $ggf = 1 ]; then
+                
+                combine -M FitDiagnostics -d $ws -m 125 --rMin -10 --rMax 10 --ignoreCovWarning --cminDefaultMinimizerStrategy 0 --saveWithUncertainties --saveOverallShapes --saveShapes --saveNormalizations -n Unblinded_multiPOI_ggf --redefineSignalPOIs r_ggH_hww --setParameters r_ggH_hww=1,r_qqH_hww=1,r_otherH=1 --freezeParameters r_otherH
+                # PostFitShapesFromWorkspace --dataset data_obs -w $ws --output FitShapesS.root -m 125 -f fitDiagnosticsUnblinded.root:fit_s --postfit --print
+
+            else
+                echo "Do not rely on the printed value of r"
+                combine -M FitDiagnostics -d $ws -m 125 --rMin -10 --rMax 10 --ignoreCovWarning --cminDefaultMinimizerStrategy 0 --saveWithUncertainties --saveOverallShapes --saveShapes --saveNormalizations -n Unblinded_multiPOI --redefineSignalPOIs r_ggH_hww,r_qqH_hww --setParameters r_ggH_hww=1,r_qqH_hww=1,r_otherH=1 --freezeParameters r_otherH
+            fi
+        else
+            combine -M FitDiagnostics -d $ws -m 125 --rMin -10 --rMax 10 --ignoreCovWarning --cminDefaultMinimizerStrategy 0 --saveWithUncertainties --saveOverallShapes --saveShapes --saveNormalizations -n Unblinded_singlePOI        
+        fi
+
+    fi
 fi
 
 if [ $dfit_asimov = 1 ]; then
 
-    echo "Fit Diagnostics Asimov"
-    combine -M FitDiagnostics -m 125 -d $ws \
-    -t -1 --expectSignal=1 --saveWorkspace -n Asimov --ignoreCovWarning \
-    --saveShapes --saveNormalizations --saveWithUncertainties --saveOverallShapes 2>&1 | tee $logsdir/FitDiagnosticsAsimov.txt
 
-fi
+    if [ $unfolding = 1 ]; then 
+        combine -M FitDiagnostics -d $ws -m 125 -t -1 --rMin -10 --rMax 10 --ignoreCovWarning --cminDefaultMinimizerStrategy 0 --saveWithUncertainties --saveOverallShapes --saveShapes --saveNormalizations -n Unblinded_unfolding --setParameters r_ggH_pt200_300=1,r_ggH_pt300_450=1,r_ggH_pt450_inf=1,r_qqH_mjj_1000_inf=1,r_otherH=1 --freezeParameters r_otherH
+        # to print the rs
+        combine -M MultiDimFit --algo singles -d $ws -t -1 --setParameters r_ggH_pt200_300=1,r_ggH_pt300_450=1,r_ggH_pt450_inf=1,r_qqH_mjj_1000_inf=1,r_otherH=1 --freezeParameters r_otherH
+    else
 
-if [ $limits = 1 ]; then
-    # echo "Expected limits"
-    # combine -M AsymptoticLimits -m 125 -n "" -d ${wsm_snapshot}.root --snapshotName MultiDimFit -v 1 \
-    # --saveWorkspace --saveToys --bypassFrequentistFit -s $seed \
-    # --floatParameters r --toysFrequentist --run blind 2>&1 | tee $logsdir/AsymptoticLimits.txt
+        if [ $multisig = 1 ]; then
+            if [ $vbf = 1 ]; then
+                
+                echo "VBF fit"
+                combine -M FitDiagnostics -d $ws -m 125 \
+                -t -1 --rMin -10 --rMax 10 --ignoreCovWarning --cminDefaultMinimizerStrategy 0 --saveWithUncertainties --saveOverallShapes --saveShapes --saveNormalizations -n Blinded_multiPOI_vbf --redefineSignalPOIs r_qqH_hww --setParameters r_ggH_hww=1,r_qqH_hww=1,r_otherH=1 --freezeParameters r_otherH
+                # PostFitShapesFromWorkspace --dataset data_obs -w $ws --output FitShapesS.root -m 125 -f fitDiagnosticsUnblinded.root:fit_s --postfit --print
 
-    combine -M AsymptoticLimits --run expected -d $ws -t -1  -v 1 --expectSignal 1
+            elif [ $ggf = 1 ]; then
+                
+                combine -M FitDiagnostics -d $ws -m 125 \
+                -t -1 --rMin -10 --rMax 10 --ignoreCovWarning --cminDefaultMinimizerStrategy 0 --saveWithUncertainties --saveOverallShapes --saveShapes --saveNormalizations -n Blinded_multiPOI_ggf --redefineSignalPOIs r_ggH_hww --setParameters r_ggH_hww=1,r_qqH_hww=1,r_otherH=1 --freezeParameters r_otherH
+                # PostFitShapesFromWorkspace --dataset data_obs -w $ws --output FitShapesS.root -m 125 -f fitDiagnosticsUnblinded.root:fit_s --postfit --print
+
+            else
+                echo "Do not rely on the printed value of r"
+                combine -M FitDiagnostics -d $ws -m 125 \
+                -t -1 --rMin -10 --rMax 10 --ignoreCovWarning --cminDefaultMinimizerStrategy 0 --saveWithUncertainties --saveOverallShapes --saveShapes --saveNormalizations -n Blinded_multiPOI --redefineSignalPOIs r_ggH_hww,r_qqH_hww --setParameters r_ggH_hww=1,r_qqH_hww=1,r_otherH=1 --freezeParameters r_otherH
+            fi
+        else
+            echo "Fit Diagnostics Asimov"
+            combine -M FitDiagnostics -m 125 -d $ws \
+            -t -1 --expectSignal=1 --saveWorkspace -n Asimov --ignoreCovWarning \
+            --saveShapes --saveNormalizations --saveWithUncertainties --saveOverallShapes 2>&1 | tee $logsdir/FitDiagnosticsAsimov.txt
+        fi
+
+    fi
+
+
+
 fi
 
 
@@ -285,7 +385,8 @@ if [ $impactsi = 1 ]; then
         combineTool.py -M Impacts -d $ws --rMin -10 --rMax 10 -m 125 --robustFit 1 --doInitialFit --expectSignal 1
         combineTool.py -M Impacts -d $ws --rMin -10 --rMax 10 -m 125 --robustFit 1 --doFits --expectSignal 1 --parallel 50
         combineTool.py -M Impacts -d $ws --rMin -10 --rMax 10 -m 125 --robustFit 1 --output impacts.json --expectSignal 1
-        plotImpacts.py -i impacts.json -o impacts --blind
+        # plotImpacts.py -i impacts.json -o impacts --blind
+        plotImpacts.py -i impacts.json -o impacts
 
 
         # combineTool.py -M Impacts -d $ws --rMin -10 --rMax 10 -m 125 --robustFit 1 --doInitialFit --expectSignal 1 --named CMS_pileup_2018
@@ -359,8 +460,27 @@ if [ $gofdata = 1 ]; then
 
 fi
 
-if [ $unfolding = 1 ]; then
+if [ $scanparam = 1 ]; then
 
-    combine -M MultiDimFit --algo singles -d $ws -t -1 --setParameters r_ggH_pt200_300=1,r_ggH_pt300_450=1,r_ggH_pt450_inf=1,r_qqH_mjj_1000_inf=1,r_WH_hww=1,r_ZH_hww=1,r_ttH_hww=1 --freezeParameters r_WH_hww,r_ZH_hww,r_ttH_hww
+    # recall unfolding POIs [r_ggH_pt200_300, r_ggH_pt300_450, r_ggH_pt450_inf, r_qqH_mjj_1000_inf]
+    POI=r
+    echo Will run NLL scan for $POI
 
+    # # scan weird NP (if you need to mask a region: --setParameters mask_SR1=1)
+    # combine -M MultiDimFit -d $ws -n test_ --algo grid -P $POI -m 125 --rMin -10 --rMax 10 --setParameterRanges name=min,max[:$POI=-6,6:] --points 100 --floatOtherPOIs 1
+    # plot 1D scan
+    # python3 CMSSW_14_1_0_pre4/src/HiggsAnalysis/CombinedLimit/scripts/plot1DScan.py higgsCombinetest_.MultiDimFit.mH125.root -o output --POI $POI 
+
+    # expected below
+    # combine -M MultiDimFit --algo grid -m 125 -n "Scan" -d $ws --bypassFrequentistFit --toysFrequentist -t -1 --expectSignal 1 --rMin 0 --rMax 2 --floatParameters r
+
+    # plot1DScan.py "" -o scan
+    python3 CMSSW_14_1_0_pre4/src/HiggsAnalysis/CombinedLimit/scripts/plot1DScan.py higgsCombineScan.MultiDimFit.mH125.root -o output --main-label Expected
+
+
+fi
+
+if [ $limits = 1 ]; then
+    echo "Observed limits"
+    combine -M AsymptoticLimits -d $ws -m 125 -n "" --rMax 10 --saveWorkspace --saveToys -s "$seed" --toysFrequentist 2>&1
 fi

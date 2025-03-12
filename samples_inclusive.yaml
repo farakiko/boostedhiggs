@@ -416,3 +416,10 @@ mcrivet:
   - VBFHToWWToAny_M-125_TuneCP5_withDipoleRecoil_Rivet
 vjetsnlohighpt:
   - WJetsToLNu_LHEFilterPtW-600ToInf
+vjetsnlonew:
+  - WJetsToLNu_012JetsNLO_34JetsLO_EWNLOcorr
+  - WJetsToLNu_Pt-100To250_MatchEWPDG20
+  - WJetsToLNu_Pt-250To400_MatchEWPDG20
+  - WJetsToLNu_Pt-400To600_MatchEWPDG20
+  - WJetsToLNu_Pt-600ToInf_MatchEWPDG20
+  - WJetsToLNu_LHEFilterPtW-600ToInf

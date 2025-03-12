@@ -109,6 +109,19 @@ def create_datacard(
                     syst_do = hists_templates[{"Sample": sName, "Region": ChName, "Systematic": sys_name + "_down"}].values()
                     nominal = hists_templates[{"Sample": sName, "Region": ChName, "Systematic": "nominal"}].values()
 
+                    if ("weight_pileup_2018" in sys_name):
+                        # if "weight_pileup_2018" in sys_name:
+                        # # (a) first redefine the up/down per bin appropriately (in case they were swapped)
+                        syst_up_redefined = np.where(syst_up > syst_do, syst_up, syst_do)
+                        syst_do_redefined = np.where(syst_up > syst_do, syst_do, syst_up)
+
+                        # (b) then if both are bigger than nominal or both are less than nominal, symmetrize
+                        msk_must_symetrize = (syst_do_redefined > nominal) | (syst_up_redefined < nominal)
+
+                        max_variation = np.maximum(abs(nominal - syst_up_redefined), abs(nominal - syst_do_redefined))
+                        syst_up = np.where(msk_must_symetrize, nominal + max_variation, syst_up_redefined)
+                        syst_do = np.where(msk_must_symetrize, nominal - max_variation, syst_do_redefined)
+
                     if sys_value.combinePrior == "lnN":
                         eff_up = shape_to_num(syst_up, nominal)
                         eff_do = shape_to_num(syst_do, nominal)
@@ -121,13 +134,6 @@ def create_datacard(
                     else:
 
                         nominal[nominal == 0] = 1  # to avoid invalid value encountered in true_divide in "syst_up/nominal"
-
-                        if "weight_pileup_2018" in sys_name:
-                            # must smoothen weight_pileup_2018
-                            max_variation = np.maximum(abs(nominal - syst_up), abs(nominal - syst_do))
-
-                            syst_up = nominal + max_variation
-                            syst_do = nominal - max_variation
 
                         sample.setParamEffect(sys_value, (syst_up / nominal), (syst_do / nominal))
 
