@@ -228,7 +228,6 @@ class VjetsProcessor(processor.ProcessorABC):
         if self.isMC:
             if ("WJets" in dataset) or ("ZJets" in dataset) or ("DYJets" in dataset):
                 genVars, _ = match_V(events.GenPart, candidatefj)
-                print(events.fields)
                 if "LHE_HT" in events.fields:
                     genVars["LHE_HT"] = events.LHE.HT
                 if "LHE_Vpt" in events.fields:
