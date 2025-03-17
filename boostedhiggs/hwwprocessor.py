@@ -452,13 +452,8 @@ class HwwProcessor(processor.ProcessorABC):
         genjets = events.GenJet
         goodgenjets = genjets[(genjets.pt > 20.0) & (np.abs(genjets.eta) < 2.4)]
 
-        nB0 = (ak.sum(goodgenjets.hadronFlavour == 5, axis=1) == 0).to_numpy()
-        nB1 = (ak.sum(goodgenjets.hadronFlavour == 5, axis=1) == 1).to_numpy()
-        nB2 = (ak.sum(goodgenjets.hadronFlavour == 5, axis=1) == 2).to_numpy()
-
-        nC0 = (ak.sum(goodgenjets.hadronFlavour == 4, axis=1) == 0).to_numpy()
-        nC1 = (ak.sum(goodgenjets.hadronFlavour == 4, axis=1) == 1).to_numpy()
-        nC2 = (ak.sum(goodgenjets.hadronFlavour == 4, axis=1) == 2).to_numpy()
+        nBjets = (ak.sum(goodgenjets.hadronFlavour == 5, axis=1)).to_numpy()
+        nCjets = (ak.sum(goodgenjets.hadronFlavour == 4, axis=1)).to_numpy()
 
         ######################
         # Store variables
@@ -520,12 +515,8 @@ class HwwProcessor(processor.ProcessorABC):
             "loose_lep1_pt": ak.firsts(muons[loose_muons1][ak.argsort(muons[loose_muons1].pt, ascending=False)]).pt,
             "msk_leptonic_taus": msk_leptonic_taus,
             "dR_genlep_recolep": dR_genlep_recolep,
-            "nB0": nB0,
-            "nB1": nB1,
-            "nB2": nB2,
-            "nC0": nC0,
-            "nC1": nC1,
-            "nC2": nC2,
+            "nB": nBjets,
+            "nC": nCjets,
         }
 
         # store the genweight as a column
@@ -633,8 +624,10 @@ class HwwProcessor(processor.ProcessorABC):
                 self.add_selection(name="Signal", sel=signal_mask)
             elif ("WJets" in dataset) or ("ZJets" in dataset) or ("DYJets" in dataset):
                 genVars, _ = match_V(events.GenPart, candidatefj)
-                genVars["LHE_HT"] = events.LHE.HT
-                genVars["LHE_Vpt"] = events.LHE.Vpt
+                if "LHE_HT" in events.fields:
+                    genVars["LHE_HT"] = events.LHE.HT
+                if "LHE_Vpt" in events.fields:
+                    genVars["LHE_Vpt"] = events.LHE.Vpt
             elif "TT" in dataset:
                 genVars, _ = match_Top(events.GenPart, candidatefj)
             else:
