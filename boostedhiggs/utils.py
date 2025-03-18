@@ -291,8 +291,7 @@ def match_H(
 
 
 def match_V(genparts: GenParticleArray, fatjet: FatJetArray):
-    # vs = genparts[get_pid_mask(genparts, [W_PDGID, Z_PDGID], byall=False) * genparts.hasFlags(GEN_FLAGS)]
-    vs = genparts[get_pid_mask(genparts, [W_PDGID, Z_PDGID], byall=False)]
+    vs = genparts[get_pid_mask(genparts, [W_PDGID, Z_PDGID], byall=False) * genparts.hasFlags(GEN_FLAGS)]
     matched_vs = vs[ak.argmin(fatjet.delta_r(vs), axis=1, keepdims=True)]
     matched_vs_mask = ak.any(fatjet.delta_r(matched_vs) < JET_DR, axis=1)
 
