@@ -356,23 +356,6 @@ def systs_from_parquets(years):
             ["SingleTop"],
             SIG_regions + CONTROL_regions,
         ),
-        # FSR systematics
-        # specefic handling of ps_fsr_wjets per region
-        # rl.NuisanceParameter("ps_fsr_wjets_ggFpt250to350", "lnN"): (
-        #     "weight_PSFSR",
-        #     ["WJetsLNu"],
-        #     ["ggFpt250to350"],
-        # ),
-        # rl.NuisanceParameter("ps_fsr_wjets_ggFpt350to500", "lnN"): (
-        #     "weight_PSFSR",
-        #     ["WJetsLNu"],
-        #     ["ggFpt350to500"],
-        # ),
-        # rl.NuisanceParameter("ps_fsr_wjets_ggFpt500toInf", "lnN"): (
-        #     "weight_PSFSR",
-        #     ["WJetsLNu"],
-        #     ["ggFpt500toInf"],
-        # ),
         rl.NuisanceParameter("ps_fsr_wjets", "lnN"): (
             "weight_PSFSR",
             ["WJetsLNu"],
@@ -390,36 +373,37 @@ def systs_from_parquets(years):
             SIG_regions + CONTROL_regions,
         ),
         # systematics applied only on WJets & DYJets
-        rl.NuisanceParameter(f"{CMS_PARAMS_LABEL}_d1K_NLO", "lnN"): (
-            "weight_d1K_NLO",
-            ["WJetsLNu"],
-            SIG_regions + CONTROL_regions,
-        ),
-        rl.NuisanceParameter(f"{CMS_PARAMS_LABEL}_d2K_NLO", "lnN"): (
-            "weight_d2K_NLO",
-            ["WJetsLNu"],
-            SIG_regions + CONTROL_regions,
-        ),
-        rl.NuisanceParameter(f"{CMS_PARAMS_LABEL}_d3K_NLO", "lnN"): (
-            "weight_d3K_NLO",
-            ["WJetsLNu"],
-            SIG_regions + CONTROL_regions,
-        ),
+        # rl.NuisanceParameter(f"{CMS_PARAMS_LABEL}_d1K_NLO", "lnN"): (
+        #     "weight_d1K_NLO",
+        #     ["WJetsLNu"],
+        #     SIG_regions + CONTROL_regions,
+        # ),
+        # rl.NuisanceParameter(f"{CMS_PARAMS_LABEL}_d2K_NLO", "lnN"): (
+        #     "weight_d2K_NLO",
+        #     ["WJetsLNu"],
+        #     SIG_regions + CONTROL_regions,
+        # ),
+        # rl.NuisanceParameter(f"{CMS_PARAMS_LABEL}_d3K_NLO", "lnN"): (
+        #     "weight_d3K_NLO",
+        #     ["WJetsLNu"],
+        #     SIG_regions + CONTROL_regions,
+        # ),
         rl.NuisanceParameter(f"{CMS_PARAMS_LABEL}_W_d1kappa_EW", "lnN"): (
             "weight_d1kappa_EW",
-            ["WJetsLNu", "DYJets"],
+            # ["WJetsLNu", "DYJets"],
+            ["DYJets"],
             SIG_regions + CONTROL_regions,
         ),
-        rl.NuisanceParameter(f"{CMS_PARAMS_LABEL}_W_d2kappa_EW", "lnN"): (
-            "weight_W_d2kappa_EW",
-            ["WJetsLNu"],
-            SIG_regions + CONTROL_regions,
-        ),
-        rl.NuisanceParameter(f"{CMS_PARAMS_LABEL}_W_d3kappa_EW", "lnN"): (
-            "weight_W_d3kappa_EW",
-            ["WJetsLNu"],
-            SIG_regions + CONTROL_regions,
-        ),
+        # rl.NuisanceParameter(f"{CMS_PARAMS_LABEL}_W_d2kappa_EW", "lnN"): (
+        #     "weight_W_d2kappa_EW",
+        #     ["WJetsLNu"],
+        #     SIG_regions + CONTROL_regions,
+        # ),
+        # rl.NuisanceParameter(f"{CMS_PARAMS_LABEL}_W_d3kappa_EW", "lnN"): (
+        #     "weight_W_d3kappa_EW",
+        #     ["WJetsLNu"],
+        #     SIG_regions + CONTROL_regions,
+        # ),
         rl.NuisanceParameter(f"{CMS_PARAMS_LABEL}_Z_d2kappa_EW", "lnN"): (
             "weight_Z_d2kappa_EW",
             ["DYJets"],
@@ -520,11 +504,6 @@ def systs_from_parquets(years):
                     sigs + bkgs,
                     SIG_regions + CONTROL_regions,
                 ),
-                # rl.NuisanceParameter(f"ps_fsr_wjets_{year}", "shape"): (
-                #     f"weight_PSFSR_wjets_{year}",  # TODO
-                #     ["WJetsLNu"],
-                #     SIG_regions + CONTROL_regions,
-                # ),
             },
         }
         if year != "2018":
