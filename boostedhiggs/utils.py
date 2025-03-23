@@ -292,8 +292,19 @@ def match_H(
 
 def match_V(genparts: GenParticleArray, fatjet: FatJetArray):
     # vs = genparts[get_pid_mask(genparts, [W_PDGID, Z_PDGID], byall=False) * genparts.hasFlags(GEN_FLAGS)]
-    print(genparts)
-    print(abs(genparts.pdgId))
+
+    gen_pdgids = abs(genparts.pdgId)
+    pdgids = [W_PDGID, Z_PDGID]
+    if type(pdgids) is list:
+        print("list")
+        mask = gen_pdgids == pdgids[0]
+        for pdgid in pdgids[1:]:
+            mask = mask | (gen_pdgids == pdgid)
+    else:
+        print("not list")
+        mask = gen_pdgids == pdgids
+    print("mask", mask)
+
     vs = genparts[get_pid_mask(genparts, [W_PDGID, Z_PDGID], byall=False)]
     # print(vs)
 
