@@ -293,7 +293,7 @@ def match_H(
 def match_V(genparts: GenParticleArray, fatjet: FatJetArray):
     # vs = genparts[get_pid_mask(genparts, [W_PDGID, Z_PDGID], byall=False) * genparts.hasFlags(GEN_FLAGS)]
     print(genparts)
-    print(gen_pdgids=abs(genparts.pdgId))
+    print(abs(genparts.pdgId))
     vs = genparts[get_pid_mask(genparts, [W_PDGID, Z_PDGID], byall=False)]
     # print(vs)
 
