@@ -58,16 +58,18 @@ combine_samples = {
     "EWK": "EWKvjets",
     "DYJets": "DYJets",
     "JetsToQQ": "WZQQ",
-    # NLO:
+    # # NLO:
     # "WJetsToLNu_1J": "WJetsLNu_NLO",
     # "WJetsToLNu_2J": "WJetsLNu_NLO",
     # "WJetsToLNu_LHEFilterPtW": "WJetsLNu_NLO",
-    # stitching
-    "WJetsToLNu_1J": "WJetsToLNu_1J",
-    "WJetsToLNu_2J": "WJetsToLNu_2J",
-    "WJetsToLNu_LHEFilterPtW-250To400": "WJetsToLNu_LHEFilterPtW-250To400",
-    "WJetsToLNu_LHEFilterPtW-400To600": "WJetsToLNu_LHEFilterPtW-400To600",
-    "WJetsToLNu_LHEFilterPtW-600ToInf": "WJetsToLNu_LHEFilterPtW-600ToInf",
+    # "WJetsToLNu_HT": "LO HT binned",
+    # "WJetsToLNu_1J": "WJetsLNu NLO LHEFilterPtW",
+    # "WJetsToLNu_2J": "WJetsLNu NLO LHEFilterPtW",
+    "WJetsToLNu_1J": "WJetsLNu NLO MatchEWPDG20",
+    "WJetsToLNu_2J": "WJetsLNu NLO MatchEWPDG20",
+    "WJetsToLNu_LHEFilterPtW": "WJetsLNu NLO LHEFilterPtW",
+    "_MatchEWPDG20": "WJetsLNu NLO MatchEWPDG20",
+    "WJetsToLNu_012JetsNLO_34JetsLO_EWNLOcorr": "WJetsToLNu_012JetsNLO_34JetsLO_EWNLOcorr",
 }
 
 signals = ["VBF", "ggF", "WH", "ZH", "ttH"]
@@ -107,6 +109,11 @@ def get_sum_sumgenweight(pkl_files, year, sample):
 
 def get_xsecweight(pkl_files, year, sample, is_data, luminosity):
     """Get xsec-weight and scales events by lumi/sumgenweights."""
+
+    # if "WJetsToLNu_1J" in sample:
+    #     sample = "WJetsToLNu_1J"
+    # if "WJetsToLNu_2J" in sample:
+    #     sample = "WJetsToLNu_2J"
 
     if not is_data:
         # find xsection
@@ -197,6 +204,9 @@ color_by_sample = {
     "WJetsLNu_nC1": "springgreen",
     "WJetsLNu_nC2": "greenyellow",
     "WJetsLNu_nCother": "lime",
+    "WJetsLNu NLO LHEFilterPtW": "greenyellow",
+    "WJetsLNu NLO MatchEWPDG20": "springgreen",
+    "WJetsToLNu_012JetsNLO_34JetsLO_EWNLOcorr": "lime",
 }
 
 plot_labels = {
@@ -254,6 +264,9 @@ plot_labels = {
     "WJetsLNu_nC1": r"W$(\ell\nu)$+jets (nC=1)",
     "WJetsLNu_nC2": r"W$(\ell\nu)$+jets (nC=2)",
     "WJetsLNu_nCother": r"W$(\ell\nu)$+jets (other)",
+    "WJetsLNu NLO LHEFilterPtW": r"W$(\ell\nu)$+jets (NLO LHEFilterPtW)",
+    "WJetsLNu NLO MatchEWPDG20": r"W$(\ell\nu)$+jets (NLO MatchEWPDG20)",
+    "WJetsToLNu_012JetsNLO_34JetsLO_EWNLOcorr": r"W$(\ell\nu)$+jets (NLO 012JetsNLO 34JetsLO)",
 }
 
 label_by_ch = {"mu": "Muon", "ele": "Electron"}
@@ -285,10 +298,7 @@ def get_axis(var, massbin=5):
             35, 0, 3.14, name="var", label=r"$\left| \Delta \phi(W_{l\nu}, W_{qq}) \right|$", overflow=True
         ),
         "fj_ParT_mass": hist2.axis.Variable(
-            list(range(45, 240, massbin)), name="var", label=r"ParT regressed mass [GeV]", overflow=True
-        ),
-        "fj_ParticleNet_mass": hist2.axis.Regular(
-            35, 0, 250, name="var", label=r"fj_ParticleNet regressed mass [GeV]", overflow=True
+            list(range(65, 240, massbin)), name="var", label=r"ParT regressed mass [GeV]", overflow=True
         ),
         # VBF
         "deta": hist2.axis.Regular(35, 0, 7, name="var", label=r"$\left| \Delta \eta_{jj} \right|$", overflow=True),
@@ -300,6 +310,7 @@ def get_axis(var, massbin=5):
         "nj": hist2.axis.Regular(40, 0, 10, name="var", label="number of jets outside candidate jet", overflow=True),
         "inclusive_score": hist2.axis.Regular(35, 0, 1, name="var", label=r"tagger score", overflow=True),
         "THWW": hist2.axis.Regular(25, 0, 1, name="var", label=r"$T_{HWW}$", overflow=True),
+        # "THWW": hist2.axis.Regular(25, 0.75, 1, name="var", label=r"$T_{HWW}$", overflow=True),   # preselection
         # "THWW": hist2.axis.Regular(8, 0.9, 1, name="var", label=r"$T_{HWW}$", overflow=True),
         "fj_ParT_inclusive_score": hist2.axis.Regular(35, 0, 1, name="var", label=r"ParT-Finetuned score", overflow=True),
         "fj_ParT_all_score": hist2.axis.Regular(35, 0, 1, name="var", label=r"tagger score", overflow=True),
@@ -341,7 +352,6 @@ def get_axis(var, massbin=5):
         "rec_W_lnu_m": hist2.axis.Regular(
             40, 0, 160, name="var", label=r"Reconstructed $W_{\ell \nu}$ mass [GeV]", overflow=True
         ),
-        "fj_msoftdrop": hist2.axis.Regular(35, 20, 200, name="var", label=r"Jet $m_{sd}$ [GeV]", overflow=True),
         "fj_mass": hist2.axis.Variable(
             list(range(40, 255, massbin)), name="var", label=r"Higgs candidate soft-drop mass [GeV]", overflow=True
         ),
