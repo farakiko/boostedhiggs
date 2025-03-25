@@ -251,6 +251,9 @@ if __name__ == "__main__":
     # for hww processor studies
     # noqa: python run.py --year 2017 --processor hww --pfnano v2_2 --n 1 --starti 0 --sample GluGluHToWW_Pt-200ToInf_M-125 --local --channels ele --config samples_inclusive.yaml --key mc --executor iterative
 
+    # for wjets nlo studies
+    # noqa: python run.py --year 2017 --processor vjetsnlo --pfnano v2_2 --n 1 --starti 0 --sample WJetsToLNu_012JetsNLO_34JetsLO_EWNLOcorr --local --channels mu,ele --config samples_inclusive.yaml --executor iterative
+
     # for LP studies
     # noqa LP: python run.py --executor iterative --year 2017 --processor hww --pfnano v2_2 --n 1 --starti 0 --sample GluGluHToWW_Pt-200ToInf_M-125 --local --channels ele,mu --config samples_inclusive.yaml --key mc --getLPweights --inference
     # noqa LP: python run.py --executor iterative --year 2017 --processor hww --pfnano v2_2 --sample TTToSemiLeptonic --local --channels ele,mu --config samples_inclusive.yaml --key mc --getLPweights --n 1 --starti 0

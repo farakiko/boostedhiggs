@@ -62,6 +62,7 @@ def get_systematic_dict(years):
         "weight_d1kappa_EW": (
             years,
             ["WJetsLNu", "DYJets"],
+            # ["DYJets"],
             {"ele": "weight_ele_d1kappa_EW", "mu": "weight_mu_d1kappa_EW"},
         ),
         "weight_W_d2kappa_EW": (

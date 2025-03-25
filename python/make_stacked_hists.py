@@ -43,7 +43,7 @@ def make_events_dict(years, channels, samples_dir, samples, presel, THWW_path=No
 
     """
 
-    if "Fake" in samples:  # Fake has a special tratement after the loop
+    if "Fake" in samples:  # Fake has a special treatment after the loop
         add_fake = True
         samples.remove("Fake")
     else:
@@ -54,6 +54,7 @@ def make_events_dict(years, channels, samples_dir, samples, presel, THWW_path=No
         events_dict[year] = {}
 
         for ch in channels:
+            logging.info(f"Processing {year} {ch} channel")
             events_dict[year][ch] = {}
 
             # get lumi
@@ -72,8 +73,6 @@ def make_events_dict(years, channels, samples_dir, samples, presel, THWW_path=No
 
                 if sample_to_use not in samples:
                     continue
-
-                logging.info(f"Finding {sample} samples and should combine them under {sample_to_use}")
 
                 parquet_files = glob.glob(f"{samples_dir[year]}/{sample}/outfiles/*_{ch}.parquet")
                 pkl_files = glob.glob(f"{samples_dir[year]}/{sample}/outfiles/*.pkl")
@@ -96,13 +95,18 @@ def make_events_dict(years, channels, samples_dir, samples, presel, THWW_path=No
                     else:
                         data = data[data["fj_genH_pt"] >= 200]
 
-                if "WJetsLNu_NLO" in sample_to_use:
+                if sample_to_use == "WJetsLNu NLO LHEFilterPtW":
                     if ("WJetsToLNu_1J" in sample) or ("WJetsToLNu_2J" in sample):
-                        print("Will apply gen_V_pt<250 selection on", sample)
                         data = data[data["gen_V_pt"] < 250]
                     else:
-                        print("Will apply gen_V_pt>250 selection on", sample)
                         data = data[data["gen_V_pt"] > 250]
+
+                # if sample_to_use == "WJetsLNu NLO LHEFilterPtW":
+                if sample_to_use == "WJetsLNu NLO MatchEWPDG20":
+                    if ("WJetsToLNu_1J" in sample) or ("WJetsToLNu_2J" in sample):
+                        data = data[data["gen_V_pt"] < 100]
+                    else:
+                        data = data[data["gen_V_pt"] > 100]
 
                 if "met_fj_dphi" in data.keys():
                     data["abs_met_fj_dphi"] = np.abs(data["met_fj_dphi"])
@@ -128,11 +132,7 @@ def make_events_dict(years, channels, samples_dir, samples, presel, THWW_path=No
 
                 # apply preselection
                 for selection in presel[ch]:
-                    logging.info(f"Applying {selection} selection on {len(data)} events")
                     data = data.query(presel[ch][selection])
-
-                logging.info(f"Will fill the {sample_to_use} dataframe with the remaining {len(data)} events")
-                logging.info(f"tot event weight {data['nominal'].sum()} \n")
 
                 # fill the big dataframe
                 if sample_to_use not in events_dict[year][ch]:
@@ -141,7 +141,6 @@ def make_events_dict(years, channels, samples_dir, samples, presel, THWW_path=No
                     events_dict[year][ch][sample_to_use] = pd.concat([events_dict[year][ch][sample_to_use], data])
 
             if add_fake:
-                logging.info("Processing the fake background")
 
                 df = pd.read_parquet(f"{samples_dir[year]}/Fake/fake_{year}_{ch}_FR_Nominal.parquet")
                 for selection in presel[ch]:

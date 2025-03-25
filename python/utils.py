@@ -761,6 +761,10 @@ def plot_hists(
                 # replace values where bkg is 0
                 totsignal_val[tot_val == 0] = 0
                 soverb_val = totsignal_val / (tot_val)
+
+                tot_soversqrtb = ((totsignal_val[:4] / mult_factor).sum()) / np.sqrt(tot_val[:4].sum())
+                sax.legend(title=f"S/sqrt(B) in [75-155GeV]={tot_soversqrtb:.2f}")
+
                 hep.histplot(
                     soverb_val,
                     tot_signal.axes[0].edges,
@@ -822,10 +826,19 @@ def plot_hists(
             hand_new.append(hand[i])
 
         if add_soverb:
+            # ax.legend(
+            #     [hand[idx] for idx in range(len(hand))],
+            #     [lab[idx] for idx in range(len(lab))],
+            #     bbox_to_anchor=(1.05, 1),
+            #     loc="upper left",
+            # )
+
             ax.legend(
-                [hand[idx] for idx in range(len(hand))],
-                [lab[idx] for idx in range(len(lab))],
-                bbox_to_anchor=(1.05, 1),
+                [hand_new[idx] for idx in range(len(hand_new))],
+                [lab_new[idx] for idx in range(len(lab_new))],
+                title=text_,
+                ncol=legend_ncol,
+                fontsize=14,
                 loc="upper left",
             )
 

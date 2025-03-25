@@ -26,6 +26,97 @@ warnings.filterwarnings("ignore", message="Found duplicate branch ")
 pd.set_option("mode.chained_assignment", None)
 
 
+def get_wjetsNLOcorr(hists, presel, years, channels, samples_dir, regions_sel, model_path):
+
+    for year in years:  # e.g. 2018, 2017, 2016APV, 2016
+        for ch in channels:  # e.g. mu, ele
+
+            with open("../fileset/luminosity.json") as f:
+                luminosity = json.load(f)[ch][year]
+
+            for sample in os.listdir(samples_dir[year]):
+
+                sample_to_use = get_common_sample_name(sample)
+
+                if sample_to_use != "vjetsNLO":
+                    continue
+
+                out_files = f"{samples_dir[year]}/{sample}/outfiles/"
+                parquet_files = glob.glob(f"{out_files}/*_{ch}.parquet")
+                pkl_files = glob.glob(f"{out_files}/*.pkl")
+
+                if not parquet_files:
+                    logging.info(f"No parquet file for {sample}")
+                    continue
+
+                try:
+                    data = pd.read_parquet(parquet_files)
+                except pyarrow.lib.ArrowInvalid:  # empty parquet because no event passed selection
+                    continue
+
+                if len(data) == 0:
+                    continue
+
+                # use hidNeurons to get the finetuned scores
+                data["THWW"] = get_finetuned_score(data, model_path)
+
+                # drop hidNeurons which are not needed anymore
+                data = data[data.columns.drop(list(data.filter(regex="hidNeuron")))]
+
+                # apply selection
+                for selection in presel[ch]:
+                    data = data.query(presel[ch][selection])
+
+                # apply genlep recolep matching
+                data = data[data["dR_genlep_recolep"] < 0.005]
+
+                # get the xsecweight
+                xsecweight, _, _, _ = get_xsecweight(pkl_files, year, sample, sample_to_use, False, luminosity)
+
+                with open("../binder/trg_eff_SF_ARC.pkl", "rb") as f:
+                    TRIGGER_SF = pkl.load(f)
+
+                for region, region_sel in regions_sel.items():  # e.g. pass, fail, top control region, etc.
+
+                    df = data.copy()
+                    df = df.query(region_sel)
+
+                    # ------------------- Nominal -------------------
+                    nominal = df[f"weight_{ch}"] * xsecweight
+
+                    if "bjets" in region_sel:  # if there's a bjet selection, add btag SF to the nominal weight
+                        nominal *= df["weight_btag"]
+
+                    # apply trigger SF
+                    if ch == "ele":
+                        ptbinning_trgSF = [2000, 200, 170, 150, 130, 110, 90, 70, 50, 30]
+                        etabinning_trgSF = [-2.5, -1.5, -0.5, 0.5, 1.5, 2.5]
+
+                        for i in range(len(ptbinning_trgSF) - 1):
+                            high_pt = ptbinning_trgSF[i]
+                            low_pt = ptbinning_trgSF[i + 1]
+
+                            msk_pt = (df["lep_pt"] >= low_pt) & (df["lep_pt"] < high_pt)
+
+                            for j in range(len(etabinning_trgSF) - 1):
+                                low_eta = etabinning_trgSF[j]
+                                high_eta = etabinning_trgSF[j + 1]
+
+                                msk_eta = (abs(df["lep_eta"]) >= low_eta) & (abs(df["lep_eta"]) < high_eta)
+
+                                nominal[msk_pt & msk_eta] *= TRIGGER_SF["UL" + year[2:].replace("APV", "")]["nominal"][i, j]
+
+                    hists.fill(
+                        Sample="WJetsLNu",
+                        Systematic="vjetsnlo_up",
+                        Region=region,
+                        mass_observable=df["rec_higgs_m"],
+                        weight=nominal,
+                    )
+
+    return hists
+
+
 def fill_systematics(
     data,
     hists,
@@ -45,7 +136,7 @@ def fill_systematics(
     #     TRIGGER_SF = pkl.load(f)
 
     with open("../binder/trg_eff_SF_ARC.pkl", "rb") as f:
-        TRIGGER_SF = pkl.load(f)        
+        TRIGGER_SF = pkl.load(f)
 
     THWW_SF = {
         "ggF": 0.948,
@@ -70,19 +161,18 @@ def fill_systematics(
 
             # apply trigger SF
             if ch == "ele":
-                # ptbinning = [2000, 200, 120, 30]
-                ptbinning = [2000, 200, 170, 150, 130, 110, 90, 70, 50, 30]
-                etabinning = [-2.5, -1.5, -0.5, 0.5, 1.5, 2.5]
+                ptbinning_trgSF = [2000, 200, 170, 150, 130, 110, 90, 70, 50, 30]
+                etabinning_trgSF = [-2.5, -1.5, -0.5, 0.5, 1.5, 2.5]
 
-                for i in range(len(ptbinning) - 1):
-                    high_pt = ptbinning[i]
-                    low_pt = ptbinning[i + 1]
+                for i in range(len(ptbinning_trgSF) - 1):
+                    high_pt = ptbinning_trgSF[i]
+                    low_pt = ptbinning_trgSF[i + 1]
 
                     msk_pt = (df["lep_pt"] >= low_pt) & (df["lep_pt"] < high_pt)
 
-                    for j in range(len(etabinning) - 1):
-                        low_eta = etabinning[j]
-                        high_eta = etabinning[j + 1]
+                    for j in range(len(etabinning_trgSF) - 1):
+                        low_eta = etabinning_trgSF[j]
+                        high_eta = etabinning_trgSF[j + 1]
 
                         msk_eta = (abs(df["lep_eta"]) >= low_eta) & (abs(df["lep_eta"]) < high_eta)
 
@@ -108,15 +198,15 @@ def fill_systematics(
         up, down = nominal.copy(), nominal.copy()
         if (ch == "ele") and (not is_data):
             # if ch == "ele":
-            for i in range(len(ptbinning) - 1):
-                high_pt = ptbinning[i]
-                low_pt = ptbinning[i + 1]
+            for i in range(len(ptbinning_trgSF) - 1):
+                high_pt = ptbinning_trgSF[i]
+                low_pt = ptbinning_trgSF[i + 1]
 
                 msk_pt = (df["lep_pt"] >= low_pt) & (df["lep_pt"] < high_pt)
 
-                for j in range(len(etabinning) - 1):
-                    low_eta = etabinning[j]
-                    high_eta = etabinning[j + 1]
+                for j in range(len(etabinning_trgSF) - 1):
+                    low_eta = etabinning_trgSF[j]
+                    high_eta = etabinning_trgSF[j + 1]
 
                     msk_eta = (abs(df["lep_eta"]) >= low_eta) & (abs(df["lep_eta"]) < high_eta)
 
@@ -141,7 +231,7 @@ def fill_systematics(
             weight=down,
         )
 
-        # ------------------- EWK unc. -------------------
+        # ------------------- signal EWK unc. -------------------
         up, down = nominal.copy(), nominal.copy()
         if sample_label in ["VBF", "WH", "ZH", "ttH"]:
             msk = df["fj_genH_pt"] > 400
@@ -164,6 +254,23 @@ def fill_systematics(
             weight=down,
         )
 
+        # ------------------- vjets NLO -------------------
+        # with open("templates/v15/hists_templates_Run2.pkl", "rb") as f:
+        #     hists_vjetsnlo = pkl.load(f)
+
+        # sample_idx = np.argmax(np.array(hists.axes["Sample"]) == "WJetsLNu")
+        # syst_idx = np.argmax(np.array(hists.axes["Systematic"]) == "nominal")
+        # region_idx = np.argmax(np.array(hists.axes["Region"]) == "region")
+        if sample_label == "WJetsLNu":
+
+            hists.fill(
+                Sample=sample_label,
+                Systematic="vjetsnlo_down",
+                Region=region,
+                mass_observable=df["rec_higgs_m"],
+                weight=nominal,
+            )
+
         # ------------------- PDF acceptance -------------------
 
         """
@@ -174,8 +281,8 @@ def fill_systematics(
         e.g. https://github.com/LPC-HH/HHLooper/blob/master/python/prepare_card_SR_final.py#L258
         and https://github.com/LPC-HH/HHLooper/blob/master/app/HHLooper.cc#L1488
         """
-        # if sample_to_use in sigs:
         if (sample_label in sigs + ["WJetsLNu", "TTbar"]) and (sample != "ST_s-channel_4f_hadronicDecays"):
+            # if (sample_label in sigs + ["TTbar"]) and (sample != "ST_s-channel_4f_hadronicDecays"):  # TODO add WJets
 
             pdfweights = []
 
@@ -230,6 +337,9 @@ def fill_systematics(
         - the uncertainty is the nominal histogram * h_up / h4
         """
         if (sample_label in sigs + ["WJetsLNu", "TTbar", "SingleTop"]) and (sample != "ST_s-channel_4f_hadronicDecays"):
+            # if (sample_label in sigs + ["TTbar", "SingleTop"]) and (
+            #     sample != "ST_s-channel_4f_hadronicDecays"
+            # ):  # TODO add WJets
 
             R_4 = sumscaleweights[4] / sumgenweights
             scaleweight_4 = df["weight_scale4"].values * nominal / R_4
@@ -420,6 +530,8 @@ def get_templates(years, channels, samples, samples_dir, regions_sel, model_path
         storage=hist2.storage.Weight(),
     )
 
+    hists = get_wjetsNLOcorr(hists, presel, years, channels, samples_dir, regions_sel, model_path)
+
     for year in years:  # e.g. 2018, 2017, 2016APV, 2016
         for ch in channels:  # e.g. mu, ele
             logging.info(f"Processing year {year} and {ch} channel")
@@ -481,6 +593,9 @@ def get_templates(years, channels, samples, samples_dir, regions_sel, model_path
                     pkl_files, year, sample, sample_to_use, is_data, luminosity
                 )
 
+                # if sample_to_use == "vjetsNLO":
+                #     continue
+
                 if sample_to_use == "ggF":
 
                     stxs_list = [
@@ -520,7 +635,7 @@ def get_templates(years, channels, samples, samples_dir, regions_sel, model_path
                             sumgenweights,
                             sumscaleweights,
                         )
-                elif sample_to_use == "VBF":
+                if sample_to_use == "VBF":
                     stxs_list = [
                         "mjj1000toInf",
                     ]
@@ -568,6 +683,7 @@ def get_templates(years, channels, samples, samples_dir, regions_sel, model_path
                     sumgenweights,
                     sumscaleweights,
                 )
+
 
     fake_SF = {
         "ele": 0.75,
@@ -638,7 +754,9 @@ def fix_neg_yields(h):
                 neg_bins = np.where(h[{"Sample": sample, "Systematic": systematic, "Region": region}].values() < 0)[0]
 
                 if len(neg_bins) > 0:
-                    print(f"{region}, {sample}, has {len(neg_bins)} bins for {systematic} with negative yield.. will set them to 0")   # noqa
+                    print(
+                        f"{region}, {sample}, has {len(neg_bins)} bins for {systematic} with negative yield.. will set them to 0"
+                    )  # noqa
 
                     sample_index = np.argmax(np.array(h.axes["Sample"]) == sample)
                     region_index = np.argmax(np.array(h.axes["Region"]) == region)
@@ -648,7 +766,7 @@ def fix_neg_yields(h):
                         h.view(flow=True)[sample_index, :, region_index, neg_bin + 1].value[msk] = 0
                         h.view(flow=True)[sample_index, :, region_index, neg_bin + 1].variance[msk] = 0
 
-    
+
 def main(args):
     years = args.years.split(",")
     channels = args.channels.split(",")

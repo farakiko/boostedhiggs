@@ -36,6 +36,7 @@ combine_samples = {
     # bkg
     "TT": "TTbar",
     "WJetsToLNu_HT": "WJetsLNu",
+    "WJetsToLNu_012JetsNLO_34JetsLO_EWNLOcorr": "vjetsNLO",
     "ST_": "SingleTop",
     "WW": "Diboson",
     "WZ": "Diboson",
@@ -43,11 +44,11 @@ combine_samples = {
     "EWK": "EWKvjets",
     "DYJets": "DYJets",
     "JetsToQQ": "WZQQ",
-    "WJetsToLNu_1J": "WJetsToLNu_1J",
-    "WJetsToLNu_2J": "WJetsToLNu_2J",
-    "WJetsToLNu_LHEFilterPtW-250To400": "WJetsToLNu_LHEFilterPtW-250To400",
-    "WJetsToLNu_LHEFilterPtW-400To600": "WJetsToLNu_LHEFilterPtW-400To600",
-    "WJetsToLNu_LHEFilterPtW-600ToInf": "WJetsToLNu_LHEFilterPtW-600ToInf",
+    # "WJetsToLNu_1J": "WJetsToLNu_1J",
+    # "WJetsToLNu_2J": "WJetsToLNu_2J",
+    # "WJetsToLNu_LHEFilterPtW-250To400": "WJetsToLNu_LHEFilterPtW-250To400",
+    # "WJetsToLNu_LHEFilterPtW-400To600": "WJetsToLNu_LHEFilterPtW-400To600",
+    # "WJetsToLNu_LHEFilterPtW-600ToInf": "WJetsToLNu_LHEFilterPtW-600ToInf",
 }
 
 # (name in templates, name in cards)
@@ -106,6 +107,7 @@ def get_sum_sumgenweight(pkl_files, year, sample):
 def get_sum_sumpdfweight(pkl_files, year, sample, sample_to_use):
 
     if (sample_to_use in sigs + ["WJetsLNu", "TTbar"]) and (sample != "ST_s-channel_4f_hadronicDecays"):
+        # if (sample_to_use in sigs + ["TTbar"]) and (sample != "ST_s-channel_4f_hadronicDecays"):  # TODO add WJets
         sum_sumpdfweight = {}
         for key in range(103):
             sum_sumpdfweight[key] = 0
@@ -125,6 +127,7 @@ def get_sum_sumpdfweight(pkl_files, year, sample, sample_to_use):
 def get_sum_sumscsaleweight(pkl_files, year, sample, sample_to_use):
 
     if (sample_to_use in sigs + ["WJetsLNu", "TTbar", "SingleTop"]) and (sample != "ST_s-channel_4f_hadronicDecays"):
+        # if (sample_to_use in sigs + ["TTbar", "SingleTop"]) and (sample != "ST_s-channel_4f_hadronicDecays"):  # TODO add WJets
         sum_sumlheweight = {}
         for key in [0, 1, 3, 5, 7, 8, 4]:
             sum_sumlheweight[key] = 0

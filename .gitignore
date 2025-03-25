@@ -61,3 +61,5 @@ brilconda/*
 combine/higgs*
 
 LP/outfiles*
+
+*.root
