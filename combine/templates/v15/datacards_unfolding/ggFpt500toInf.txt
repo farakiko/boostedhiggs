@@ -1,7 +1,7 @@
-# Datacard for <Channel (ggFpt500toInf) instance at 0x7f021ea103a0> generated on 2025-03-20 09:48:16.331365
+# Datacard for <Channel (ggFpt500toInf) instance at 0x7f4befe90b80> generated on 2025-03-25 07:35:39.341356
 imax 1 # number of categories ('bins' but here we are using shape templates)
 jmax 13 # number of samples minus 1
-kmax 142 # number of nuisance parameters
+kmax 141 # number of nuisance parameters
 shapes * ggFpt500toInf testModel.root testModel:ggFpt500toInf_$PROCESS testModel:ggFpt500toInf_$PROCESS_$SYSTEMATIC
 bin ggFpt500toInf
 observation 162.000
@@ -150,7 +150,6 @@ ps_isr_ttH shape                                                                
 ps_isr_ttbar shape                                                                -                -                -                -              -              -              -         1.0000              -              -              -              -              -              -
 ps_isr_wjets shape                                                                -                -                -                -              -              -              -              -         1.0000              -              -              -              -              -
 unclustered_Energy lnN                                                0.9936/1.0267                -    1.0807/1.1001    1.0521/1.0637         1.0655         1.0524  0.9746/1.0237         1.0016         0.9977         1.0102  0.9336/1.0165  0.9754/1.0032  0.9967/1.0421              -
-wjets_NLO lnN                                                                     -                -                -                -              -              -              -              -         1.0500              -              -              -              -              -
 ttbarnormSF extArg testModel.root:testModel
 wjetsnormSF extArg testModel.root:testModel
 ttbarnormSF_effect_ggFpt500toInf_ttbar rateParam ggFpt500toInf ttbar (1*@0) ttbarnormSF

@@ -1,7 +1,7 @@
-# Datacard for <Channel (VBF) instance at 0x7fb6ede54c10> generated on 2025-03-20 06:41:35.371935
+# Datacard for <Channel (VBF) instance at 0x7fb7c46cd430> generated on 2025-03-25 07:36:04.550058
 imax 1 # number of categories ('bins' but here we are using shape templates)
 jmax 11 # number of samples minus 1
-kmax 142 # number of nuisance parameters
+kmax 141 # number of nuisance parameters
 shapes * VBF testModel.root testModel:VBF_$PROCESS testModel:VBF_$PROCESS_$SYSTEMATIC
 bin VBF
 observation 31.000
@@ -150,7 +150,6 @@ ps_isr_ttH shape                                                           -    
 ps_isr_ttbar shape                                                         -              -              -              -              -         1.0000              -              -              -              -              -       -
 ps_isr_wjets shape                                                         -              -              -              -              -              -         1.0000              -              -              -              -       -
 unclustered_Energy lnN                                                1.0173         1.0219  1.0211/1.0454         1.0190  0.9865/1.0273         1.0041         1.0111  1.0082/1.3263         1.0246              -         1.0031       -
-wjets_NLO lnN                                                              -              -              -              -              -              -         1.0500              -              -              -              -       -
 ttbarnormSF extArg testModel.root:testModel
 wjetsnormSF extArg testModel.root:testModel
 ttbarnormSF_effect_VBF_ttbar rateParam VBF ttbar (1*@0) ttbarnormSF

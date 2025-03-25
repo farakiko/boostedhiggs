@@ -1,7 +1,7 @@
-# Datacard for <Channel (WJetsCR) instance at 0x7fb6eddc9ca0> generated on 2025-03-20 06:41:35.424322
+# Datacard for <Channel (WJetsCR) instance at 0x7fb7c45eb4c0> generated on 2025-03-25 07:36:04.579753
 imax 1 # number of categories ('bins' but here we are using shape templates)
 jmax 11 # number of samples minus 1
-kmax 141 # number of nuisance parameters
+kmax 140 # number of nuisance parameters
 shapes * WJetsCR testModel.root testModel:WJetsCR_$PROCESS testModel:WJetsCR_$PROCESS_$SYSTEMATIC
 bin WJetsCR
 observation 6665.000
@@ -149,6 +149,5 @@ ps_isr_ttH shape                                                           -    
 ps_isr_ttbar shape                                                         -              -              -              -              -         1.0000              -              -              -              -              -        -
 ps_isr_wjets shape                                                         -              -              -              -              -              -         1.0000              -              -              -              -        -
 unclustered_Energy lnN                                                1.0227         1.0218         1.0237         1.0220         1.0222         1.0065         1.0055         1.0050         1.0058         1.0101         1.0077        -
-wjets_NLO lnN                                                              -              -              -              -              -              -         1.0500              -              -              -              -        -
 wjetsnormSF extArg testModel.root:testModel
 wjetsnormSF_effect_WJetsCR_wjets rateParam WJetsCR wjets (1*@0) wjetsnormSF
