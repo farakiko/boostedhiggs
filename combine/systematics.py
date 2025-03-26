@@ -1,4 +1,4 @@
-bkgs = ["TTbar", "WJetsLNu", "SingleTop", "DYJets", "Diboson", "EWKvjets"]
+bkgs = ["TTbar", "WJetsLNu", "WJetsToLNu_012JetsNLO_34JetsLO_EWNLOcorr", "SingleTop", "DYJets", "Diboson", "EWKvjets"]
 ttbar_list = [
     "TTbar_is_top_lq",
     "TTbar_is_top_lqq",
@@ -35,46 +35,46 @@ def get_systematic_dict(years):
         # ISR/FSR
         "weight_PSFSR": (
             years,
-            sigs + ["TTbar", "WJetsLNu", "SingleTop"] + ttbar_list,
+            sigs + ["TTbar", "WJetsLNu", "WJetsToLNu_012JetsNLO_34JetsLO_EWNLOcorr", "SingleTop"] + ttbar_list,
             {"ele": "weight_ele_PSFSR", "mu": "weight_mu_PSFSR"},
         ),
         "weight_PSISR": (
             years,
-            sigs + ["TTbar", "WJetsLNu", "SingleTop"] + ttbar_list,
+            sigs + ["TTbar", "WJetsLNu", "WJetsToLNu_012JetsNLO_34JetsLO_EWNLOcorr", "SingleTop"] + ttbar_list,
             {"ele": "weight_ele_PSISR", "mu": "weight_mu_PSISR"},
         ),
-        # systematics applied only on WJets & DYJets
-        "weight_d1K_NLO": (
-            years,
-            ["WJetsLNu"],
-            {"ele": "weight_ele_d1K_NLO", "mu": "weight_mu_d1K_NLO"},
-        ),
-        "weight_d2K_NLO": (
-            years,
-            ["WJetsLNu"],
-            {"ele": "weight_ele_d2K_NLO", "mu": "weight_mu_d2K_NLO"},
-        ),
-        "weight_d3K_NLO": (
-            years,
-            ["WJetsLNu"],
-            {"ele": "weight_ele_d3K_NLO", "mu": "weight_mu_d3K_NLO"},
-        ),
+        # # systematics applied only on WJets & DYJets
+        # "weight_d1K_NLO": (
+        #     years,
+        #     ["WJetsLNu", "WJetsToLNu_012JetsNLO_34JetsLO_EWNLOcorr"],
+        #     {"ele": "weight_ele_d1K_NLO", "mu": "weight_mu_d1K_NLO"},
+        # ),
+        # "weight_d2K_NLO": (
+        #     years,
+        #     ["WJetsLNu", "WJetsToLNu_012JetsNLO_34JetsLO_EWNLOcorr"],
+        #     {"ele": "weight_ele_d2K_NLO", "mu": "weight_mu_d2K_NLO"},
+        # ),
+        # "weight_d3K_NLO": (
+        #     years,
+        #     ["WJetsLNu", "WJetsToLNu_012JetsNLO_34JetsLO_EWNLOcorr"],
+        #     {"ele": "weight_ele_d3K_NLO", "mu": "weight_mu_d3K_NLO"},
+        # ),
         "weight_d1kappa_EW": (
             years,
-            ["WJetsLNu", "DYJets"],
-            # ["DYJets"],
+            # ["WJetsLNu", "WJetsToLNu_012JetsNLO_34JetsLO_EWNLOcorr", "DYJets"],
+            ["DYJets"],
             {"ele": "weight_ele_d1kappa_EW", "mu": "weight_mu_d1kappa_EW"},
         ),
-        "weight_W_d2kappa_EW": (
-            years,
-            ["WJetsLNu"],
-            {"ele": "weight_ele_W_d2kappa_EW", "mu": "weight_mu_W_d2kappa_EW"},
-        ),
-        "weight_W_d3kappa_EW": (
-            years,
-            ["WJetsLNu"],
-            {"ele": "weight_ele_W_d3kappa_EW", "mu": "weight_mu_W_d3kappa_EW"},
-        ),
+        # "weight_W_d2kappa_EW": (
+        #     years,
+        #     ["WJetsLNu", "WJetsToLNu_012JetsNLO_34JetsLO_EWNLOcorr"],
+        #     {"ele": "weight_ele_W_d2kappa_EW", "mu": "weight_mu_W_d2kappa_EW"},
+        # ),
+        # "weight_W_d3kappa_EW": (
+        #     years,
+        #     ["WJetsLNu", "WJetsToLNu_012JetsNLO_34JetsLO_EWNLOcorr"],
+        #     {"ele": "weight_ele_W_d3kappa_EW", "mu": "weight_mu_W_d3kappa_EW"},
+        # ),
         "weight_Z_d2kappa_EW": (
             years,
             ["DYJets"],
@@ -150,7 +150,7 @@ def get_systematic_dict(years):
             **{
                 f"weight_PSFSR_wjets_{year}": (
                     [year],
-                    ["WJetsLNu"],
+                    ["WJetsLNu", "WJetsToLNu_012JetsNLO_34JetsLO_EWNLOcorr"],
                     {"ele": "weight_ele_PSFSR", "mu": "weight_mu_PSFSR"},
                 ),
             },
