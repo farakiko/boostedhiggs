@@ -2,6 +2,7 @@ from typing import Dict, List, Tuple, Union
 
 import awkward as ak
 import numpy as np
+import vector
 from coffea.analysis_tools import PackedSelection
 from coffea.nanoevents.methods.base import NanoEventsArray
 from coffea.nanoevents.methods.nanoaod import FatJetArray, GenParticleArray
@@ -290,59 +291,105 @@ def match_H(
     return genVars, is_decay
 
 
-def match_V(genparts: GenParticleArray, fatjet: FatJetArray):
-    vs = genparts[get_pid_mask(genparts, [W_PDGID, Z_PDGID], byall=False) * genparts.hasFlags(GEN_FLAGS)]
+def match_V(genparts: GenParticleArray, fatjet: FatJetArray, isgensherpa=False):
+    if isgensherpa:
 
-    matched_vs = vs[ak.argmin(fatjet.delta_r(vs), axis=1, keepdims=True)]
-    matched_vs_mask = ak.any(fatjet.delta_r(matched_vs) < JET_DR, axis=1)
+        def get_lep(genparts):
+            msk_genstatus = genparts.hasFlags(["fromHardProcess", "isLastCopy"]) & (genparts.status == 1)
+            msk_genlep = (
+                (abs(genparts.pdgId) == ELE_PDGID) | (abs(genparts.pdgId) == MU_PDGID) | (abs(genparts.pdgId) == TAU_PDGID)
+            )
+            return genparts[msk_genstatus & msk_genlep]
 
-    daughters = ak.flatten(matched_vs.distinctChildren, axis=2)
-    daughters = daughters[daughters.hasFlags(["fromHardProcess", "isLastCopy"])]
-    daughters_pdgId = abs(daughters.pdgId)
-    decay = (
-        # 2 quarks * 1
-        (ak.sum(daughters_pdgId < b_PDGID, axis=1) == 2) * 1
-        # >=1 electron * 3
-        + (ak.sum(daughters_pdgId == ELE_PDGID, axis=1) >= 1) * 3
-        # >=1 muon * 5
-        + (ak.sum(daughters_pdgId == MU_PDGID, axis=1) >= 1) * 5
-        # >=1 tau * 7
-        + (ak.sum(daughters_pdgId == TAU_PDGID, axis=1) >= 1) * 7
-    )
+        def get_neutrino(genparts):
+            msk_genstatus = genparts.hasFlags(["fromHardProcess", "isLastCopy"]) & (genparts.status == 1)
+            msk_gennu = (
+                (abs(genparts.pdgId) == vELE_PDGID)
+                | (abs(genparts.pdgId) == vMU_PDGID)
+                | (abs(genparts.pdgId) == vTAU_PDGID)
+            )
+            return genparts[msk_genstatus & msk_gennu]
 
-    daughters_nov = daughters[
-        ((daughters_pdgId != vELE_PDGID) & (daughters_pdgId != vMU_PDGID) & (daughters_pdgId != vTAU_PDGID))
-    ]
-    nprongs = ak.sum(fatjet.delta_r(daughters_nov) < JET_DR, axis=1)
+        def get_p4(ptkl):
+            return vector.awk(
+                ak.zip(
+                    {
+                        "pt": ak.where(ak.num(ptkl.pt) == 0, [[0.0]], ptkl.pt),
+                        "eta": ak.where(ak.num(ptkl.eta) == 0, [[0.0]], ptkl.eta),
+                        "phi": ak.where(ak.num(ptkl.phi) == 0, [[0.0]], ptkl.phi),
+                        "e": ak.where(ak.num(ptkl.energy) == 0, [[0.0]], ptkl.energy),
+                    }
+                )
+            )
 
-    lepdaughters = daughters[
-        ((daughters_pdgId == ELE_PDGID) | (daughters_pdgId == MU_PDGID) | (daughters_pdgId == TAU_PDGID))
-    ]
-    lepinprongs = 0
-    if len(lepdaughters) > 0:
-        lepinprongs = ak.sum(fatjet.delta_r(lepdaughters) < JET_DR, axis=1)  # should be 0 or 1
+        lep_p4 = get_p4(get_lep(genparts))
+        nu_p4 = get_p4(get_neutrino(genparts))
 
-    # number of c quarks
-    cquarks = daughters_nov[abs(daughters_nov.pdgId) == c_PDGID]
-    ncquarks = ak.sum(fatjet.delta_r(cquarks) < JET_DR, axis=1)
+        genW = lep_p4 + nu_p4
 
-    matched_vdaus_mask = ak.any(fatjet.delta_r(daughters) < 0.8, axis=1)
-    matched_mask = matched_vs_mask & matched_vdaus_mask
-    genVars = {
-        "gen_V_pt": ak.firsts(vs.pt),
-        "fj_V_pt": ak.firsts(matched_vs.pt),
-        "fj_isV": np.ones(len(genparts), dtype="bool"),
-        "fj_nprongs": nprongs,
-        "fj_lepinprongs": lepinprongs,
-        "fj_ncquarks": ncquarks,
-        "fj_V_isMatched": matched_mask,
-        "fj_isV_2q": to_label(decay == 1),
-        "fj_isV_elenu": to_label(decay == 3),
-        "fj_isV_munu": to_label(decay == 5),
-        "fj_isV_taunu": to_label(decay == 7),
-    }
+        genVars = {
+            "gen_V_pt": ak.firsts(genW.pt),
+            "gen_V_mass": ak.firsts(genW.mass),
+        }
 
-    genVars["fj_isV_lep"] = (genVars["fj_isV_elenu"] == 1) | (genVars["fj_isV_munu"] == 1) | (genVars["fj_isV_taunu"] == 1)
+        return genVars
+
+    else:
+        vs = genparts[get_pid_mask(genparts, [W_PDGID, Z_PDGID], byall=False) * genparts.hasFlags(GEN_FLAGS)]
+
+        matched_vs = vs[ak.argmin(fatjet.delta_r(vs), axis=1, keepdims=True)]
+        matched_vs_mask = ak.any(fatjet.delta_r(matched_vs) < JET_DR, axis=1)
+
+        daughters = ak.flatten(matched_vs.distinctChildren, axis=2)
+        daughters = daughters[daughters.hasFlags(["fromHardProcess", "isLastCopy"])]
+        daughters_pdgId = abs(daughters.pdgId)
+        decay = (
+            # 2 quarks * 1
+            (ak.sum(daughters_pdgId < b_PDGID, axis=1) == 2) * 1
+            # >=1 electron * 3
+            + (ak.sum(daughters_pdgId == ELE_PDGID, axis=1) >= 1) * 3
+            # >=1 muon * 5
+            + (ak.sum(daughters_pdgId == MU_PDGID, axis=1) >= 1) * 5
+            # >=1 tau * 7
+            + (ak.sum(daughters_pdgId == TAU_PDGID, axis=1) >= 1) * 7
+        )
+
+        daughters_nov = daughters[
+            ((daughters_pdgId != vELE_PDGID) & (daughters_pdgId != vMU_PDGID) & (daughters_pdgId != vTAU_PDGID))
+        ]
+        nprongs = ak.sum(fatjet.delta_r(daughters_nov) < JET_DR, axis=1)
+
+        lepdaughters = daughters[
+            ((daughters_pdgId == ELE_PDGID) | (daughters_pdgId == MU_PDGID) | (daughters_pdgId == TAU_PDGID))
+        ]
+        lepinprongs = 0
+        if len(lepdaughters) > 0:
+            lepinprongs = ak.sum(fatjet.delta_r(lepdaughters) < JET_DR, axis=1)  # should be 0 or 1
+
+        # number of c quarks
+        cquarks = daughters_nov[abs(daughters_nov.pdgId) == c_PDGID]
+        ncquarks = ak.sum(fatjet.delta_r(cquarks) < JET_DR, axis=1)
+
+        matched_vdaus_mask = ak.any(fatjet.delta_r(daughters) < 0.8, axis=1)
+        matched_mask = matched_vs_mask & matched_vdaus_mask
+        genVars = {
+            "gen_V_pt": ak.firsts(vs.pt),
+            "gen_V_mass": ak.firsts(vs.mass),
+            "fj_V_pt": ak.firsts(matched_vs.pt),
+            "fj_isV": np.ones(len(genparts), dtype="bool"),
+            "fj_nprongs": nprongs,
+            "fj_lepinprongs": lepinprongs,
+            "fj_ncquarks": ncquarks,
+            "fj_V_isMatched": matched_mask,
+            "fj_isV_2q": to_label(decay == 1),
+            "fj_isV_elenu": to_label(decay == 3),
+            "fj_isV_munu": to_label(decay == 5),
+            "fj_isV_taunu": to_label(decay == 7),
+        }
+
+        genVars["fj_isV_lep"] = (
+            (genVars["fj_isV_elenu"] == 1) | (genVars["fj_isV_munu"] == 1) | (genVars["fj_isV_taunu"] == 1)
+        )
 
     return genVars, matched_mask
 
