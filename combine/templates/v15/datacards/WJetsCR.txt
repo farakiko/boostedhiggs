@@ -1,7 +1,7 @@
-# Datacard for <Channel (WJetsCR) instance at 0x7fb7c45eb4c0> generated on 2025-03-25 07:36:04.579753
+# Datacard for <Channel (WJetsCR) instance at 0x7f758b402cd0> generated on 2025-03-27 07:36:18.390592
 imax 1 # number of categories ('bins' but here we are using shape templates)
 jmax 11 # number of samples minus 1
-kmax 140 # number of nuisance parameters
+kmax 142 # number of nuisance parameters
 shapes * WJetsCR testModel.root testModel:WJetsCR_$PROCESS testModel:WJetsCR_$PROCESS_$SYSTEMATIC
 bin WJetsCR
 observation 6665.000
@@ -110,6 +110,7 @@ PDF_ggH_ACCEPT_CMS_HWW_boosted shape                                  1.0000    
 PDF_qqH_ACCEPT_CMS_HWW_boosted shape                                       -         1.0000              -              -              -              -              -              -              -              -              -        -
 PDF_ttH_ACCEPT_CMS_HWW_boosted shape                                       -              -              -              -         1.0000              -              -              -              -              -              -        -
 PDF_ttbar_ACCEPT_CMS_HWW_boosted shape                                     -              -              -              -              -         1.0000              -              -              -              -              -        -
+PDF_wjets_ACCEPT_CMS_HWW_boosted lnN                                       -              -              -              -              -              -         1.0600              -              -              -              -        -
 QCDscale_WH lnN                                                            -              -  0.9930/1.0050              -              -              -              -              -              -              -              -        -
 QCDscale_WH_ACCEPT_CMS_HWW_boosted shape                                   -              -         1.0000              -              -              -              -              -              -              -              -        -
 QCDscale_ZH lnN                                                            -              -              -  0.9700/1.0380              -              -              -              -              -              -              -        -
@@ -121,6 +122,7 @@ QCDscale_qqH_ACCEPT_CMS_HWW_boosted shape                                  -    
 QCDscale_singletop_ACCEPT_CMS_HWW_boosted shape                            -              -              -              -              -              -              -         1.0000              -              -              -        -
 QCDscale_ttH lnN                                                           -              -              -              -  0.9080/1.0580              -              -              -              -              -              -        -
 QCDscale_ttH_ACCEPT_CMS_HWW_boosted shape                                  -              -              -              -         1.0000              -              -              -              -              -              -        -
+QCDscale_wjets_ACCEPT_CMS_HWW_boosted lnN                                  -              -              -              -              -              -         1.0600              -              -              -              -        -
 alpha_s lnN                                                           1.0260         1.0050         1.0090         1.0090         1.0200              -              -              -              -              -              -        -
 lumi_13TeV_1718 lnN                                                   1.0027         1.0027         1.0027         1.0027         1.0027         1.0027         1.0027         1.0027         1.0027         1.0027         1.0027        -
 lumi_13TeV_2016 lnN                                                   1.0026         1.0026         1.0026         1.0026         1.0026         1.0026         1.0026         1.0026         1.0026         1.0026         1.0026        -
