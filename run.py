@@ -249,7 +249,7 @@ if __name__ == "__main__":
     # noqa: python run.py --year 2017 --processor trigger --pfnano v2_2 --n 100 --starti 0 --sample GluGluHToWW_Pt-200ToInf_M-125 --local --channels mu,ele --config samples_inclusive.yaml --key data
 
     # for hww processor studies
-    # noqa: python run.py --year 2017 --processor hww --pfnano v2_2 --n 1 --starti 0 --sample GluGluHToWW_Pt-200ToInf_M-125 --local --channels ele --config samples_inclusive.yaml --key mc --executor iterative
+    # noqa: python run.py --year 2017 --processor hww --pfnano v2_2 --n 1 --starti 0 --local --channels ele --config samples_inclusive.yaml --key mc --executor iterative --sample GluGluHToWW_Pt-200ToInf_M-125
 
     # for wjets nlo studies
     # noqa: python run.py --year 2017 --processor vjetsnlo --pfnano v2_2 --n 1 --starti 0 --sample WJetsToLNu_012JetsNLO_34JetsLO_EWNLOcorr --local --channels mu,ele --config samples_inclusive.yaml --executor iterative
