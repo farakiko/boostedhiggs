@@ -1,7 +1,7 @@
-# Datacard for <Channel (TopCR) instance at 0x7f4befde4190> generated on 2025-03-25 07:35:39.347723
+# Datacard for <Channel (TopCR) instance at 0x7f67c5037910> generated on 2025-03-27 07:39:11.125234
 imax 1 # number of categories ('bins' but here we are using shape templates)
 jmax 13 # number of samples minus 1
-kmax 140 # number of nuisance parameters
+kmax 142 # number of nuisance parameters
 shapes * TopCR testModel.root testModel:TopCR_$PROCESS testModel:TopCR_$PROCESS_$SYSTEMATIC
 bin TopCR
 observation 390.000
@@ -110,6 +110,7 @@ PDF_ggH_ACCEPT_CMS_HWW_boosted shape                                            
 PDF_qqH_ACCEPT_CMS_HWW_boosted shape                                         1.0000                -                -                -              -              -              -              -              -              -              -              -              -       -
 PDF_ttH_ACCEPT_CMS_HWW_boosted shape                                              -                -                -                -              -              -         1.0000              -              -              -              -              -              -       -
 PDF_ttbar_ACCEPT_CMS_HWW_boosted shape                                            -                -                -                -              -              -              -         1.0000              -              -              -              -              -       -
+PDF_wjets_ACCEPT_CMS_HWW_boosted lnN                                              -                -                -                -              -              -              -              -         1.0600              -              -              -              -       -
 QCDscale_WH lnN                                                                   -                -                -                -  0.9930/1.0050              -              -              -              -              -              -              -              -       -
 QCDscale_WH_ACCEPT_CMS_HWW_boosted shape                                          -                -                -                -         1.0000              -              -              -              -              -              -              -              -       -
 QCDscale_ZH lnN                                                                   -                -                -                -              -  0.9700/1.0380              -              -              -              -              -              -              -       -
@@ -121,6 +122,7 @@ QCDscale_qqH_ACCEPT_CMS_HWW_boosted shape                                    1.0
 QCDscale_singletop_ACCEPT_CMS_HWW_boosted shape                                   -                -                -                -              -              -              -              -              -         1.0000              -              -              -       -
 QCDscale_ttH lnN                                                                  -                -                -                -              -              -  0.9080/1.0580              -              -              -              -              -              -       -
 QCDscale_ttH_ACCEPT_CMS_HWW_boosted shape                                         -                -                -                -              -              -         1.0000              -              -              -              -              -              -       -
+QCDscale_wjets_ACCEPT_CMS_HWW_boosted lnN                                         -                -                -                -              -              -              -              -         1.0600              -              -              -              -       -
 alpha_s lnN                                                                       -           1.0260           1.0260           1.0260         1.0090         1.0090         1.0200              -              -              -              -              -              -       -
 lumi_13TeV_1718 lnN                                                          1.0027           1.0027           1.0027           1.0027         1.0027         1.0027         1.0027         1.0027         1.0027         1.0027         1.0027         1.0027         1.0027       -
 lumi_13TeV_2016 lnN                                                          1.0026           1.0026           1.0026           1.0026         1.0026         1.0026         1.0026         1.0026         1.0026         1.0026         1.0026         1.0026         1.0026       -
