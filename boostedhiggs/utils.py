@@ -314,7 +314,7 @@ def match_V(genparts: GenParticleArray, fatjet: FatJetArray, isgensherpa=False):
             return vector.awk(
                 ak.zip(
                     {
-                        "pt": ak.where(ak.num(ptkl.pt) == 0, [[0.0]], ptkl.pt),
+                        "pt": ak.where(ak.num(ptkl.pt) == 0, [[0.0]], ptkl.pt),  # in cases for Tau decays
                         "eta": ak.where(ak.num(ptkl.eta) == 0, [[0.0]], ptkl.eta),
                         "phi": ak.where(ak.num(ptkl.phi) == 0, [[0.0]], ptkl.phi),
                         "e": ak.where(ak.num(ptkl.energy) == 0, [[0.0]], ptkl.energy),
@@ -332,7 +332,7 @@ def match_V(genparts: GenParticleArray, fatjet: FatJetArray, isgensherpa=False):
             "gen_V_mass": ak.firsts(genW.mass),
         }
 
-        return genVars
+        return genVars, None
 
     else:
         vs = genparts[get_pid_mask(genparts, [W_PDGID, Z_PDGID], byall=False) * genparts.hasFlags(GEN_FLAGS)]
