@@ -250,12 +250,10 @@ class VjetsProcessor(processor.ProcessorABC):
         if self.isMC:
             for ch in self._channels:
                 ewk_corr, qcd_corr, alt_qcd_corr = add_VJets_kFactors(self.weights[ch], events.GenPart, dataset, events)
+
                 # add corrections for plotting
                 variables["weight_ewkcorr"] = ewk_corr
                 variables["weight_qcdcorr"] = qcd_corr
-                # variables["weight_altqcdcorr"] = alt_qcd_corr["nominal"]
-                # variables["weight_altqcdcorr_up"] = alt_qcd_corr["up"]
-                # variables["weight_altqcdcorr_down"] = alt_qcd_corr["down"]
 
                 # store the final weight per ch
                 variables[f"weight_{ch}"] = self.weights[ch].weight()

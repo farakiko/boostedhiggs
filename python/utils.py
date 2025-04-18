@@ -50,7 +50,8 @@ combine_samples = {
     # bkg
     "QCD_Pt": "QCD",
     "TT": "TTbar",
-    "WJetsToLNu_HT": "WJetsLNu",
+    "WJetsToLNu_HT": "WJetsLNu_LO",
+    "WJetsToLNu_012JetsNLO_34JetsLO_EWNLOcorr": "WJetsLNu",
     "ST_": "SingleTop",
     "WW": "Diboson",
     "WZ": "Diboson",
@@ -69,7 +70,6 @@ combine_samples = {
     "WJetsToLNu_2J": "WJetsLNu NLO MatchEWPDG20",
     "WJetsToLNu_LHEFilterPtW": "WJetsLNu NLO LHEFilterPtW",
     "_MatchEWPDG20": "WJetsLNu NLO MatchEWPDG20",
-    "WJetsToLNu_012JetsNLO_34JetsLO_EWNLOcorr": "WJetsToLNu_012JetsNLO_34JetsLO_EWNLOcorr",
 }
 
 signals = ["VBF", "ggF", "WH", "ZH", "ttH"]
@@ -173,7 +173,7 @@ color_by_sample = {
     "Fake_FR_stat_Down": "orange",
     # "Fake": "navajowhite",
     "WJetsLNu": "tab:green",
-    "WJetsLNu_NLO": "tab:green",
+    "WJetsLNu_LO": "springgreen",
     "TTbar": "tab:blue",
     "Diboson": "orchid",
     "SingleTop": "tab:cyan",
@@ -227,7 +227,7 @@ plot_labels = {
     "Fake_FR_stat_Down": "Fake_FR_stat_Down",
     "Diboson": "VV",
     "WJetsLNu": r"W$(\ell\nu)$+jets",
-    "WJetsLNu_NLO": r"W$(\ell\nu)$+jets (NLO)",
+    "WJetsLNu_LO": r"W$(\ell\nu)$+jets (LO HT binned)",
     "SingleTop": r"Single T",
     "EWKvjets": "EWK VJets",
     "DYJets": r"Z$(\ell\ell)$+jets",
@@ -310,7 +310,7 @@ def get_axis(var, massbin=5):
         "nj": hist2.axis.Regular(40, 0, 10, name="var", label="number of jets outside candidate jet", overflow=True),
         "inclusive_score": hist2.axis.Regular(35, 0, 1, name="var", label=r"tagger score", overflow=True),
         "THWW": hist2.axis.Regular(25, 0, 1, name="var", label=r"$T_{HWW}$", overflow=True),
-        # "THWW": hist2.axis.Regular(25, 0.75, 1, name="var", label=r"$T_{HWW}$", overflow=True),   # preselection
+        # "THWW": hist2.axis.Regular(25, 0.75, 1, name="var", label=r"$T_{HWW}$", overflow=True),  # preselection
         # "THWW": hist2.axis.Regular(8, 0.9, 1, name="var", label=r"$T_{HWW}$", overflow=True),
         "fj_ParT_inclusive_score": hist2.axis.Regular(35, 0, 1, name="var", label=r"ParT-Finetuned score", overflow=True),
         "fj_ParT_all_score": hist2.axis.Regular(35, 0, 1, name="var", label=r"tagger score", overflow=True),
@@ -763,7 +763,7 @@ def plot_hists(
                 soverb_val = totsignal_val / (tot_val)
 
                 tot_soversqrtb = ((totsignal_val[:4] / mult_factor).sum()) / np.sqrt(tot_val[:4].sum())
-                sax.legend(title=f"S/sqrt(B) in [75-155GeV]={tot_soversqrtb:.2f}")
+                # sax.legend(title=f"S/sqrt(B) in [75-155GeV]={tot_soversqrtb:.2f}")
 
                 hep.histplot(
                     soverb_val,
@@ -826,21 +826,21 @@ def plot_hists(
             hand_new.append(hand[i])
 
         if add_soverb:
-            # ax.legend(
-            #     [hand[idx] for idx in range(len(hand))],
-            #     [lab[idx] for idx in range(len(lab))],
-            #     bbox_to_anchor=(1.05, 1),
-            #     loc="upper left",
-            # )
-
             ax.legend(
-                [hand_new[idx] for idx in range(len(hand_new))],
-                [lab_new[idx] for idx in range(len(lab_new))],
-                title=text_,
-                ncol=legend_ncol,
-                fontsize=14,
+                [hand[idx] for idx in range(len(hand))],
+                [lab[idx] for idx in range(len(lab))],
+                bbox_to_anchor=(1.05, 1),
                 loc="upper left",
             )
+
+            # ax.legend(
+            #     [hand_new[idx] for idx in range(len(hand_new))],
+            #     [lab_new[idx] for idx in range(len(lab_new))],
+            #     title=text_,
+            #     ncol=legend_ncol,
+            #     fontsize=14,
+            #     loc="upper left",
+            # )
 
         else:
             ax.legend(

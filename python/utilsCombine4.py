@@ -12,28 +12,25 @@ plt.style.use(hep.style.CMS)
 
 warnings.filterwarnings("ignore", message="Found duplicate branch ")
 
+
 # PLOTTING UTILS
 color_by_sample = {
-    "ggF": "lightsteelblue",
-    "VBF": "peru",
-    # signal that is background
-    "WH": "tab:brown",
-    "ZH": "yellowgreen",
-    "ttH": "tab:olive",
+    "ggF": "pink",
+    "VBF": "aqua",
+    "WH": "green",
+    "ZH": "blue",
+    "ttH": "yellow",
     # background
-    "QCD": "tab:orange",
-    "WJetsLNu": "tab:green",
-    "TTbar": "tab:blue",
+    "QCD": "#9c9ca1",
+    "WJetsLNu": "#f89c20",
+    "TTbar": "#e42536",
     "Diboson": "orchid",
-    "SingleTop": "tab:cyan",
-    # "WJetsLNu_unmatched": "tab:grey",
-    # "WJetsLNu_matched": "tab:green",
+    "SingleTop": "#964a8b",
     "EWKvjets": "tab:grey",
-    # TODO: make sure it's WZQQ is NLO in next iteration
     "DYJets": "tab:purple",
     "WZQQ": "khaki",
-    "WZQQorDYJets": "khaki",
-    "Fake": "tab:orange",
+    "Fake": "#9c9ca1",
+    "Rest": "#5790fc",
     ###################################
     # stxs
     "ggH_hww_200_300": "lightsteelblue",
@@ -45,34 +42,15 @@ color_by_sample = {
 
 plot_labels = {
     "ggF": "ggF",
+    "VBF": "VBF",
     "WH": "WH",
     "ZH": "ZH",
-    "VH": "VH",
-    # "VH": "VH(WW)",
-    # "VBF": r"VBFH(WW) $(qq\ell\nu)$",
-    "VBF": r"VBF",
-    # "ttH": "ttH(WW)",
-    "ttH": r"$t\bar{t}$H",
-    "QCD": "Multijet",
-    "Diboson": "VV",
-    "WJetsLNu": r"W$(\ell\nu)$+jets",
-    "TTbar": r"$t\bar{t}$+jets",
-    "SingleTop": r"Single T",
-    #     "WplusHToTauTau": "WplusHToTauTau",
-    #     "WminusHToTauTau": "WminusHToTauTau",
-    #     "ttHToTauTau": "ttHToTauTau",
-    #     "GluGluHToTauTau": "GluGluHToTauTau",
-    #     "ZHToTauTau": "ZHToTauTau",
-    #     "VBFHToTauTau": "VBFHToTauTau"
-    "WJetsLNu_unmatched": r"W$(\ell\nu)$+jets unmatched",
-    "WJetsLNu_matched": r"W$(\ell\nu)$+jets matched",
-    "EWKvjets": "EWK VJets",
-    # TODO: make sure it's WZQQ is NLO in next iteration
-    "DYJets": r"Z$(\ell\ell)$+jets",
-    "WZQQ": r"V$(qq)$",
-    "WZQQorDYJets": r"W$(qq)$/Z(inc.)+jets",
-    "Fake": "Fake",
-    ###################################
+    "ttH": "ttH",
+    # bkg
+    "WJetsLNu": "WJets",
+    "TTbar": "TT",
+    "SingleTop": "ST",
+    "Rest": "Rest",
     # stxs
     "ggH_hww_200_300": r"ggF $pT^{H}: 200-300$",
     "ggH_hww_300_450": r"ggF $pT^{H}: 300-450$",
@@ -148,8 +126,28 @@ def plot_hists(
     tot_signal_mult = tot_signal * mult
 
     # get bkg
-    bkg_labels = [label for label in samples if (label and label not in signal_labels and (label not in ["Data"]))]
-    bkg = [h[{"Sample": label}] for label in bkg_labels]
+    # bkg_labels = [label for label in samples if (label and label not in signal_labels and (label not in ["Data"]))]
+    bkg = []
+    bkg_labels = []
+    for label in samples:
+        if label and label not in signal_labels and (label not in ["Data"]):
+
+            if label in ["WJetsLNu", "TTbar"]:
+                bkg_labels += [label]
+                bkg += [h[{"Sample": label}]]
+
+    bkg_rest_sum = 0
+    for label in samples:
+        if label and label not in signal_labels and (label not in ["Data"]):
+            if label not in ["WJetsLNu", "TTbar"]:
+
+                # Let's say your histogram is called `hf`
+                sample_axis = h.axes[0]  # Assuming Sample is the first axis
+                bkg_idx = sample_axis.index(label)
+
+                bkg_rest_sum += h[bkg_idx, :]
+    bkg_labels += ["Rest"]
+    bkg += [bkg_rest_sum]
 
     # sum all of the background
     if len(bkg) > 0:
@@ -233,7 +231,7 @@ def plot_hists(
             baseline=tot_val_MC - tot_err_MC,
             edges=bkg[0].copy().axes[0].edges,
             **errps,
-            label="Syst. unc.",
+            label="Syst. Unc.",
         )
 
     # plot the signal
@@ -266,7 +264,7 @@ def plot_hists(
             ax=ax,
             label=siglabel,
             linewidth=2,
-            color="tab:red",
+            color="black",
             flow="none",
         )
         # # add MC stat errors
@@ -308,8 +306,9 @@ def plot_hists(
 
     if ratio_plot == "Pulls":
         rax.axhline(0, ls="--", color="k")
-        rax.set_ylim(-4, 4)
-        rax.set_ylabel(r"Pull: $\frac{Data-MC}{\sigma_{data}}$", fontsize=18, labelpad=10)
+        rax.set_ylim(-6, 6)
+        # rax.set_ylim(-2.6, 2.6)
+        rax.set_ylabel(r"Pull: $\frac{Data-MC}{\sigma_{stat}}$", fontsize=18, labelpad=10)
     elif ratio_plot == "Data/MC":
         rax.axhline(1, ls="--", color="k")
         rax.set_ylim(0.2, 1.8)
@@ -358,6 +357,7 @@ def plot_hists(
                 color="k",
                 capsize=4,
                 flow="none",
+                label="Pull",
             )
 
             rax.stairs(
@@ -365,7 +365,7 @@ def plot_hists(
                 baseline=0 - tot_err_MC / sigma_data,
                 edges=bkg[0].copy().axes[0].edges,
                 **errps,
-                label=r"$\sigma_{syst}/\sigma_{data}$",
+                label=r"$\sigma_{syst}/\sigma_{stat}$",
             )
 
         elif ratio_plot == "Data/MC":
@@ -450,7 +450,7 @@ def plot_hists(
             hep.histplot(
                 tot_signal / (sigma_data),
                 ax=rax,
-                label=r"Signal/$\sigma_{data}$",
+                label=r"Signal/$\sigma_{stat}$",
                 linewidth=2,
                 color="tab:red",
                 flow="none",
@@ -469,7 +469,7 @@ def plot_hists(
                 histtype="fill",
             )
 
-    rax.legend(fontsize=14, loc="upper right", ncol=2)
+    rax.legend(fontsize=16, loc="upper right", ncol=3)
     rax.set_xlabel(f"{h.axes[-1].label}")  # assumes the variable to be plotted is at the last axis
 
     # rax end
@@ -484,7 +484,10 @@ def plot_hists(
     # (sort by yield in fixed fj_pt histogram after pre-sel)
     order_dic = {}
     for bkg_label in bkg_labels:
-        order_dic[plot_labels[bkg_label]] = h[{"Sample": bkg_label}].sum()
+        if bkg_label != "Rest":
+            order_dic[plot_labels[bkg_label]] = h[{"Sample": bkg_label}].sum()
+        else:
+            order_dic[plot_labels[bkg_label]] = bkg_rest_sum.sum()
 
     summ = []
     for label in labels[: len(bkg_labels)]:
@@ -510,9 +513,11 @@ def plot_hists(
     ax.legend(
         [hand_new[idx] for idx in range(len(hand_new))],
         [lab_new[idx] for idx in range(len(lab_new))],
-        title=legend_title,
-        ncol=3,
-        fontsize=12,
+        # title=legend_title,
+        loc="upper right",
+        ncol=2,
+        fontsize=14,
+        frameon=False,
     )
 
     _, a = ax.get_ylim()
@@ -525,17 +530,29 @@ def plot_hists(
     # ax.set_xlim(45, 210)
     ax.set_xlim(75, 235)
 
-    hep.cms.lumitext("%.0f " % get_lumi(years, channels) + r"fb$^{-1}$ (13 TeV)", ax=ax, fontsize=20)
-    hep.cms.text("Work in Progress", ax=ax, fontsize=15)
+    # hep.cms.lumitext("%.0f " % get_lumi(years, channels) + r"fb$^{-1}$ (13 TeV)", ax=ax, fontsize=20)
+    # hep.cms.text("Work in Progress", ax=ax, fontsize=15)
 
-    if "prefit" in label_on_plot:
-        label_on_plot = "Prefit"
-    elif "shapes_fit_b" in label_on_plot:
-        label_on_plot = "B-only fit"
-    elif "shapes_fit_s" in label_on_plot:
-        label_on_plot = "S+B fit"
+    # if "prefit" in label_on_plot:
+    #     label_on_plot = "Prefit"
+    # elif "shapes_fit_b" in label_on_plot:
+    #     label_on_plot = "B-only fit"
+    # elif "shapes_fit_s" in label_on_plot:
+    #     label_on_plot = "S+B fit"
 
-    ax.text(0.05, 0.95, label_on_plot, transform=ax.transAxes, verticalalignment="top", fontweight="bold")
+    # ax.text(0.05, 0.95, label_on_plot, transform=ax.transAxes, verticalalignment="top", fontweight="bold")
+
+    ax.text(0.05, 0.83, legend_title, fontsize=17, color="black", ha="left", transform=ax.transAxes)
+    ax.text(0.05, 0.73, label_on_plot, fontsize=17, color="black", ha="left", transform=ax.transAxes)
+
+    hep.cms.label(
+        loc=1,
+        data=True,
+        ax=ax,
+        lumi=f"{get_lumi(years, channels):.0f}",
+        fontsize=18,
+        llabel="Preliminary",
+    )
 
     # save plot
     os.makedirs(out_dir, exist_ok=True)
