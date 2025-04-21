@@ -1,4 +1,4 @@
-# Datacard for <Channel (VBF) instance at 0x7f1c719fec40> generated on 2025-04-18 08:42:12.107942
+# Datacard for <Channel (VBF) instance at 0x7f64917cac40> generated on 2025-04-21 10:28:22.692926
 imax 1 # number of categories ('bins' but here we are using shape templates)
 jmax 13 # number of samples minus 1
 kmax 144 # number of nuisance parameters
@@ -67,7 +67,7 @@ CMS_HWW_boosted_mu_isolation lnN                                             1.0
 CMS_HWW_boosted_mu_trigger lnN                                               1.0012           1.0125           1.0109           1.0101         1.0109         1.0090         1.0123         1.0007         1.0010         1.0001         1.0000         1.0004         1.0022       -
 CMS_HWW_boosted_mu_trigger_iso lnN                                           1.0000           1.0114           1.0101           1.0091         1.0094         1.0081         1.0112         1.0001         1.0000              -              -         1.0002              -       -
 CMS_HWW_boosted_taggereff_VBF lnN                                     0.7560/1.0930    0.7560/1.0930    0.7560/1.0930    0.7560/1.0930              -              -              -              -              -              -              -              -              -       -
-CMS_HWW_boosted_ttbar_extrapolation_unc lnN                                       -                -                -                -              -              -              -         1.0600              -              -              -              -              -       -
+CMS_HWW_boosted_ttbar_extrapolation_unc lnN                                       -                -                -                -              -              -              -         1.2000              -              -              -              -              -       -
 CMS_l1_ecal_prefiring_2016 shape                                             1.0000           1.0000           1.0000           1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000       -
 CMS_l1_ecal_prefiring_2016APV shape                                          1.0000           1.0000           1.0000           1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000       -
 CMS_l1_ecal_prefiring_2017 shape                                             1.0000           1.0000           1.0000           1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000       -
