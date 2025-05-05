@@ -738,12 +738,18 @@ jmrValues = {}
 
 # jet mass resolution: https://twiki.cern.ch/twiki/bin/view/CMS/JetWtagging
 # nominal, down, up (these are switched in the github!!!)
-jmrValues["msoftdrop"] = {
+jmrValues["msoftdrop_twiki"] = {
     "2016": [1.0, 0.8, 1.2],
     "2017": [1.09, 1.04, 1.14],
     # Use 2017 values for 2018 until 2018 are released
     "2018": [1.09, 1.04, 1.14],
 }
+# convert from SF on sigma to value to smear mass by
+# note: clamped to 1.0 (so 2016 JMR down needs to be interpolated by combine)
+jmrValues["msoftdrop"] = {}
+for year in jmrValues["msoftdrop_twiki"].keys():
+    rel_resol = 0.12 if year == "2016" else 0.10
+    jmrValues["msoftdrop"][year] = 1 + np.sqrt(max(jmrValues["msoftdrop_twiki"][year]**2 - 1, 0)) * rel_resol
 
 # jet mass scale
 # W-tagging PUPPI softdrop JMS values: https://twiki.cern.ch/twiki/bin/view/CMS/JetWtagging
