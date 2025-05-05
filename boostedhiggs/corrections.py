@@ -748,8 +748,8 @@ jmrValues["msoftdrop_twiki"] = {
 # note: clamped to 1.0 (so 2016 JMR down needs to be interpolated by combine)
 jmrValues["msoftdrop"] = {}
 for year in jmrValues["msoftdrop_twiki"].keys():
-    rel_resol = 0.12 if year == "2016" else 0.10
-    jmrValues["msoftdrop"][year] = 1 + np.sqrt(max(jmrValues["msoftdrop_twiki"][year]**2 - 1, 0)) * rel_resol
+    rel_res = 0.12 if year == "2016" else 0.10
+    jmrValues["msoftdrop"][year] = [1 + np.sqrt(max(sf_res**2 - 1, 0)) * rel_res for sf_res in jmrValues["msoftdrop_twiki"][year]]
 
 # jet mass scale
 # W-tagging PUPPI softdrop JMS values: https://twiki.cern.ch/twiki/bin/view/CMS/JetWtagging
