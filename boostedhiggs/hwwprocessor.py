@@ -475,6 +475,7 @@ class HwwProcessor(processor.ProcessorABC):
             "lep_met_mt": mt_lep_met,
             "met_fj_dphi": met_fj_dphi,
             "met_pt": met.pt,
+            "met_phi": met.phi,
             "deta": deta,
             "mjj": mjj,
             "ht": ht,
@@ -517,6 +518,7 @@ class HwwProcessor(processor.ProcessorABC):
             "dR_genlep_recolep": dR_genlep_recolep,
             "nB": nBjets,
             "nC": nCjets,
+            "fj_mass_raw": good_fatjets[fj_idx_lep].mass,
         }
 
         # store the genweight as a column
@@ -802,10 +804,6 @@ class HwwProcessor(processor.ProcessorABC):
 
                 # store the final weight per ch
                 variables[f"weight_{ch}"] = self.weights[ch].weight()
-
-                # store each weight (for debug)
-                # for key in self.weights[ch]._weights:
-                #    variables[f"{ch}_single_weight_{key}"] = self.weights[ch].partial_weight([key])
 
                 if self._systematics:
                     for systematic in self.weights[ch].variations:
