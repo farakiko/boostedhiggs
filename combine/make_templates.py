@@ -26,95 +26,52 @@ warnings.filterwarnings("ignore", message="Found duplicate branch ")
 pd.set_option("mode.chained_assignment", None)
 
 
-def get_wjetsNLOcorr(hists, presel, years, channels, samples_dir, regions_sel, model_path):
+with open("../binder/trg_eff_SF_ARC.pkl", "rb") as f:
+    TRIGGER_SF = pkl.load(f)
 
-    for year in years:  # e.g. 2018, 2017, 2016APV, 2016
-        for ch in channels:  # e.g. mu, ele
+THWW_SF = {
+    "ggF": 0.948,
+    "VBF": 0.984,
+}
+ptbinning_trgSF = [2000, 200, 170, 150, 130, 110, 90, 70, 50, 30]
+etabinning_trgSF = [-2.5, -1.5, -0.5, 0.5, 1.5, 2.5]
 
-            with open("../fileset/luminosity.json") as f:
-                luminosity = json.load(f)[ch][year]
 
-            for sample in os.listdir(samples_dir[year]):
+def get_nominal_from_df(df, year, ch, sample_label, region, region_sel, xsecweight, is_data):
 
-                sample_to_use = get_common_sample_name(sample)
+    if is_data:
+        nominal = np.ones_like(df["fj_pt"])  # for data (nominal is 1)
+    else:
+        nominal = df[f"weight_{ch}"] * xsecweight
 
-                if sample_to_use != "vjetsNLO":
-                    continue
+        if "bjets" in region_sel:  # if there's a bjet selection, add btag SF to the nominal weight
+            nominal *= df["weight_btag"]
 
-                out_files = f"{samples_dir[year]}/{sample}/outfiles/"
-                parquet_files = glob.glob(f"{out_files}/*_{ch}.parquet")
-                pkl_files = glob.glob(f"{out_files}/*.pkl")
+        # apply trigger SF
+        if ch == "ele":
 
-                if not parquet_files:
-                    logging.info(f"No parquet file for {sample}")
-                    continue
+            for i in range(len(ptbinning_trgSF) - 1):
+                high_pt = ptbinning_trgSF[i]
+                low_pt = ptbinning_trgSF[i + 1]
 
-                try:
-                    data = pd.read_parquet(parquet_files)
-                except pyarrow.lib.ArrowInvalid:  # empty parquet because no event passed selection
-                    continue
+                msk_pt = (df["lep_pt"] >= low_pt) & (df["lep_pt"] < high_pt)
 
-                if len(data) == 0:
-                    continue
+                for j in range(len(etabinning_trgSF) - 1):
+                    low_eta = etabinning_trgSF[j]
+                    high_eta = etabinning_trgSF[j + 1]
 
-                # use hidNeurons to get the finetuned scores
-                data["THWW"] = get_finetuned_score(data, model_path)
+                    msk_eta = (abs(df["lep_eta"]) >= low_eta) & (abs(df["lep_eta"]) < high_eta)
 
-                # drop hidNeurons which are not needed anymore
-                data = data[data.columns.drop(list(data.filter(regex="hidNeuron")))]
+                    nominal[msk_pt & msk_eta] *= TRIGGER_SF["UL" + year[2:].replace("APV", "")]["nominal"][i, j]
 
-                # apply selection
-                for selection in presel[ch]:
-                    data = data.query(presel[ch][selection])
+        # apply THWW SF
+        if ("ggF" in sample_label) or (sample_label in ["ggF", "VBF", "WH", "ZH", "ttH"]):
+            if "ggF" in region:
+                nominal *= THWW_SF["ggF"]
+            else:
+                nominal *= THWW_SF["VBF"]
 
-                # apply genlep recolep matching
-                data = data[data["dR_genlep_recolep"] < 0.005]
-
-                # get the xsecweight
-                xsecweight, _, _, _ = get_xsecweight(pkl_files, year, sample, sample_to_use, False, luminosity)
-
-                with open("../binder/trg_eff_SF_ARC.pkl", "rb") as f:
-                    TRIGGER_SF = pkl.load(f)
-
-                for region, region_sel in regions_sel.items():  # e.g. pass, fail, top control region, etc.
-
-                    df = data.copy()
-                    df = df.query(region_sel)
-
-                    # ------------------- Nominal -------------------
-                    nominal = df[f"weight_{ch}"] * xsecweight
-
-                    if "bjets" in region_sel:  # if there's a bjet selection, add btag SF to the nominal weight
-                        nominal *= df["weight_btag"]
-
-                    # apply trigger SF
-                    if ch == "ele":
-                        ptbinning_trgSF = [2000, 200, 170, 150, 130, 110, 90, 70, 50, 30]
-                        etabinning_trgSF = [-2.5, -1.5, -0.5, 0.5, 1.5, 2.5]
-
-                        for i in range(len(ptbinning_trgSF) - 1):
-                            high_pt = ptbinning_trgSF[i]
-                            low_pt = ptbinning_trgSF[i + 1]
-
-                            msk_pt = (df["lep_pt"] >= low_pt) & (df["lep_pt"] < high_pt)
-
-                            for j in range(len(etabinning_trgSF) - 1):
-                                low_eta = etabinning_trgSF[j]
-                                high_eta = etabinning_trgSF[j + 1]
-
-                                msk_eta = (abs(df["lep_eta"]) >= low_eta) & (abs(df["lep_eta"]) < high_eta)
-
-                                nominal[msk_pt & msk_eta] *= TRIGGER_SF["UL" + year[2:].replace("APV", "")]["nominal"][i, j]
-
-                    hists.fill(
-                        Sample="WJetsLNu",
-                        Systematic="vjetsnlo_up",
-                        Region=region,
-                        mass_observable=df["rec_higgs_m"],
-                        weight=nominal,
-                    )
-
-    return hists
+    return nominal
 
 
 def fill_systematics(
@@ -132,17 +89,6 @@ def fill_systematics(
     sumgenweights,
     sumscaleweights,
 ):
-    # with open("trg_eff_SF.pkl", "rb") as f:
-    #     TRIGGER_SF = pkl.load(f)
-
-    with open("../binder/trg_eff_SF_ARC.pkl", "rb") as f:
-        TRIGGER_SF = pkl.load(f)
-
-    THWW_SF = {
-        "ggF": 0.948,
-        "VBF": 0.984,
-    }
-
     SYST_DICT = get_systematic_dict(years)
 
     for region, region_sel in regions_sel.items():  # e.g. pass, fail, top control region, etc.
@@ -150,40 +96,7 @@ def fill_systematics(
         df = data.copy()
         df = df.query(region_sel)
 
-        # ------------------- Nominal -------------------
-        if is_data:
-            nominal = np.ones_like(df["fj_pt"])  # for data (nominal is 1)
-        else:
-            nominal = df[f"weight_{ch}"] * xsecweight
-
-            if "bjets" in region_sel:  # if there's a bjet selection, add btag SF to the nominal weight
-                nominal *= df["weight_btag"]
-
-            # apply trigger SF
-            if ch == "ele":
-                ptbinning_trgSF = [2000, 200, 170, 150, 130, 110, 90, 70, 50, 30]
-                etabinning_trgSF = [-2.5, -1.5, -0.5, 0.5, 1.5, 2.5]
-
-                for i in range(len(ptbinning_trgSF) - 1):
-                    high_pt = ptbinning_trgSF[i]
-                    low_pt = ptbinning_trgSF[i + 1]
-
-                    msk_pt = (df["lep_pt"] >= low_pt) & (df["lep_pt"] < high_pt)
-
-                    for j in range(len(etabinning_trgSF) - 1):
-                        low_eta = etabinning_trgSF[j]
-                        high_eta = etabinning_trgSF[j + 1]
-
-                        msk_eta = (abs(df["lep_eta"]) >= low_eta) & (abs(df["lep_eta"]) < high_eta)
-
-                        nominal[msk_pt & msk_eta] *= TRIGGER_SF["UL" + year[2:].replace("APV", "")]["nominal"][i, j]
-
-            # apply THWW SF
-            if ("ggF" in sample_label) or (sample_label in ["ggF", "VBF", "WH", "ZH", "ttH"]):
-                if "ggF" in region:
-                    nominal *= THWW_SF["ggF"]
-                else:
-                    nominal *= THWW_SF["VBF"]
+        nominal = get_nominal_from_df(df, year, ch, sample_label, region, region_sel, xsecweight, is_data)
 
         hists.fill(
             Sample=sample_label,
@@ -254,23 +167,6 @@ def fill_systematics(
             weight=down,
         )
 
-        # ------------------- vjets NLO -------------------
-        # with open("templates/v15/hists_templates_Run2.pkl", "rb") as f:
-        #     hists_vjetsnlo = pkl.load(f)
-
-        # sample_idx = np.argmax(np.array(hists.axes["Sample"]) == "WJetsLNu")
-        # syst_idx = np.argmax(np.array(hists.axes["Systematic"]) == "nominal")
-        # region_idx = np.argmax(np.array(hists.axes["Region"]) == "region")
-        if sample_label == "WJetsLNu":
-
-            hists.fill(
-                Sample=sample_label,
-                Systematic="vjetsnlo_down",
-                Region=region,
-                mass_observable=df["rec_higgs_m"],
-                weight=nominal,
-            )
-
         # ------------------- PDF acceptance -------------------
 
         """
@@ -281,8 +177,7 @@ def fill_systematics(
         e.g. https://github.com/LPC-HH/HHLooper/blob/master/python/prepare_card_SR_final.py#L258
         and https://github.com/LPC-HH/HHLooper/blob/master/app/HHLooper.cc#L1488
         """
-        if (sample_label in sigs + ["WJetsLNu", "TTbar"]) and (sample != "ST_s-channel_4f_hadronicDecays"):
-            # if (sample_label in sigs + ["TTbar"]) and (sample != "ST_s-channel_4f_hadronicDecays"):  # TODO add WJets
+        if (sample_label in sigs + ["TTbar"]) and (sample != "ST_s-channel_4f_hadronicDecays"):
 
             pdfweights = []
 
@@ -336,10 +231,7 @@ def fill_systematics(
         - then, take max/min of h0, h1, h3, h5, h7, h8 w.r.t h4: h_up and h_dn
         - the uncertainty is the nominal histogram * h_up / h4
         """
-        if (sample_label in sigs + ["WJetsLNu", "TTbar", "SingleTop"]) and (sample != "ST_s-channel_4f_hadronicDecays"):
-            # if (sample_label in sigs + ["TTbar", "SingleTop"]) and (
-            #     sample != "ST_s-channel_4f_hadronicDecays"
-            # ):  # TODO add WJets
+        if (sample_label in sigs + ["TTbar", "SingleTop"]) and (sample != "ST_s-channel_4f_hadronicDecays"):
 
             R_4 = sumscaleweights[4] / sumgenweights
             scaleweight_4 = df["weight_scale4"].values * nominal / R_4
@@ -444,7 +336,7 @@ def fill_systematics(
 
     # ------------------- individual sources of JES -------------------
 
-    """We apply the jet pt cut on the up/down variations. Must loop over systematics first."""
+    """We apply the jet pt cut on the up/down variations."""
     for syst, (yrs, smpls, var) in SYST_DICT["JEC"].items():
 
         for variation in ["up", "down"]:
@@ -460,14 +352,7 @@ def fill_systematics(
                 df = data.copy()
                 df = df.query(region_sel)
 
-                # ------------------- Nominal -------------------
-                if is_data:
-                    nominal = np.ones_like(df["fj_pt"])  # for data (nominal is 1)
-                else:
-                    nominal = df[f"weight_{ch}"] * xsecweight
-
-                    if "bjets" in region_sel:  # if there's a bjet selection, add btag SF to the nominal weight
-                        nominal *= df["weight_btag"]
+                nominal = get_nominal_from_df(df, year, ch, sample_label, region, region_sel, xsecweight, is_data)
 
                 if (sample_label in smpls) and (year in yrs) and (ch in var):
                     shape_variation = df["rec_higgs_m" + var[ch] + f"_{variation}"]
@@ -530,8 +415,6 @@ def get_templates(years, channels, samples, samples_dir, regions_sel, model_path
         storage=hist2.storage.Weight(),
     )
 
-    hists = get_wjetsNLOcorr(hists, presel, years, channels, samples_dir, regions_sel, model_path)
-
     for year in years:  # e.g. 2018, 2017, 2016APV, 2016
         for ch in channels:  # e.g. mu, ele
             logging.info(f"Processing year {year} and {ch} channel")
@@ -592,9 +475,6 @@ def get_templates(years, channels, samples, samples_dir, regions_sel, model_path
                 xsecweight, sumgenweights, sumpdfweights, sumscaleweights = get_xsecweight(
                     pkl_files, year, sample, sample_to_use, is_data, luminosity
                 )
-
-                # if sample_to_use == "vjetsNLO":
-                #     continue
 
                 if sample_to_use == "ggF":
 
@@ -683,7 +563,6 @@ def get_templates(years, channels, samples, samples_dir, regions_sel, model_path
                     sumgenweights,
                     sumscaleweights,
                 )
-
 
     fake_SF = {
         "ele": 0.75,

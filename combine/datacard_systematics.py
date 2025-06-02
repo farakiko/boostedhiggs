@@ -21,7 +21,6 @@ CMS_PARAMS_LABEL = "CMS_HWW_boosted"
 
 SIG_regions = ["VBF", "ggFpt250to350", "ggFpt350to500", "ggFpt500toInf"]
 CONTROL_regions = ["TopCR", "WJetsCR"]
-# CONTROL_regions = ["TopCR", "WJetsCR1", "WJetsCR2", "WJetsCR3"]
 
 
 def systs_not_from_parquets(years: List[str], lep_channels: List[str], do_unfolding: bool):
@@ -372,38 +371,12 @@ def systs_from_parquets(years):
             ["SingleTop"],
             SIG_regions + CONTROL_regions,
         ),
-        # systematics applied only on WJets & DYJets
-        # rl.NuisanceParameter(f"{CMS_PARAMS_LABEL}_d1K_NLO", "lnN"): (
-        #     "weight_d1K_NLO",
-        #     ["WJetsLNu"],
-        #     SIG_regions + CONTROL_regions,
-        # ),
-        # rl.NuisanceParameter(f"{CMS_PARAMS_LABEL}_d2K_NLO", "lnN"): (
-        #     "weight_d2K_NLO",
-        #     ["WJetsLNu"],
-        #     SIG_regions + CONTROL_regions,
-        # ),
-        # rl.NuisanceParameter(f"{CMS_PARAMS_LABEL}_d3K_NLO", "lnN"): (
-        #     "weight_d3K_NLO",
-        #     ["WJetsLNu"],
-        #     SIG_regions + CONTROL_regions,
-        # ),
+        # systematics applied only on DYJets
         rl.NuisanceParameter(f"{CMS_PARAMS_LABEL}_W_d1kappa_EW", "lnN"): (
             "weight_d1kappa_EW",
-            # ["WJetsLNu", "DYJets"],
             ["DYJets"],
             SIG_regions + CONTROL_regions,
         ),
-        # rl.NuisanceParameter(f"{CMS_PARAMS_LABEL}_W_d2kappa_EW", "lnN"): (
-        #     "weight_W_d2kappa_EW",
-        #     ["WJetsLNu"],
-        #     SIG_regions + CONTROL_regions,
-        # ),
-        # rl.NuisanceParameter(f"{CMS_PARAMS_LABEL}_W_d3kappa_EW", "lnN"): (
-        #     "weight_W_d3kappa_EW",
-        #     ["WJetsLNu"],
-        #     SIG_regions + CONTROL_regions,
-        # ),
         rl.NuisanceParameter(f"{CMS_PARAMS_LABEL}_Z_d2kappa_EW", "lnN"): (
             "weight_Z_d2kappa_EW",
             ["DYJets"],
