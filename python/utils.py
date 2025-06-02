@@ -310,8 +310,11 @@ def get_axis(var, massbin=5):
         "nj": hist2.axis.Regular(40, 0, 10, name="var", label="number of jets outside candidate jet", overflow=True),
         "inclusive_score": hist2.axis.Regular(35, 0, 1, name="var", label=r"tagger score", overflow=True),
         "THWW": hist2.axis.Regular(25, 0, 1, name="var", label=r"$T_{HWW}$", overflow=True),
-        # "THWW": hist2.axis.Regular(25, 0.75, 1, name="var", label=r"$T_{HWW}$", overflow=True),  # preselection
         # "THWW": hist2.axis.Regular(8, 0.9, 1, name="var", label=r"$T_{HWW}$", overflow=True),
+        "fj_VScore": hist2.axis.Regular(25, 0, 1, name="var", label=r"Vscore", overflow=True),  # preselection
+        "SecondFatjet_Vscore": hist2.axis.Regular(
+            25, 0, 1, name="var", label=r"SecondFatjet_Vscore", overflow=True
+        ),  # preselection
         "fj_ParT_inclusive_score": hist2.axis.Regular(35, 0, 1, name="var", label=r"ParT-Finetuned score", overflow=True),
         "fj_ParT_all_score": hist2.axis.Regular(35, 0, 1, name="var", label=r"tagger score", overflow=True),
         # AN
@@ -321,7 +324,8 @@ def get_axis(var, massbin=5):
         ),
         "fj_pt": hist2.axis.Regular(30, 250, 600, name="var", label=r"Higgs candidate jet $p_T$ [GeV]", overflow=True),
         # "fj_pt": hist2.axis.Regular(20, 250, 600, name="var", label=r"Higgs candidate jet $p_T$ [GeV]", overflow=True),
-        "lep_pt": hist2.axis.Regular(40, 30, 400, name="var", label=r"Lepton $p_T$ [GeV]", overflow=True),
+        # "lep_pt": hist2.axis.Regular(40, 30, 400, name="var", label=r"Lepton $p_T$ [GeV]", overflow=True),
+        "lep_pt": hist2.axis.Regular(20, 00, 450, name="var", label=r"Lepton $p_T$ [GeV]", overflow=True),
         "pt_ratio": hist2.axis.Regular(40, 0, 2, name="var", label=r"Lepton $p_T$ / Jet $p_T$", overflow=True),
         "rho": hist2.axis.Regular(50, -1, -10, name="var", label=r"Rho", overflow=True),
         "lep_eta": hist2.axis.Regular(35, -2.5, 2.5, name="var", label=r"Lepton $\eta$", overflow=True),
@@ -332,8 +336,8 @@ def get_axis(var, massbin=5):
         "lep_fj_dr": hist2.axis.Regular(
             35, 0.03, 0.8, name="var", label=r"$\Delta R(\ell, \mathrm{Higgs \ candidate \ jet})$", overflow=True
         ),
-        "met_pt": hist2.axis.Regular(40, 20, 250, name="var", label=r"MET [GeV]", overflow=True),
-        # "met_pt": hist2.axis.Regular(20, 20, 250, name="var", label=r"MET [GeV]", overflow=True),
+        # "met_pt": hist2.axis.Regular(40, 20, 250, name="var", label=r"MET [GeV]", overflow=True),
+        # "met_pt": hist2.axis.Regular(15, 0, 300, name="var", label=r"MET [GeV]", overflow=True),
         "met_phi": hist2.axis.Regular(40, -3.14, 3.14, name="var", label=r"MET $\Phi$", overflow=True),
         "met_fj_dphi": hist2.axis.Regular(
             35,
@@ -762,7 +766,7 @@ def plot_hists(
                 totsignal_val[tot_val == 0] = 0
                 soverb_val = totsignal_val / (tot_val)
 
-                tot_soversqrtb = ((totsignal_val[:4] / mult_factor).sum()) / np.sqrt(tot_val[:4].sum())
+                # tot_soversqrtb = ((totsignal_val[:4] / mult_factor).sum()) / np.sqrt(tot_val[:4].sum())
                 # sax.legend(title=f"S/sqrt(B) in [75-155GeV]={tot_soversqrtb:.2f}")
 
                 hep.histplot(
