@@ -574,7 +574,6 @@ class HwwProcessor(processor.ProcessorABC):
                 if shift != "":
                     fatjetvars_sys[f"fj_mass{shift}"] = ak.firsts(vals)
 
-            variables["fj_mass"] = fatjetvars_sys["fj_mass"]  # overwrite nominal fj_mass
             variables = {**variables, **fatjetvars_sys}
             fatjetvars = {**fatjetvars, **fatjetvars_sys}
 
