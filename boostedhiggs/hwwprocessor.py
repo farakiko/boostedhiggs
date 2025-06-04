@@ -448,12 +448,12 @@ class HwwProcessor(processor.ProcessorABC):
             genlep_idx = ak.argmin(dR_genlep_recolep, axis=1, keepdims=True)
             dR_genlep_recolep = ak.firsts(dR_genlep_recolep[genlep_idx])
 
-        # store gen jet flavors that may be useful for studying NLO WJets
-        genjets = events.GenJet
-        goodgenjets = genjets[(genjets.pt > 20.0) & (np.abs(genjets.eta) < 2.4)]
+            # store gen jet flavors that may be useful for studying NLO WJets
+            genjets = events.GenJet
+            goodgenjets = genjets[(genjets.pt > 20.0) & (np.abs(genjets.eta) < 2.4)]
 
-        nBjets = (ak.sum(goodgenjets.hadronFlavour == 5, axis=1)).to_numpy()
-        nCjets = (ak.sum(goodgenjets.hadronFlavour == 4, axis=1)).to_numpy()
+            nBjets = (ak.sum(goodgenjets.hadronFlavour == 5, axis=1)).to_numpy()
+            nCjets = (ak.sum(goodgenjets.hadronFlavour == 4, axis=1)).to_numpy()
 
         ######################
         # Store variables
@@ -516,10 +516,11 @@ class HwwProcessor(processor.ProcessorABC):
             "loose_lep1_pt": ak.firsts(muons[loose_muons1][ak.argsort(muons[loose_muons1].pt, ascending=False)]).pt,
             "msk_leptonic_taus": msk_leptonic_taus,
             "dR_genlep_recolep": dR_genlep_recolep,
-            "nB": nBjets,
-            "nC": nCjets,
             "fj_mass_raw": good_fatjets[fj_idx_lep].mass,
         }
+
+        if self.isMC:
+            variables = {**variables, **{"nB": nBjets, "nC": nCjets}}
 
         # store the genweight as a column
         for ch in self._channels:
@@ -710,7 +711,7 @@ class HwwProcessor(processor.ProcessorABC):
 
         else:
             # apply dummy selection
-            self.add_selection(name="dummy", sel=(ht > -99999))
+            self.add_selection(name="dummy", sel=(nBjets > -1))
 
         if self.isMC:
             for ch in self._channels:
