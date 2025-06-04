@@ -302,6 +302,9 @@ class HwwProcessor(processor.ProcessorABC):
 
         jmsr_shifted_fatjetvars = get_jmsr(good_fatjets[fj_idx_lep], num_jets=1, year=self._year, isData=not self.isMC)
 
+        print("fj_mass", candidatefj.msdcorr)
+        print("fj_mass after", jmsr_shifted_fatjetvars["msoftdrop"][""])
+
         # AK4 JETS
         jets, jec_shifted_jetvars = get_jec_jets(events, events.Jet, self._year, not self.isMC, self.jecs, fatjets=False)
         met = met_factory.build(events.MET, jets, {}) if self.isMC else events.MET
