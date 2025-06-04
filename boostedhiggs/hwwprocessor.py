@@ -302,11 +302,7 @@ class HwwProcessor(processor.ProcessorABC):
 
         jmsr_shifted_fatjetvars = get_jmsr(good_fatjets[fj_idx_lep], num_jets=1, year=self._year, isData=not self.isMC)
 
-        print("fj_mass", candidatefj.msdcorr)
-        candidatefj["msdcorr"] = ak.firsts(jmsr_shifted_fatjetvars["msoftdrop"][""])
-        print("fj_mass after", candidatefj.msdcorr)
-
-        # print("fj_mass after", ak.firsts(jmsr_shifted_fatjetvars["msoftdrop"][""]))
+        candidatefj["msdcorr"] = ak.firsts(jmsr_shifted_fatjetvars["msoftdrop"][""])  # apply nominal JMS/JMR
 
         # AK4 JETS
         jets, jec_shifted_jetvars = get_jec_jets(events, events.Jet, self._year, not self.isMC, self.jecs, fatjets=False)
@@ -575,11 +571,8 @@ class HwwProcessor(processor.ProcessorABC):
 
             # JMSR vars
             for shift, vals in objects["jmsr_shifted_fatjetvars"]["msoftdrop"].items():
-                # if shift != "":  # TODO: Commented on June 4th
-                fatjetvars_sys[f"fj_mass{shift}"] = ak.firsts(vals)
-
-            print("vars", variables["fj_mass"])
-            print("fatjetvars_sys", fatjetvars_sys["fj_mass"])
+                if shift != "":
+                    fatjetvars_sys[f"fj_mass{shift}"] = ak.firsts(vals)
 
             variables["fj_mass"] = fatjetvars_sys["fj_mass"]  # overwrite nominal fj_mass
             variables = {**variables, **fatjetvars_sys}
