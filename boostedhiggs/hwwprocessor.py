@@ -569,8 +569,8 @@ class HwwProcessor(processor.ProcessorABC):
 
             # JMSR vars
             for shift, vals in objects["jmsr_shifted_fatjetvars"]["msoftdrop"].items():
-                if shift != "":
-                    fatjetvars_sys[f"fj_mass{shift}"] = ak.firsts(vals)
+                # if shift != "":  # TODO: Commented on June 4th
+                fatjetvars_sys[f"fj_mass{shift}"] = ak.firsts(vals)
 
             variables = {**variables, **fatjetvars_sys}
             fatjetvars = {**fatjetvars, **fatjetvars_sys}
@@ -763,7 +763,7 @@ class HwwProcessor(processor.ProcessorABC):
         return variables
 
     def _add_MC_weights(self, dataset, events, objects, variables):
-        """Applies event-level weights and corrections for MC, including."""
+        """Applies event-level weights and corrections for MC."""
         for ch in self._channels:
             if self._year in ("2016", "2017"):
                 self.weights[ch].add(
