@@ -26,6 +26,42 @@ warnings.filterwarnings("ignore", message="Found duplicate branch ")
 pd.set_option("mode.chained_assignment", None)
 
 
+ptbinning_trgSF = [2000, 200, 170, 150, 130, 110, 90, 70, 50, 30]
+etabinning_trgSF = [-2.5, -1.5, -0.5, 0.5, 1.5, 2.5]
+
+with open("../combine/trg_eff_SF_ARC.pkl", "rb") as f:
+    TRIGGER_SF = pkl.load(f)
+
+
+def get_nominal(df, year, ch, xsecweight, is_data):
+    """Compute the nominal event weight."""
+
+    if is_data:
+        return np.ones_like(df["fj_pt"])
+
+    nominal = df[f"weight_{ch}"] * xsecweight
+
+    if ch == "ele":
+        year_tag = f"UL{year[2:].replace('APV', '')}"
+        sf_nominal = TRIGGER_SF[year_tag]["nominal"]
+
+        lep_pt = df["lep_pt"].to_numpy()
+        lep_eta = np.abs(df["lep_eta"].to_numpy())
+
+        for i in range(len(ptbinning_trgSF) - 1):
+            high_pt, low_pt = ptbinning_trgSF[i], ptbinning_trgSF[i + 1]
+            msk_pt = (lep_pt >= low_pt) & (lep_pt < high_pt)
+
+            for j in range(len(etabinning_trgSF) - 1):
+                low_eta, high_eta = etabinning_trgSF[j], etabinning_trgSF[j + 1]
+                msk_eta = (lep_eta >= low_eta) & (lep_eta < high_eta)
+
+                msk = msk_pt & msk_eta
+                nominal[msk] *= sf_nominal[i, j]
+
+    return nominal
+
+
 def make_events_dict(years, channels, samples_dir, samples, presel, THWW_path=None, fake_SF={"ele": 1, "mu": 1}):
     """
     Postprocess the parquets by applying preselection, saving a `nominal` weight column, and
@@ -35,7 +71,7 @@ def make_events_dict(years, channels, samples_dir, samples, presel, THWW_path=No
         years [list]: years to postprocess and save in the output (e.g. ["2016APV", "2016"])
         channels [list]: channels to postprocess and save in the output (e.g. ["ele", "mu"])
         samples_dir [dict]: key=year, value=str pointing to the path of the parquets
-        samples [list]: samples to postprocess and save in the output (e.g. ["HWW", "QCD", "Data"])
+        samples [list]: samples to postprocess and save in the output (e.g. ["HWW", "QCD", "df"])
         presel [dict]: selections to apply per ch (e.g. `presel = {"ele": {"pt cut": fj_pt>250}}`)
 
     Returns
@@ -54,10 +90,9 @@ def make_events_dict(years, channels, samples_dir, samples, presel, THWW_path=No
         events_dict[year] = {}
 
         for ch in channels:
-            logging.info(f"Processing {year} {ch} channel")
+            logging.info(f"Processing {year}, {ch} channel")
             events_dict[year][ch] = {}
 
-            # get lumi
             with open("../fileset/luminosity.json") as f:
                 luminosity = json.load(f)[ch][year]
 
@@ -67,6 +102,8 @@ def make_events_dict(years, channels, samples_dir, samples, presel, THWW_path=No
                 if sample_to_use not in samples:
                     continue
 
+                is_data = True if sample_to_use == "Data" else False
+
                 parquet_files = glob.glob(f"{samples_dir[year]}/{sample}/outfiles/*_{ch}.parquet")
                 pkl_files = glob.glob(f"{samples_dir[year]}/{sample}/outfiles/*.pkl")
 
@@ -75,66 +112,35 @@ def make_events_dict(years, channels, samples_dir, samples, presel, THWW_path=No
                     continue
 
                 try:
-                    data = pd.read_parquet(parquet_files)
+                    df = pd.read_parquet(parquet_files)
                 except pyarrow.lib.ArrowInvalid:  # empty parquet because no event passed selection
                     continue
 
-                if len(data) == 0:
+                if len(df) == 0:
                     continue
 
                 if "ggF" in sample_to_use:
                     if "GluGluHToWWToLNuQQ_M-125_TuneCP5_13TeV_powheg_jhugen751_pythia8" in sample:
-                        data = data[data["fj_genH_pt"] < 200]
+                        df = df[df["fj_genH_pt"] < 200]
                     else:
-                        data = data[data["fj_genH_pt"] >= 200]
+                        df = df[df["fj_genH_pt"] >= 200]
 
-                if sample_to_use == "WJetsLNu NLO LHEFilterPtW":
-                    if ("WJetsToLNu_1J" in sample) or ("WJetsToLNu_2J" in sample):
-                        data = data[data["gen_V_pt"] < 250]
-                    else:
-                        data = data[data["gen_V_pt"] > 250]
-
-                # if sample_to_use == "WJetsLNu NLO LHEFilterPtW":
-                if sample_to_use == "WJetsLNu NLO MatchEWPDG20":
-                    if ("WJetsToLNu_1J" in sample) or ("WJetsToLNu_2J" in sample):
-                        data = data[data["gen_V_pt"] < 100]
-                    else:
-                        data = data[data["gen_V_pt"] > 100]
-
-                if "met_fj_dphi" in data.keys():
-                    data["abs_met_fj_dphi"] = np.abs(data["met_fj_dphi"])
-
-                # get event_weight
-                if sample_to_use != "Data":
-                    try:
-                        data["xsecweight"] = utils.get_xsecweight(pkl_files, year, sample, False, luminosity)
-                    except EOFError:
-                        continue
-                    data["nominal"] = data["xsecweight"] * data[f"weight_{ch}"]
-
-                else:
-                    data["xsecweight"] = np.ones_like(data["fj_pt"])
-                    data["nominal"] = np.ones_like(data["fj_pt"])
+                df["xsecweight"] = utils.get_xsecweight(pkl_files, year, sample, is_data, luminosity)
+                df["nominal"] = get_nominal(df, year, ch, df["xsecweight"], is_data)
 
                 if THWW_path is not None:
-                    # use hidNeurons to get the finetuned scores
-                    data["THWW"] = utils.get_finetuned_score(data, THWW_path)
+                    df["THWW"] = utils.get_finetuned_score(df, THWW_path)
+                    df = df[df.columns.drop(list(df.filter(regex="hidNeuron")))]
 
-                    # drop hidNeuron columns for memory purposes
-                    data = data[data.columns.drop(list(data.filter(regex="hidNeuron")))]
-
-                # apply preselection
                 for selection in presel[ch]:
-                    data = data.query(presel[ch][selection])
+                    df = df.query(presel[ch][selection])
 
-                # fill the big dataframe
                 if sample_to_use not in events_dict[year][ch]:
-                    events_dict[year][ch][sample_to_use] = data
+                    events_dict[year][ch][sample_to_use] = df
                 else:
-                    events_dict[year][ch][sample_to_use] = pd.concat([events_dict[year][ch][sample_to_use], data])
+                    events_dict[year][ch][sample_to_use] = pd.concat([events_dict[year][ch][sample_to_use], df])
 
             if add_fake:
-
                 df = pd.read_parquet(f"{samples_dir[year]}/Fake/fake_{year}_{ch}_FR_Nominal.parquet")
                 for selection in presel[ch]:
                     df = df.query(presel[ch][selection])
@@ -230,16 +236,7 @@ def plot_hists_from_events_dict(events_dict, plot_config):
                         df = df.query(sel)
 
                         # ----------- some variables need manual tweaking
-                        if var_to_plot == "met_phi":
-
-                            def compute_met_phi(jet_phi, delta_phi):
-                                met_phi = jet_phi - delta_phi
-                                met_phi = np.arctan2(np.sin(met_phi), np.cos(met_phi))  # ensure it is between [-pi, pi]
-                                return met_phi
-
-                            df[var_to_plot] = compute_met_phi(df["fj_phi"], df["met_fj_dphi"])
-
-                        elif "lep_isolation_ele" in var_to_plot:
+                        if "lep_isolation_ele" in var_to_plot:
                             if ch != "ele":
                                 continue
                             df = df[(df["lep_pt"] > 120)] if "highpt" in var_to_plot else df[(df["lep_pt"] < 120)]
@@ -287,7 +284,6 @@ def plot_hists_from_events_dict(events_dict, plot_config):
             logy=plot_config["logy"],
             mult=plot_config["mult"],
             legend_ncol=plot_config["legend_ncol"],
-            text_=plot_config["legend_text"],
             outpath=plot_config["outdir"] + f"/{region}/",
             plot_Fake_unc=plot_config["plot_Fake_unc"] if plot_config["plot_Fake_unc"] != 0 else None,
             plot_syst_unc=(SYST_UNC_up, SYST_UNC_down) if plot_config["plot_syst_unc"] else None,
@@ -297,8 +293,6 @@ def plot_hists_from_events_dict(events_dict, plot_config):
 def main(args):
 
     if args.make_events_dict:
-
-        # load the `events_dict_config.yml`
         with open("config_make_events_dict.yaml", "r") as stream:
             events_dict_config = yaml.safe_load(stream)
 
@@ -322,7 +316,6 @@ def main(args):
         logging.info(f"Done with building the events_dict and stored it at {events_dict_config['outdir']}/events_dict.pkl")
 
     if args.plot_stacked_hists:
-
         with open("config_plot_stacked_hists.yaml", "r") as stream:
             plot_config = yaml.safe_load(stream)
 

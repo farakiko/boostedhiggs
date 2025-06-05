@@ -26,9 +26,6 @@ warnings.filterwarnings("ignore", message="Found duplicate branch ")
 pd.set_option("mode.chained_assignment", None)
 
 
-with open("./trg_eff_SF_ARC.pkl", "rb") as f:
-    TRIGGER_SF = pkl.load(f)
-
 THWW_SF = {
     "ggF": 0.948,
     "VBF": 0.984,
@@ -36,6 +33,9 @@ THWW_SF = {
 
 ptbinning_trgSF = [2000, 200, 170, 150, 130, 110, 90, 70, 50, 30]
 etabinning_trgSF = [-2.5, -1.5, -0.5, 0.5, 1.5, 2.5]
+
+with open("./trg_eff_SF_ARC.pkl", "rb") as f:
+    TRIGGER_SF = pkl.load(f)
 
 
 def get_nominal(df, year, ch, sample_label, region, region_sel, xsecweight, is_data):

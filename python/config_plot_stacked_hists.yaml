@@ -1,4 +1,4 @@
-events_dict_path: "hists/WithTaggerCut/events_dict.pkl"
+events_dict_path: "hists/v1/events_dict.pkl"
 
 years_to_plot:
     - "2018"
@@ -12,15 +12,8 @@ channels_to_plot:
 
 regions_to_plot:
 
-    # "2018": met_pt > 20
-    # "2017": met_pt > 20
-    # "2016": met_pt > 20
-    # "2016APV": met_pt > 20
-
-    # "RUN2": met_pt > 20
-
     Pre-selection: met_pt > 20
-    # TopCR: ( (THWW>0.75) & (n_bjets_T>0) )
+    TopCR: ( (THWW>0.75) & (n_bjets_T>0) )
     # WJets CR: ( (THWW<0.90) & (THWW>0.75) & (n_bjets_T==0) )
 
     # "VBF": (n_bjets_T==0) & (THWW>0.905) & ( (mjj>1000) & (deta>3.5) ) & (rec_higgs_pt>250)
@@ -55,7 +48,7 @@ vars_to_plot:
     # - THWW
     # - FirstFatjet_pt
     # - SecondFatjet_pt
-    # - fj_pt
+    - fj_pt
     # - lep_pt
     # - lep_fj_dr
     # - lep_eta
@@ -70,7 +63,7 @@ vars_to_plot:
     # - NumOtherJets
     # - rec_W_lnu_m
     # - rec_W_qq_m
-    - rec_higgs_m
+    # - rec_higgs_m
     # - fj_ParT_mass
     # - fj_mass
     # - lep_isolation_ele_highpt
@@ -82,10 +75,7 @@ vars_to_plot:
     # - lep_misolation_mu_highpt
     # - lep_misolation_mu_lowpt
 
-# outdir: "/Users/fmokhtar/Desktop/AN_2024/SYSTEMATICS/WithTagger/"
-# outdir: "/Users/fmokhtar/Desktop/AN_2024/SR"
-# outdir: "/Users/fmokhtar/Desktop/AN_2024/TopCR"
-outdir: "/Users/fmokhtar/Desktop/AN_2024/lol"
+outdir: "/Users/fmokhtar/Desktop/AN_2024/test"
 
 plot_syst_unc: True
 plot_Fake_unc: 0.5
@@ -100,8 +90,4 @@ mult: 5
 blind_region: False
 # blind_region: [90,160]
 
-# legend_text: ""
-# legend_text: "VBF category"
-# legend_text: "ggF category pT [250, 350]"
-# legend_text: "ggF category pT [350, 500]"
-# legend_text: "ggF category pT [500, Inf]"
+legend_text: ""

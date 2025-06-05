@@ -101,11 +101,6 @@ def get_sum_sumgenweight(pkl_files, year, sample):
 def get_xsecweight(pkl_files, year, sample, is_data, luminosity):
     """Get xsec-weight and scales events by lumi/sumgenweights."""
 
-    # if "WJetsToLNu_1J" in sample:
-    #     sample = "WJetsToLNu_1J"
-    # if "WJetsToLNu_2J" in sample:
-    #     sample = "WJetsToLNu_2J"
-
     if not is_data:
         # find xsection
         f = open("../fileset/xsec_pfnano.json")

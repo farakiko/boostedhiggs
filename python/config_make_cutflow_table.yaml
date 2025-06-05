@@ -1,8 +1,8 @@
 samples_dir:
-    "2018": ../eos/July18_hww_2018
-    "2017": ../eos/July18_hww_2017
-    "2016": ../eos/July18_hww_2016
-    "2016APV": ../eos/July18_hww_2016APV
+    "2018": ../eos/hww/Dec20_hww_2018
+    "2017": ../eos/hww/Dec20_hww_2017
+    "2016": ../eos/hww/Dec20_hww_2016
+    "2016APV": ../eos/hww/Dec20_hww_2016APV
 
 samples:
     - ggF
@@ -28,4 +28,4 @@ add_cuts:
 add_data: True
 add_sumgenweight: True
 
-THWW_path: ../../weaver-core-dev/experiments_finetuning/v35_30/model.onnx
+THWW_path: ../ParT_Finetuned/v35_30/model.onnx

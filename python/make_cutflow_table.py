@@ -15,19 +15,13 @@ import glob
 import json
 import os
 import pickle as pkl
-import sys
 
 import matplotlib.pyplot as plt
 import mplhep as hep
 import pandas as pd
 import pyarrow
-import yaml
-
-sys.path
-sys.path.append("../python/")
-
 import utils
-from utils import get_xsecweight
+import yaml
 
 plt.style.use(hep.style.CMS)
 plt.rcParams.update({"font.size": 20})
@@ -87,7 +81,7 @@ def get_cutflow(pkl_files, year, ch, sample, is_data):
     with open("../fileset/luminosity.json") as f:
         luminosity = json.load(f)[ch][year]
 
-    xsec_weight = get_xsecweight(pkl_files, year, sample, is_data, luminosity)
+    xsec_weight = utils.get_xsecweight(pkl_files, year, sample, is_data, luminosity)
 
     cuts = [
         "sumgenweight",
@@ -455,8 +449,7 @@ def main(args):
 
 
 if __name__ == "__main__":
-    # e.g.
-    # python make_cutflow_table.py --years 2017 --channels ele,mu --add_cuts
+    # e.g. python make_cutflow_table.py --years 2017 --channels ele,mu --add-cuts
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--years", dest="years", default="2017", help="years separated by commas")

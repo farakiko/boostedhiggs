@@ -1,8 +1,8 @@
 samples_dir:
-    "2018": ../eos/July18_hww_2018
-    "2017": ../eos/July18_hww_2017
-    "2016": ../eos/July18_hww_2016
-    "2016APV": ../eos/July18_hww_2016APV
+    "2018": ../eos/hww/Dec20_hww_2018
+    "2017": ../eos/hww/Dec20_hww_2017
+    "2016": ../eos/hww/Dec20_hww_2016
+    "2016APV": ../eos/hww/Dec20_hww_2016APV
 
 years:
     - "2018"
@@ -17,10 +17,10 @@ channels:
 presel:
     ele:
         msoftdrop: (fj_mass>40)
-        # THWW: (THWW>0.75)
+        THWW: (THWW>0.75)
     mu:
         msoftdrop: (fj_mass>40)
-        # THWW: (THWW>0.75)
+        THWW: (THWW>0.75)
 
 samples:
     - ggF
@@ -39,6 +39,6 @@ samples:
     - WJetsLNu
     - Data
 
-THWW_path: ../../weaver-core-dev/experiments_finetuning/v35_30/model.onnx
+THWW_path: ../ParT_Finetuned/v35_30/model.onnx
 
-outdir: "hists/v1/"
+outdir: "hists/v2/"
