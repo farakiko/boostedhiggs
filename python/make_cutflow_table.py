@@ -26,8 +26,8 @@ import yaml
 sys.path
 sys.path.append("../python/")
 
-import utils_diffBins
-from utils_diffBins import get_xsecweight
+import utils
+from utils import get_xsecweight
 
 plt.style.use(hep.style.CMS)
 plt.rcParams.update({"font.size": 20})
@@ -136,22 +136,7 @@ def make_cutflow_dict(years, channels, samples_dir, samples):
             condor_dir = os.listdir(samples_dir[year])
 
             for sample in condor_dir:
-
-                # first: check if the sample is in one of combine_samples_by_name
-                sample_to_use = None
-                for key in utils_diffBins.combine_samples_by_name:
-                    if key in sample:
-                        sample_to_use = utils_diffBins.combine_samples_by_name[key]
-                        break
-
-                # second: if not, combine under common label
-                if sample_to_use is None:
-                    for key in utils_diffBins.combine_samples:
-                        if key in sample:
-                            sample_to_use = utils_diffBins.combine_samples[key]
-                            break
-                        else:
-                            sample_to_use = sample
+                sample_to_use = utils.get_common_sample_name(sample)
 
                 if sample_to_use not in samples:
                     continue
@@ -171,12 +156,9 @@ def make_cutflow_dict(years, channels, samples_dir, samples):
                 try:
                     data = pd.read_parquet(parquet_files)
                 except pyarrow.lib.ArrowInvalid:
-                    # empty parquet because no event passed selection
-                    #                 print(f"No parquet file for {sample}")
                     continue
 
                 if len(data) == 0:
-                    #                 print(f"Hi, No parquet file for {sample}")
                     continue
 
                 if sample_to_use not in cutflows[year][ch].keys():
@@ -340,7 +322,7 @@ def make_latex_cutflow_table(cutflows, year, ch, cuts, add_data=False, add_sumge
     for label in data:
         if label == "z":
             texdata += "\\hline\n"
-        texdata += f"{cut_to_label[label]} & {' & '.join(map(str,data[label]))} \\\\\n"
+        texdata += f"{cut_to_label[label]} & {' & '.join(map(str, data[label]))} \\\\\n"
 
     texdata += "\\hline\n"
 
@@ -364,7 +346,7 @@ def make_latex_cutflow_table(cutflows, year, ch, cuts, add_data=False, add_sumge
     for label in data:
         if label == "z":
             texdata += "\\hline\n"
-        texdata2 += f"{cut_to_label[label]} & {' & '.join(map(str,data[label]))} \\\\\n"
+        texdata2 += f"{cut_to_label[label]} & {' & '.join(map(str, data[label]))} \\\\\n"
 
     # make table
     print("\\begin{table}[!htp]")

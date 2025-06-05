@@ -3,8 +3,6 @@ from __future__ import division, print_function
 import json
 import logging
 import warnings
-
-# from lib2to3.fixes.fix_operator import invocation
 from typing import List
 
 import pandas as pd

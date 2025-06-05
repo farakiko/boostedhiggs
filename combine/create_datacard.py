@@ -109,7 +109,7 @@ def create_datacard(
                     syst_do = hists_templates[{"Sample": sName, "Region": ChName, "Systematic": sys_name + "_down"}].values()
                     nominal = hists_templates[{"Sample": sName, "Region": ChName, "Systematic": "nominal"}].values()
 
-                    if ("weight_pileup_2018" in sys_name):
+                    if "weight_pileup_2018" in sys_name:
                         # if "weight_pileup_2018" in sys_name:
                         # # (a) first redefine the up/down per bin appropriately (in case they were swapped)
                         syst_up_redefined = np.where(syst_up > syst_do, syst_up, syst_do)
@@ -231,8 +231,7 @@ def main(args):
 
 
 if __name__ == "__main__":
-    # e.g.
-    # python create_datacard.py --years 2016,2016APV,2017,2018 --channels mu,ele --outdir templates/v1
+    # e.g. python create_datacard.py --years 2016,2016APV,2017,2018 --channels mu,ele --outdir templates/v1
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--years", default="2017", help="years separated by commas")

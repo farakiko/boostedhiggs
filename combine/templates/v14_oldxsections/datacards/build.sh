@@ -1,2 +1,0 @@
-combineCards.py VBF=VBF.txt ggFpt250to350=ggFpt250to350.txt ggFpt350to500=ggFpt350to500.txt ggFpt500toInf=ggFpt500toInf.txt TopCR=TopCR.txt WJetsCR=WJetsCR.txt > model_combined.txt
-text2workspace.py model_combined.txt

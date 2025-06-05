@@ -18,16 +18,6 @@ plt.style.use(hep.style.CMS)
 warnings.filterwarnings("ignore", message="Found duplicate branch ")
 
 
-# df = 1
-
-# mapping_dict = {
-#     "mjj350-700": (df["VBF"]["lep"]["STXS_finecat"] % 100 == 17) | (df["VBF"]["lep"]["STXS_finecat"] % 100 == 18),
-#     "mjj700-1000": (df["VBF"]["lep"]["STXS_finecat"] % 100 == 19) | (df["VBF"]["lep"]["STXS_finecat"] % 100 == 20),
-#     "mjj1000-1500": (df["VBF"]["lep"]["STXS_finecat"] % 100 == 21) | (df["VBF"]["lep"]["STXS_finecat"] % 100 == 22),
-#     "mjj1500plus": (df["VBF"]["lep"]["STXS_finecat"] % 100 == 23) | (df["VBF"]["lep"]["STXS_finecat"] % 100 == 24),
-# }
-
-
 combine_samples_by_name = {
     "GluGluHToWW_Pt-200ToInf_M-125": "ggF",
     "GluGluHToWW_Pt-200ToInf_M-125_Rivet": "ggF",
@@ -51,6 +41,7 @@ combine_samples = {
     "QCD_Pt": "QCD",
     "TT": "TTbar",
     "WJetsToLNu_HT": "WJetsLNu_LO",
+    # "WJetsToLNu_HT": "WJetsLNu",
     "WJetsToLNu_012JetsNLO_34JetsLO_EWNLOcorr": "WJetsLNu",
     "ST_": "SingleTop",
     "WW": "Diboson",
@@ -336,7 +327,7 @@ def get_axis(var, massbin=5):
         "lep_fj_dr": hist2.axis.Regular(
             35, 0.03, 0.8, name="var", label=r"$\Delta R(\ell, \mathrm{Higgs \ candidate \ jet})$", overflow=True
         ),
-        # "met_pt": hist2.axis.Regular(40, 20, 250, name="var", label=r"MET [GeV]", overflow=True),
+        "met_pt": hist2.axis.Regular(40, 20, 250, name="var", label=r"MET [GeV]", overflow=True),
         # "met_pt": hist2.axis.Regular(15, 0, 300, name="var", label=r"MET [GeV]", overflow=True),
         "met_phi": hist2.axis.Regular(40, -3.14, 3.14, name="var", label=r"MET $\Phi$", overflow=True),
         "met_fj_dphi": hist2.axis.Regular(

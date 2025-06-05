@@ -26,56 +26,338 @@ warnings.filterwarnings("ignore", message="Found duplicate branch ")
 pd.set_option("mode.chained_assignment", None)
 
 
-with open("../binder/trg_eff_SF_ARC.pkl", "rb") as f:
+with open("./trg_eff_SF_ARC.pkl", "rb") as f:
     TRIGGER_SF = pkl.load(f)
 
 THWW_SF = {
     "ggF": 0.948,
     "VBF": 0.984,
 }
+
 ptbinning_trgSF = [2000, 200, 170, 150, 130, 110, 90, 70, 50, 30]
 etabinning_trgSF = [-2.5, -1.5, -0.5, 0.5, 1.5, 2.5]
 
 
-def get_nominal_from_df(df, year, ch, sample_label, region, region_sel, xsecweight, is_data):
+def get_nominal(df, year, ch, sample_label, region, region_sel, xsecweight, is_data):
+    """Compute the nominal event weight."""
 
     if is_data:
-        nominal = np.ones_like(df["fj_pt"])  # for data (nominal is 1)
-    else:
-        nominal = df[f"weight_{ch}"] * xsecweight
+        return np.ones_like(df["fj_pt"])
 
-        if "bjets" in region_sel:  # if there's a bjet selection, add btag SF to the nominal weight
-            nominal *= df["weight_btag"]
+    nominal = df[f"weight_{ch}"] * xsecweight
 
-        # apply trigger SF
-        if ch == "ele":
+    if "bjets" in region_sel:
+        nominal *= df["weight_btag"]
 
-            for i in range(len(ptbinning_trgSF) - 1):
-                high_pt = ptbinning_trgSF[i]
-                low_pt = ptbinning_trgSF[i + 1]
+    if ch == "ele":
+        year_tag = f"UL{year[2:].replace('APV', '')}"
+        sf_nominal = TRIGGER_SF[year_tag]["nominal"]
 
-                msk_pt = (df["lep_pt"] >= low_pt) & (df["lep_pt"] < high_pt)
+        lep_pt = df["lep_pt"].to_numpy()
+        lep_eta = np.abs(df["lep_eta"].to_numpy())
 
-                for j in range(len(etabinning_trgSF) - 1):
-                    low_eta = etabinning_trgSF[j]
-                    high_eta = etabinning_trgSF[j + 1]
+        for i in range(len(ptbinning_trgSF) - 1):
+            high_pt, low_pt = ptbinning_trgSF[i], ptbinning_trgSF[i + 1]
+            msk_pt = (lep_pt >= low_pt) & (lep_pt < high_pt)
 
-                    msk_eta = (abs(df["lep_eta"]) >= low_eta) & (abs(df["lep_eta"]) < high_eta)
+            for j in range(len(etabinning_trgSF) - 1):
+                low_eta, high_eta = etabinning_trgSF[j], etabinning_trgSF[j + 1]
+                msk_eta = (lep_eta >= low_eta) & (lep_eta < high_eta)
 
-                    nominal[msk_pt & msk_eta] *= TRIGGER_SF["UL" + year[2:].replace("APV", "")]["nominal"][i, j]
+                msk = msk_pt & msk_eta
+                nominal[msk] *= sf_nominal[i, j]
 
-        # apply THWW SF
-        if ("ggF" in sample_label) or (sample_label in ["ggF", "VBF", "WH", "ZH", "ttH"]):
-            if "ggF" in region:
-                nominal *= THWW_SF["ggF"]
-            else:
-                nominal *= THWW_SF["VBF"]
+    if sample_label in ["ggF", "VBF", "WH", "ZH", "ttH"] or "ggF" in sample_label:
+        nominal *= THWW_SF["ggF"] if "ggF" in region else THWW_SF["VBF"]
 
     return nominal
 
 
+def add_trigger_SF_unc(hists, df, year, ch, sample_label, region, nominal, is_data):
+    """Add electron trigger SF up/down variations."""
+
+    up = nominal.copy()
+    down = nominal.copy()
+
+    if ch == "ele" and not is_data:
+        year_tag = f"UL{year[2:].replace('APV', '')}"
+        sf_nominal = TRIGGER_SF[year_tag]["nominal"]
+        sf_up = TRIGGER_SF[year_tag]["up"]
+        sf_down = TRIGGER_SF[year_tag]["down"]
+
+        lep_pt = df["lep_pt"].to_numpy()
+        lep_eta = np.abs(df["lep_eta"].to_numpy())
+
+        for i in range(len(ptbinning_trgSF) - 1):
+            high_pt, low_pt = ptbinning_trgSF[i], ptbinning_trgSF[i + 1]
+            msk_pt = (lep_pt >= low_pt) & (lep_pt < high_pt)
+
+            for j in range(len(etabinning_trgSF) - 1):
+                low_eta, high_eta = etabinning_trgSF[j], etabinning_trgSF[j + 1]
+                msk_eta = (lep_eta >= low_eta) & (lep_eta < high_eta)
+
+                msk = msk_pt & msk_eta
+
+                up[msk] /= sf_nominal[i, j]
+                down[msk] /= sf_nominal[i, j]
+
+                up[msk] *= sf_up[i, j]
+                down[msk] *= sf_down[i, j]
+
+    for syst, weight in [("trigger_ele_SF_up", up), ("trigger_ele_SF_down", down)]:
+        hists.fill(
+            Sample=sample_label,
+            Systematic=syst,
+            Region=region,
+            mass_observable=df["rec_higgs_m"],
+            weight=weight,
+        )
+
+    return hists
+
+
+def add_hww_EKW_unc(hists, df, sample_label, region, nominal):
+    """Add electroweak signal uncertainty for VBF, WH, ZH, ttH."""
+
+    up = nominal.copy()
+    down = nominal.copy()
+
+    if sample_label in ["VBF", "WH", "ZH", "ttH"]:
+        msk = df["fj_genH_pt"] > 400
+        ew_weight = df["EW_weight"]
+
+        up = np.where(msk, nominal / ew_weight, nominal)
+        down = np.where(msk, nominal * ew_weight, nominal)
+
+    for syst, weight in [("EW_up", up), ("EW_down", down)]:
+        hists.fill(
+            Sample=sample_label,
+            Systematic=syst,
+            Region=region,
+            mass_observable=df["rec_higgs_m"],
+            weight=weight,
+        )
+
+    return hists
+
+
+def add_pdfacc_unc(hists, df, sample, sample_label, region, nominal, sumpdfweights, sumgenweights):
+    """
+    For the PDF acceptance uncertainty:
+    - store 103 variations. 0-100 PDF values
+    - The last two values: alpha_s variations.
+    - you just sum the yield difference from the nominal in quadrature to get the total uncertainty.
+    e.g. https://github.com/LPC-HH/HHLooper/blob/master/python/prepare_card_SR_final.py#L258
+    and https://github.com/LPC-HH/HHLooper/blob/master/app/HHLooper.cc#L1488
+    """
+
+    if sample_label in sigs + ["TTbar"] and sample != "ST_s-channel_4f_hadronicDecays":
+        pdfweights = []
+
+        for weight_i in sumpdfweights:
+            # get the normalization factor per variation i (ratio of sumpdfweights_i/sumgenweights)
+            R_i = sumpdfweights[weight_i] / sumgenweights
+
+            pdfweight = df[f"weight_pdf{weight_i}"].values * nominal / R_i
+            pdfweights.append(pdfweight)
+
+        pdfweights = np.swapaxes(np.array(pdfweights), 0, 1)  # so that the shape is (# events, variation)
+
+        abs_unc = np.linalg.norm((pdfweights - nominal.values.reshape(-1, 1)), axis=1)
+        # cap at 100% uncertainty
+        rel_unc = np.clip(abs_unc / nominal, 0, 1)
+        shape_up = nominal * (1 + rel_unc)
+        shape_down = nominal * (1 - rel_unc)
+
+    else:
+        shape_up = nominal
+        shape_down = nominal
+
+    for syst, weight in [
+        ("weight_pdf_acceptance_up", shape_up),
+        ("weight_pdf_acceptance_down", shape_down),
+    ]:
+        hists.fill(
+            Sample=sample_label,
+            Systematic=syst,
+            Region=region,
+            mass_observable=df["rec_higgs_m"],
+            weight=weight,
+        )
+
+    return hists
+
+
+def add_qcdscaleacc_unc(hists, df, sample, sample_label, region, nominal, sumscaleweights, sumgenweights):
+    """
+    For the QCD acceptance uncertainty:
+    - we save the individual weights [0, 1, 3, 5, 7, 8]
+    - postprocessing: we obtain sum_sumlheweight
+    - postprocessing: we obtain LHEScaleSumw: sum_sumlheweight[i] / sum_sumgenweight
+    - postprocessing:
+    obtain histograms for 0, 1, 3, 5, 7, 8 and 4: h0, h1, ... respectively
+    weighted by scale_0, scale_1, etc
+    and normalize them by  (xsec * luminosity) / LHEScaleSumw[i]
+    - then, take max/min of h0, h1, h3, h5, h7, h8 w.r.t h4: h_up and h_dn
+    - the uncertainty is the nominal histogram * h_up / h4
+    """
+
+    if sample_label in sigs + ["TTbar", "SingleTop"] and sample != "ST_s-channel_4f_hadronicDecays":
+        R_4 = sumscaleweights[4] / sumgenweights
+        central_scaleweight = df["weight_scale4"].values * nominal / R_4
+
+        scaleweights = []
+        for i in sumscaleweights:
+            if i == 4:
+                continue
+            R_i = sumscaleweights[i] / sumgenweights
+            w_i = df[f"weight_scale{i}"].values * nominal / R_i
+            scaleweights.append(w_i)
+
+        scaleweights = np.swapaxes(np.array(scaleweights), 0, 1)  # (n_events, n_variations)
+
+        shape_up = nominal * np.max(scaleweights, axis=1) / central_scaleweight
+        shape_down = nominal * np.min(scaleweights, axis=1) / central_scaleweight
+    else:
+        shape_up = nominal
+        shape_down = nominal
+
+    for syst, weight in [
+        ("weight_qcd_scale_up", shape_up),
+        ("weight_qcd_scale_down", shape_down),
+    ]:
+        hists.fill(
+            Sample=sample_label,
+            Systematic=syst,
+            Region=region,
+            mass_observable=df["rec_higgs_m"],
+            weight=weight,
+        )
+
+    return hists
+
+
+def add_btag_syst(hists, df, year, ch, sample_label, region, nominal, SYST_DICT):
+    """b-tag uncertainties."""
+
+    for syst, (yrs, smpls, var) in SYST_DICT["btag"].items():
+        if (sample_label in smpls) and (year in yrs) and (ch in var):
+            shape_up = df[var[ch] + "Up"] * nominal
+            shape_down = df[var[ch] + "Down"] * nominal
+        else:
+            shape_up = nominal
+            shape_down = nominal
+
+        for variation, weight in [("up", shape_up), ("down", shape_down)]:
+            hists.fill(
+                Sample=sample_label,
+                Systematic=f"{syst}_{variation}",
+                Region=region,
+                mass_observable=df["rec_higgs_m"],
+                weight=weight,
+            )
+
+    return hists
+
+
+def add_JEC_unc(hists, data, year, ch, sample_label, SYST_DICT, region, regions_sel, nominal, xsecweight, is_data):
+    """Individual sources of JES/JMS/JMR."""
+
+    for syst, (yrs, smpls, var) in SYST_DICT["JEC"].items():
+        for variation in ["up", "down"]:
+            for region, region_sel in regions_sel.items():
+                df = data.copy()
+
+                if (sample_label in smpls) and (year in yrs) and (ch in var):
+                    region_sel_mod = region_sel.replace("rec_higgs_pt", f"rec_higgs_pt{var[ch]}_{variation}")
+                    df = df.query(region_sel_mod)
+                    nominal_varied = get_nominal(df, year, ch, sample_label, region, region_sel_mod, xsecweight, is_data)
+                    mass_obs = df[f"rec_higgs_m{var[ch]}_{variation}"]
+                else:
+                    df = df.query(region_sel)
+                    nominal_varied = get_nominal(df, year, ch, sample_label, region, region_sel, xsecweight, is_data)
+                    mass_obs = df["rec_higgs_m"]
+
+                hists.fill(
+                    Sample=sample_label,
+                    Systematic=f"{syst}_{variation}",
+                    Region=region,
+                    mass_observable=mass_obs,
+                    weight=nominal_varied,
+                )
+
+    return hists
+
+
+def add_fake_unc(hists, years, channels, samples_dir, presel, regions_sel):
+    """Fills Fake samples for nominal and fake-related systematics."""
+
+    fake_SF = {
+        "ele": 0.75,
+        "mu": 1.0,
+    }
+
+    variations = ["FR_Nominal", "FR_stat_Up", "FR_stat_Down", "EWK_SF_Up", "EWK_SF_Down"]
+
+    for year in years:
+        for ch in channels:
+            sf = fake_SF[ch]
+
+            for variation in variations:
+                filepath = f"{samples_dir[year]}/Fake/fake_{year}_{ch}_{variation}.parquet"
+                if not os.path.exists(filepath):
+                    logging.warning(f"Missing file: {filepath}")
+                    continue
+
+                df = pd.read_parquet(filepath)
+
+                for cut in presel[ch].values():
+                    df = df.query(cut)
+                df["nominal"] *= sf  # Apply closure SF
+
+                for region, region_sel in regions_sel.items():
+                    df_region = df.query(region_sel)
+
+                    syst_label = "nominal" if variation == "FR_Nominal" else variation
+                    hists.fill(
+                        Sample="Fake",
+                        Systematic=syst_label,
+                        Region=region,
+                        mass_observable=df_region["rec_higgs_m"],
+                        weight=df_region["nominal"],
+                    )
+    return hists
+
+
+def add_common_syst(hists, df, year, ch, sample_label, SYST_DICT, region, region_sel, nominal, xsecweight):
+    """Any other systematic uncertainty that is not listed above."""
+
+    for syst, (yrs, smpls, var) in SYST_DICT["common"].items():
+        if (sample_label in smpls) and (year in yrs) and (ch in var):
+            shape_up = df[var[ch] + "Up"] * xsecweight
+            shape_down = df[var[ch] + "Down"] * xsecweight
+
+            if "bjets" in region_sel:  # if there's a bjet selection, add btag SF to the nominal weight
+                shape_up *= df["weight_btag"]
+                shape_down *= df["weight_btag"]
+        else:
+            shape_up = nominal
+            shape_down = nominal
+
+        for variation, weight in [("up", shape_up), ("down", shape_down)]:
+            hists.fill(
+                Sample=sample_label,
+                Systematic=f"{syst}_{variation}",
+                Region=region,
+                mass_observable=df["rec_higgs_m"],
+                weight=weight,
+            )
+
+    return hists
+
+
 def fill_systematics(
-    data,
+    df,
     hists,
     years,
     year,
@@ -92,286 +374,35 @@ def fill_systematics(
     SYST_DICT = get_systematic_dict(years)
 
     for region, region_sel in regions_sel.items():  # e.g. pass, fail, top control region, etc.
+        df_region = df.query(region_sel)
+        if df_region.empty:
+            continue
 
-        df = data.copy()
-        df = df.query(region_sel)
+        nominal = get_nominal(df_region, year, ch, sample_label, region, region_sel, xsecweight, is_data)
 
-        nominal = get_nominal_from_df(df, year, ch, sample_label, region, region_sel, xsecweight, is_data)
-
+        # Nominal
         hists.fill(
             Sample=sample_label,
             Systematic="nominal",
             Region=region,
-            mass_observable=df["rec_higgs_m"],
+            mass_observable=df_region["rec_higgs_m"],
             weight=nominal,
         )
 
-        # ------------------- Trigger SF unc. -------------------
-        # for the up/down must revert the nominal that i had applied before
-        up, down = nominal.copy(), nominal.copy()
-        if (ch == "ele") and (not is_data):
-            # if ch == "ele":
-            for i in range(len(ptbinning_trgSF) - 1):
-                high_pt = ptbinning_trgSF[i]
-                low_pt = ptbinning_trgSF[i + 1]
-
-                msk_pt = (df["lep_pt"] >= low_pt) & (df["lep_pt"] < high_pt)
-
-                for j in range(len(etabinning_trgSF) - 1):
-                    low_eta = etabinning_trgSF[j]
-                    high_eta = etabinning_trgSF[j + 1]
-
-                    msk_eta = (abs(df["lep_eta"]) >= low_eta) & (abs(df["lep_eta"]) < high_eta)
-
-                    up[msk_pt & msk_eta] /= TRIGGER_SF["UL" + year[2:].replace("APV", "")]["nominal"][i, j]
-                    down[msk_pt & msk_eta] /= TRIGGER_SF["UL" + year[2:].replace("APV", "")]["nominal"][i, j]
-
-                    up[msk_pt & msk_eta] *= TRIGGER_SF["UL" + year[2:].replace("APV", "")]["up"][i, j]
-                    down[msk_pt & msk_eta] *= TRIGGER_SF["UL" + year[2:].replace("APV", "")]["down"][i, j]
-
-        hists.fill(
-            Sample=sample_label,
-            Systematic="trigger_ele_SF_up",
-            Region=region,
-            mass_observable=df["rec_higgs_m"],
-            weight=up,
+        # Systematics
+        hists = add_trigger_SF_unc(hists, df_region, year, ch, sample_label, region, nominal, is_data)
+        hists = add_hww_EKW_unc(hists, df_region, sample_label, region, nominal)
+        hists = add_pdfacc_unc(hists, df_region, sample, sample_label, region, nominal, sumpdfweights, sumgenweights)
+        hists = add_qcdscaleacc_unc(hists, df_region, sample, sample_label, region, nominal, sumscaleweights, sumgenweights)
+        hists = add_btag_syst(hists, df_region, year, ch, sample_label, region, nominal, SYST_DICT)
+        hists = add_common_syst(hists, df_region, year, ch, sample_label, SYST_DICT, region, region_sel, nominal, xsecweight)
+        hists = add_JEC_unc(
+            hists, df_region, year, ch, sample_label, SYST_DICT, region, regions_sel, nominal, xsecweight, is_data
         )
-        hists.fill(
-            Sample=sample_label,
-            Systematic="trigger_ele_SF_down",
-            Region=region,
-            mass_observable=df["rec_higgs_m"],
-            weight=down,
-        )
-
-        # ------------------- signal EWK unc. -------------------
-        up, down = nominal.copy(), nominal.copy()
-        if sample_label in ["VBF", "WH", "ZH", "ttH"]:
-            msk = df["fj_genH_pt"] > 400
-
-            up = np.where(msk, nominal / df["EW_weight"], nominal)
-            down = np.where(msk, nominal * df["EW_weight"], nominal)
-
-        hists.fill(
-            Sample=sample_label,
-            Systematic="EW_up",
-            Region=region,
-            mass_observable=df["rec_higgs_m"],
-            weight=up,
-        )
-        hists.fill(
-            Sample=sample_label,
-            Systematic="EW_down",
-            Region=region,
-            mass_observable=df["rec_higgs_m"],
-            weight=down,
-        )
-
-        # ------------------- PDF acceptance -------------------
-
-        """
-        For the PDF acceptance uncertainty:
-        - store 103 variations. 0-100 PDF values
-        - The last two values: alpha_s variations.
-        - you just sum the yield difference from the nominal in quadrature to get the total uncertainty.
-        e.g. https://github.com/LPC-HH/HHLooper/blob/master/python/prepare_card_SR_final.py#L258
-        and https://github.com/LPC-HH/HHLooper/blob/master/app/HHLooper.cc#L1488
-        """
-        if (sample_label in sigs + ["TTbar"]) and (sample != "ST_s-channel_4f_hadronicDecays"):
-
-            pdfweights = []
-
-            for weight_i in sumpdfweights:
-
-                # noqa: get the normalization factor per variation i (ratio of sumpdfweights_i/sumgenweights)
-                R_i = sumpdfweights[weight_i] / sumgenweights
-
-                pdfweight = df[f"weight_pdf{weight_i}"].values * nominal / R_i
-                pdfweights.append(pdfweight)
-
-            pdfweights = np.swapaxes(np.array(pdfweights), 0, 1)  # so that the shape is (# events, variation)
-
-            abs_unc = np.linalg.norm((pdfweights - nominal.values.reshape(-1, 1)), axis=1)
-            # cap at 100% uncertainty
-            rel_unc = np.clip(abs_unc / nominal, 0, 1)
-            shape_up = nominal * (1 + rel_unc)
-            shape_down = nominal * (1 - rel_unc)
-
-        else:
-            shape_up = nominal
-            shape_down = nominal
-
-        hists.fill(
-            Sample=sample_label,
-            Systematic="weight_pdf_acceptance_up",
-            Region=region,
-            mass_observable=df["rec_higgs_m"],
-            weight=shape_up,
-        )
-
-        hists.fill(
-            Sample=sample_label,
-            Systematic="weight_pdf_acceptance_down",
-            Region=region,
-            mass_observable=df["rec_higgs_m"],
-            weight=shape_down,
-        )
-
-        # ------------------- QCD scale -------------------
-
-        """
-        For the QCD acceptance uncertainty:
-        - we save the individual weights [0, 1, 3, 5, 7, 8]
-        - postprocessing: we obtain sum_sumlheweight
-        - postprocessing: we obtain LHEScaleSumw: sum_sumlheweight[i] / sum_sumgenweight
-        - postprocessing:
-        obtain histograms for 0, 1, 3, 5, 7, 8 and 4: h0, h1, ... respectively
-        weighted by scale_0, scale_1, etc
-        and normalize them by  (xsec * luminosity) / LHEScaleSumw[i]
-        - then, take max/min of h0, h1, h3, h5, h7, h8 w.r.t h4: h_up and h_dn
-        - the uncertainty is the nominal histogram * h_up / h4
-        """
-        if (sample_label in sigs + ["TTbar", "SingleTop"]) and (sample != "ST_s-channel_4f_hadronicDecays"):
-
-            R_4 = sumscaleweights[4] / sumgenweights
-            scaleweight_4 = df["weight_scale4"].values * nominal / R_4
-
-            scaleweights = []
-            for weight_i in sumscaleweights:
-                if weight_i == 4:
-                    continue
-
-                # get the normalization factor per variation i (ratio of sumscaleweights_i/sumgenweights)
-                R_i = sumscaleweights[weight_i] / sumgenweights
-                scaleweight_i = df[f"weight_scale{weight_i}"].values * nominal / R_i
-
-                scaleweights.append(scaleweight_i)
-
-            scaleweights = np.array(scaleweights)
-
-            scaleweights = np.swapaxes(np.array(scaleweights), 0, 1)  # so that the shape is (# events, variation)
-
-            # TODO: debug
-            shape_up = nominal * np.max(scaleweights, axis=1) / scaleweight_4
-            shape_down = nominal * np.min(scaleweights, axis=1) / scaleweight_4
-
-        else:
-            shape_up = nominal
-            shape_down = nominal
-
-        hists.fill(
-            Sample=sample_label,
-            Systematic="weight_qcd_scale_up",
-            Region=region,
-            mass_observable=df["rec_higgs_m"],
-            weight=shape_up,
-        )
-
-        hists.fill(
-            Sample=sample_label,
-            Systematic="weight_qcd_scale_down",
-            Region=region,
-            mass_observable=df["rec_higgs_m"],
-            weight=shape_down,
-        )
-
-        # ------------------- Common systematics  -------------------
-
-        for syst, (yrs, smpls, var) in SYST_DICT["common"].items():
-
-            if (sample_label in smpls) and (year in yrs) and (ch in var):
-                shape_up = df[var[ch] + "Up"] * xsecweight
-                shape_down = df[var[ch] + "Down"] * xsecweight
-
-                if "bjets" in region_sel:  # if there's a bjet selection, add btag SF to the nominal weight
-                    shape_up *= df["weight_btag"]
-                    shape_down *= df["weight_btag"]
-
-            else:
-                shape_up = nominal
-                shape_down = nominal
-
-            hists.fill(
-                Sample=sample_label,
-                Systematic=f"{syst}_up",
-                Region=region,
-                mass_observable=df["rec_higgs_m"],
-                weight=shape_up,
-            )
-
-            hists.fill(
-                Sample=sample_label,
-                Systematic=f"{syst}_down",
-                Region=region,
-                mass_observable=df["rec_higgs_m"],
-                weight=shape_down,
-            )
-
-        # ------------------- btag systematics  -------------------
-
-        for syst, (yrs, smpls, var) in SYST_DICT["btag"].items():
-
-            if (sample_label in smpls) and (year in yrs) and (ch in var):
-                shape_up = df[var[ch] + "Up"] * nominal
-                shape_down = df[var[ch] + "Down"] * nominal
-            else:
-                shape_up = nominal
-                shape_down = nominal
-
-            hists.fill(
-                Sample=sample_label,
-                Systematic=f"{syst}_up",
-                Region=region,
-                mass_observable=df["rec_higgs_m"],
-                weight=shape_up,
-            )
-
-            hists.fill(
-                Sample=sample_label,
-                Systematic=f"{syst}_down",
-                Region=region,
-                mass_observable=df["rec_higgs_m"],
-                weight=shape_down,
-            )
-
-    # ------------------- individual sources of JES -------------------
-
-    """We apply the jet pt cut on the up/down variations."""
-    for syst, (yrs, smpls, var) in SYST_DICT["JEC"].items():
-
-        for variation in ["up", "down"]:
-
-            for (
-                region,
-                region_sel,
-            ) in regions_sel.items():  # e.g. pass, fail, top control region, etc.
-
-                if (sample_label in smpls) and (year in yrs) and (ch in var):
-                    region_sel = region_sel.replace("rec_higgs_pt", "rec_higgs_pt" + var[ch] + f"_{variation}")
-
-                df = data.copy()
-                df = df.query(region_sel)
-
-                nominal = get_nominal_from_df(df, year, ch, sample_label, region, region_sel, xsecweight, is_data)
-
-                if (sample_label in smpls) and (year in yrs) and (ch in var):
-                    shape_variation = df["rec_higgs_m" + var[ch] + f"_{variation}"]
-                else:
-                    shape_variation = df["rec_higgs_m"]
-
-                hists.fill(
-                    Sample=sample_label,
-                    Systematic=f"{syst}_{variation}",
-                    Region=region,
-                    mass_observable=shape_variation,
-                    weight=nominal,
-                )
 
 
 def get_templates(years, channels, samples, samples_dir, regions_sel, model_path):
-    """
-    Postprocesses the parquets by applying preselections, and fills templates for different regions.
-
+    """Postprocesses the parquets by applying preselections, and fills templates for different regions.
     Args
         years [list]: years to postprocess (e.g. ["2016APV", "2016"])
         ch [list]: channels to postprocess (e.g. ["ele", "mu"])
@@ -388,9 +419,9 @@ def get_templates(years, channels, samples, samples_dir, regions_sel, model_path
     # add extra selections to preselection
     presel = {
         "mu": {
+            "lepmiso": "(lep_pt<55) | ( (lep_pt>=55) & (lep_misolation<0.8))",  # needed for the fakes
             "fj_mass": "fj_mass>40",
             "tagger>0.75": "THWW>0.75",
-            "lepmiso": "(lep_pt<55) | ( (lep_pt>=55) & (lep_misolation<0.8))",  # needed for the fakes
         },
         "ele": {
             "fj_mass": "fj_mass>40",
@@ -415,20 +446,15 @@ def get_templates(years, channels, samples, samples_dir, regions_sel, model_path
         storage=hist2.storage.Weight(),
     )
 
-    for year in years:  # e.g. 2018, 2017, 2016APV, 2016
-        for ch in channels:  # e.g. mu, ele
-            logging.info(f"Processing year {year} and {ch} channel")
+    for year in years:
+        for ch in channels:
+            logging.info(f"Processing {year}, {ch} channel")
 
             with open("../fileset/luminosity.json") as f:
                 luminosity = json.load(f)[ch][year]
 
             for sample in os.listdir(samples_dir[year]):
-
                 sample_to_use = get_common_sample_name(sample)
-
-                if ("ggF" in sample_to_use) or ("VBF" in sample_to_use):
-                    if "Rivet" not in sample:
-                        continue
 
                 if sample_to_use not in samples:
                     continue
@@ -564,44 +590,7 @@ def get_templates(years, channels, samples, samples_dir, regions_sel, model_path
                     sumscaleweights,
                 )
 
-    fake_SF = {
-        "ele": 0.75,
-        "mu": 1.0,
-    }
-    for variation in ["FR_Nominal", "FR_stat_Up", "FR_stat_Down", "EWK_SF_Up", "EWK_SF_Down"]:
-
-        for year in years:
-            for ch in channels:
-
-                data = pd.read_parquet(f"{samples_dir[year]}/Fake/fake_{year}_{ch}_{variation}.parquet")
-
-                # apply selection
-                for selection in presel[ch]:
-                    data = data.query(presel[ch][selection])
-
-                data["nominal"] *= fake_SF[ch]  # the closure test SF
-
-                for region in hists.axes["Region"]:
-                    df = data.copy()
-
-                    df = df.query(regions_sel[region])
-
-                    if variation == "FR_Nominal":
-                        hists.fill(
-                            Sample="Fake",
-                            Systematic="nominal",
-                            Region=region,
-                            mass_observable=df["rec_higgs_m"],
-                            weight=df["nominal"],
-                        )
-                    else:
-                        hists.fill(
-                            Sample="Fake",
-                            Systematic=variation,
-                            Region=region,
-                            mass_observable=df["rec_higgs_m"],
-                            weight=df["nominal"],
-                        )
+    hists = add_fake_unc(hists, years, channels, samples_dir, presel, regions_sel)
 
     logging.info(hists)
 
@@ -613,37 +602,50 @@ def fix_neg_yields(h):
     Will set the bin yields of a process to 0 if the nominal yield is negative, and will
     set the yield to 0 for the full Systematic axis.
     """
-    for region in h.axes["Region"]:
-        for sample in h.axes["Sample"]:
-            neg_bins = np.where(h[{"Sample": sample, "Systematic": "nominal", "Region": region}].values() < 0)[0]
 
-            if len(neg_bins) > 0:
-                print(f"{region}, {sample}, has {len(neg_bins)} bins with negative yield.. will set them to 0")
+    sample_axis = np.array(h.axes["Sample"])
+    syst_axis = np.array(h.axes["Systematic"])
+    region_axis = np.array(h.axes["Region"])
 
-                sample_index = np.argmax(np.array(h.axes["Sample"]) == sample)
-                region_index = np.argmax(np.array(h.axes["Region"]) == region)
+    # Fix nominal bins with negative yield
+    for region in region_axis:
+        for sample in sample_axis:
+            values = h[{"Sample": sample, "Systematic": "nominal", "Region": region}].values()
+            neg_bins = np.where(values < 0)[0]
 
-                for neg_bin in neg_bins:
-                    h.view(flow=True)[sample_index, :, region_index, neg_bin + 1].value = 1e-3
-                    h.view(flow=True)[sample_index, :, region_index, neg_bin + 1].variance = 1e-3
+            if len(neg_bins) == 0:
+                continue
 
-    for region in h.axes["Region"]:
-        for sample in h.axes["Sample"]:
-            for systematic in h.axes["Systematic"]:
-                neg_bins = np.where(h[{"Sample": sample, "Systematic": systematic, "Region": region}].values() < 0)[0]
+            print(f"[fix_neg_yields] {region}, {sample} has {len(neg_bins)} negative nominal bins — setting to 1e-3.")
 
-                if len(neg_bins) > 0:
-                    print(
-                        f"{region}, {sample}, has {len(neg_bins)} bins for {systematic} with negative yield.. will set them to 0"
-                    )  # noqa
+            i_sample = np.argmax(sample_axis == sample)
+            i_region = np.argmax(region_axis == region)
 
-                    sample_index = np.argmax(np.array(h.axes["Sample"]) == sample)
-                    region_index = np.argmax(np.array(h.axes["Region"]) == region)
+            for i_bin in neg_bins:
+                bin_view = h.view(flow=True)[i_sample, :, i_region, i_bin + 1]
+                bin_view.value = 1e-3
+                bin_view.variance = 1e-3
 
-                    for neg_bin in neg_bins:
-                        msk = h.view(flow=True)[sample_index, :, region_index, neg_bin + 1].value < 0
-                        h.view(flow=True)[sample_index, :, region_index, neg_bin + 1].value[msk] = 0
-                        h.view(flow=True)[sample_index, :, region_index, neg_bin + 1].variance[msk] = 0
+    # Now zero out negative yields in variations
+    for region in region_axis:
+        for sample in sample_axis:
+            i_sample = np.argmax(sample_axis == sample)
+            i_region = np.argmax(region_axis == region)
+
+            for syst in syst_axis:
+                values = h[{"Sample": sample, "Systematic": syst, "Region": region}].values()
+                neg_bins = np.where(values < 0)[0]
+
+                if len(neg_bins) == 0:
+                    continue
+
+                print(f"[fix_neg_yields] {region}, {sample}, {syst} has {len(neg_bins)} negative bins — zeroing them.")
+
+                for i_bin in neg_bins:
+                    bin_view = h.view(flow=True)[i_sample, :, i_region, i_bin + 1]
+                    msk = bin_view.value < 0
+                    bin_view.value[msk] = 0
+                    bin_view.variance[msk] = 0
 
 
 def main(args):
@@ -680,8 +682,7 @@ def main(args):
 
 
 if __name__ == "__main__":
-    # e.g.
-    # python make_templates.py --years 2016,2016APV,2017,2018 --channels mu,ele --outdir templates/v1
+    # e.g. python make_templates.py --years 2016,2016APV,2017,2018 --channels mu,ele --outdir templates/v1
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--years", dest="years", default="2017", help="years separated by commas")

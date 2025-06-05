@@ -47,9 +47,6 @@ from boostedhiggs.utils import (
 
 from .run_tagger_inference import runInferenceTriton
 
-# from boostedhiggs.utils import match_H_alljets
-
-
 warnings.filterwarnings("ignore", message="Found duplicate branch ")
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 warnings.filterwarnings("ignore", message="Missing cross-reference index ")
@@ -140,6 +137,7 @@ class HwwProcessor(processor.ProcessorABC):
 
     def _save_dfs_parquet(self, fname, dfs_dict, ch):
         """Save the given pandas DataFrame dictionary as a Parquet file to the output directory."""
+
         if self._output_location is not None:
             table = pa.Table.from_pandas(dfs_dict)
             if len(table) != 0:  # skip dataframes with empty entries
@@ -147,6 +145,7 @@ class HwwProcessor(processor.ProcessorABC):
 
     def _ak_to_pandas(self, output_collection: ak.Array) -> pd.DataFrame:
         """Converts an Awkward Array collection to a flat pandas DataFrame for to write the output."""
+
         output = pd.DataFrame()
         for field in ak.fields(output_collection):
             output[field] = ak.to_numpy(output_collection[field])
@@ -157,6 +156,7 @@ class HwwProcessor(processor.ProcessorABC):
         Adds a boolean mask to the PackedSelection object for the given channel(s) and updates the
         cutflow dictionary with the sum of selected events or weights.
         """
+
         channels = self._channels if channel == "all" else [channel]
 
         for ch in channels:
@@ -176,6 +176,7 @@ class HwwProcessor(processor.ProcessorABC):
 
     def _compute_lhe_pdf_weights(self, events):
         """Computes and returns summed LHE scale and PDF weights (used for QCD and PDF uncertainty calculations)."""
+
         sumlheweight = {}
         if "LHEScaleWeight" in events.fields:
             if len(events.LHEScaleWeight[0]) == 9:
@@ -218,6 +219,7 @@ class HwwProcessor(processor.ProcessorABC):
 
     def _build_objects(self, events):
         """Constructs physics objects (e.g. leptons, jets) and applies basic kinematic and quality cuts."""
+
         # MUONS
         muons = ak.with_field(events.Muon, 0, "flavor")
 
@@ -381,6 +383,7 @@ class HwwProcessor(processor.ProcessorABC):
 
     def _derive_variables(self, events, objects):
         """Derives physics variables from `objects` (e.g. deltaR(jet,lep))."""
+
         ht = ak.sum(objects["jets"].pt, axis=1)
 
         # VH jet
@@ -555,6 +558,7 @@ class HwwProcessor(processor.ProcessorABC):
 
     def _apply_JEC(self, objects, variables):
         """Computes JES/JER and JMSR shift variations and appends them to the set of output variables."""
+
         fatjetvars = {
             "fj_pt": objects["candidatefj"].pt,
             "fj_eta": objects["candidatefj"].eta,
@@ -645,6 +649,7 @@ class HwwProcessor(processor.ProcessorABC):
         Events are selected only if all pileup weight variations (nominal, up, down)
         are below the specified cutoff.
         """
+
         pweights = get_pileup_weight(year, yearmod, events.Pileup.nPU.to_numpy())
         pw_pass = (pweights["nominal"] <= cutoff) * (pweights["up"] <= cutoff) * (pweights["down"] <= cutoff)
         logging.info(f"Passing pileup weight cut: {np.sum(pw_pass)} out of {len(events)} events")
@@ -653,6 +658,7 @@ class HwwProcessor(processor.ProcessorABC):
 
     def _add_selections(self, events, trigger, metfilters, objects, variables):
         """Adds event pre-selection to PackedSelection for cutflow and filtering."""
+
         if self.isMC:
             self._apply_pileup_cutoff(events, self._year, self._yearmod, cutoff=4)
 
@@ -730,6 +736,7 @@ class HwwProcessor(processor.ProcessorABC):
 
     def _store_genVars(self, dataset, events, objects, variables):
         """Matches generator-level particles to reconstructed jets or leptons."""
+
         signal_mask = None
         if self.isMC:
             if self.isSignal:
@@ -766,6 +773,7 @@ class HwwProcessor(processor.ProcessorABC):
 
     def _add_MC_weights(self, dataset, events, objects, variables):
         """Applies event-level weights and corrections for MC."""
+
         for ch in self._channels:
             if self._year in ("2016", "2017"):
                 self.weights[ch].add(
@@ -877,6 +885,7 @@ class HwwProcessor(processor.ProcessorABC):
 
     def _add_lundplane_weights(self, events, dataset, selection_ch, objects):
         """Computes variables used for Lund plane reweighting technique."""
+
         from boostedhiggs.corrections import getLPweights
 
         pf_cands, gen_parts_eta_phi, gen_parts_pt_mass, ak8_jets, bgen_parts_eta_phi, genlep = getLPweights(
@@ -913,6 +922,7 @@ class HwwProcessor(processor.ProcessorABC):
 
     def _run_inference(self, events, selection_ch, objects):
         """Runs ParT tagger inference using Triton."""
+
         model_name = "ak8_MD_vminclv2ParT_manual_fixwrap_all_nodes"
         pnet_vars = runInferenceTriton(
             self.tagger_resources_path, events[selection_ch], objects["fj_idx_lep"][selection_ch], model_name=model_name
@@ -926,6 +936,7 @@ class HwwProcessor(processor.ProcessorABC):
 
     def _build_output(self, events, dataset, variables, objects):
         """Stores the events passing the selections in a pandas dataframes."""
+
         output = {}
         for ch in self._channels:
             selection_ch = self.selections[ch].all(*self.selections[ch].names)
