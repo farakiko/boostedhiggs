@@ -17,6 +17,7 @@ mc:
   - WJetsToLNu_HT-800To1200
   - WJetsToLNu_HT-1200To2500
   - WJetsToLNu_HT-2500ToInf
+  - WJetsToLNu_012JetsNLO_34JetsLO_EWNLOcorr
   - TTTo2L2Nu
   - TTToHadronic
   - TTToSemiLeptonic
@@ -62,6 +63,8 @@ mc:
   - EWKWminus_WToLNu
   - EWKWplus_WToLNu
 vjetsnlo:
+  - WJetsToLNu_012JetsNLO_34JetsLO_EWNLOcorr
+vjetsnloOTHER:
   - WJetsToLNu_1J
   - WJetsToLNu_2J
   - WJetsToLNu_LHEFilterPtW-250To400
@@ -72,8 +75,6 @@ vjetsnlo:
   - WJetsToLNu_Pt-250To400_MatchEWPDG20
   - WJetsToLNu_Pt-400To600_MatchEWPDG20
   - WJetsToLNu_Pt-600ToInf_MatchEWPDG20
-vjetsnloOTHER:
-  - WJetsToLNu_0J
 extra:
   - GluGluZH_HToWW_M-125_TuneCP5_13TeV-powheg-pythia8
   - TTZToQQ
