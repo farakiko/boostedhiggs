@@ -153,7 +153,7 @@ seed=$seed numtoys=$numtoys"
 ####################################################################################################
 
 dataset=data_obs
-cards_dir="templates/v14/"
+cards_dir="templates/v17/"
 
 if [ $unfolding = 1 ]; then
     cards_dir+="/datacards_unfolding"
