@@ -68,7 +68,10 @@ def get_nominal(df, year, ch, sample_label, region, region_sel, xsecweight, is_d
                 nominal[msk] *= sf_nominal[i, j]
 
     if sample_label in ["ggF", "VBF", "WH", "ZH", "ttH"] or "ggF" in sample_label:
-        nominal *= THWW_SF["ggF"] if "ggF" in region else THWW_SF["VBF"]
+        if "ggF" in region:
+            nominal *= THWW_SF["ggF"]
+        elif "VBF" in region:
+            nominal *= THWW_SF["VBF"]
 
     return nominal
 
