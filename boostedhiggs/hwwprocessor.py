@@ -983,6 +983,8 @@ class HwwProcessor(processor.ProcessorABC):
                 "loose_lep1_miso",
                 "loose_lep1_pt",
                 "msk_leptonic_taus",
+                "ngenjets_b",
+                "ngenjets_c",
             )
 
             def entries_to_remove(entries, variables):
