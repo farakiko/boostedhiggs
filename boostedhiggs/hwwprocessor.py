@@ -937,6 +937,61 @@ class HwwProcessor(processor.ProcessorABC):
     def _build_output(self, events, dataset, variables, objects):
         """Stores the events passing the selections in a pandas dataframes."""
 
+        if not self._apply_selection and not self._apply_trigger:
+            entries = (
+                "fj_lsf3",
+                "fj_eta",
+                "fj_phi",
+                "lep_pt",
+                "lep_eta",
+                "lep_phi",
+                "lep_mass",
+                "lep_isolation",
+                "lep_misolation",
+                "lep_fj_dr",
+                "lep_met_mt",
+                "met_fj_dphi",
+                "met_pt",
+                "met_phi",
+                "n_loose_taus_mu",
+                "n_loose_taus_ele",
+                "n_loose_muons1",
+                "n_loose_muons2",
+                "n_tight_muons",
+                "n_good_muons",
+                "n_loose_electrons",
+                "n_tight_electrons",
+                "n_good_electrons",
+                "n_loose_taus_mu",
+                "NumOtherJets",
+                "n_bjets_L",
+                "n_bjets_M",
+                "FirstFatjet_pt",
+                "FirstFatjet_eta",
+                "FirstFatjet_phi",
+                "FirstFatjet_msd",
+                "FirstFatjet_Vscore",
+                "SecondFatjet_pt",
+                "SecondFatjet_eta",
+                "SecondFatjet_phi",
+                "SecondFatjet_msd",
+                "SecondFatjet_Vscore",
+                "VH_fj_pt",
+                "VH_fj_eta",
+                "VH_fj_VScore",
+                "ht",
+                "loose_lep1_miso",
+                "loose_lep1_pt",
+                "msk_leptonic_taus",
+            )
+
+            def entries_to_remove(entries, variables):
+                for key in entries:
+                    if key in variables:
+                        del variables[key]
+
+            entries_to_remove(entries, variables)
+
         output = {}
         for ch in self._channels:
             selection_ch = self.selections[ch].all(*self.selections[ch].names)
