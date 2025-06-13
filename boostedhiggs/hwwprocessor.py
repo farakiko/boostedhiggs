@@ -963,7 +963,6 @@ class HwwProcessor(processor.ProcessorABC):
                 "n_tight_electrons",
                 "n_good_electrons",
                 "n_loose_taus_mu",
-                "NumOtherJets",
                 "n_bjets_L",
                 "n_bjets_M",
                 "FirstFatjet_pt",
