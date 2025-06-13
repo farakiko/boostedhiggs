@@ -659,7 +659,7 @@ class HwwProcessor(processor.ProcessorABC):
     def _add_selections(self, events, trigger, metfilters, objects, variables):
         """Adds event pre-selection to PackedSelection for cutflow and filtering."""
 
-        if self.isMC:
+        if self.isMC and self._apply_selection:
             self._apply_pileup_cutoff(events, self._year, self._yearmod, cutoff=4)
 
         if self._apply_trigger:
