@@ -748,7 +748,8 @@ jmrValues["msoftdrop_twiki"] = {
 # note: clamped to 1.0 (so 2016 JMR down needs to be interpolated by combine)
 jmrValues["msoftdrop"] = {}
 for year in jmrValues["msoftdrop_twiki"]:
-    rel_res = 0.12 if year == "2016" else 0.10
+    # rel_res = 0.12 if year == "2016" else 0.10    # TODO: compute mu/sigma and plug here
+    rel_res = 0.26
     jmrValues["msoftdrop"][year] = [
         1 + np.sqrt(max(sf_res**2 - 1, 0)) * rel_res for sf_res in jmrValues["msoftdrop_twiki"][year]
     ]
