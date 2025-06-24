@@ -1,4 +1,4 @@
-# Datacard for <Channel (WJetsCR) instance at 0x7ff3cb110bb0> generated on 2025-06-08 04:15:25.776366
+# Datacard for <Channel (WJetsCR) instance at 0x7f819921ebb0> generated on 2025-06-24 06:34:22.280116
 imax 1 # number of categories ('bins' but here we are using shape templates)
 jmax 11 # number of samples minus 1
 kmax 139 # number of nuisance parameters
@@ -46,14 +46,14 @@ CMS_HWW_boosted_ele_trigger_stat_unc_2016APV shape         1.0000         1.0000
 CMS_HWW_boosted_ele_trigger_stat_unc_2017 shape            1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000        -
 CMS_HWW_boosted_ele_trigger_stat_unc_2018 shape            1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000        -
 CMS_HWW_boosted_ele_trigger_syst_unc lnN                   1.0530         1.0530         1.0530         1.0530         1.0530         1.0530         1.0530         1.0530         1.0530         1.0530         1.0530        -
-CMS_HWW_boosted_jmr_2016 lnN                                    -         1.0014         1.0005              -         1.0006         1.0002              -              -         1.0029         1.0012              -        -
-CMS_HWW_boosted_jmr_2016APV lnN                                 -         1.0014         1.0003              -         1.0003              -              -         1.0010         1.0037              -              -        -
-CMS_HWW_boosted_jmr_2017 lnN                               1.0003         1.0013         1.0000         1.0007         1.0005         1.0002         1.0004         0.9973         1.0014         1.0031         0.9981        -
-CMS_HWW_boosted_jmr_2018 lnN                               0.9999         1.0001         1.0003         1.0001              -         1.0007         1.0006         1.0023         1.0025              -         1.0036        -
-CMS_HWW_boosted_jms_2016 lnN                               1.0000         1.0009         1.0003         1.0000              -         1.0005         1.0002         1.0016         1.0011         1.0000              -        -
-CMS_HWW_boosted_jms_2016APV lnN                                 -         1.0009         1.0007         1.0002         1.0008         1.0009         1.0000         1.0016         1.0011         1.0015         1.0000        -
-CMS_HWW_boosted_jms_2017 lnN                               1.0006              -         0.9999         1.0004         1.0005         0.9999         1.0000         1.0000         0.9999         1.0031              -        -
-CMS_HWW_boosted_jms_2018 lnN                               1.0003         1.0012         1.0001         1.0001         0.9980         1.0002         1.0002         1.0029         1.0010              -              -        -
+CMS_HWW_boosted_jmr_2016 shape                             1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000        -
+CMS_HWW_boosted_jmr_2016APV shape                          1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000        -
+CMS_HWW_boosted_jmr_2017 shape                             1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000        -
+CMS_HWW_boosted_jmr_2018 shape                             1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000        -
+CMS_HWW_boosted_jms_2016 shape                             1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000        -
+CMS_HWW_boosted_jms_2016APV shape                          1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000        -
+CMS_HWW_boosted_jms_2017 shape                             1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000        -
+CMS_HWW_boosted_jms_2018 shape                             1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000         1.0000        -
 CMS_HWW_boosted_miniisolation_SF_unc lnN            0.9800/1.0200  0.9800/1.0200  0.9800/1.0200  0.9800/1.0200  0.9800/1.0200  0.9800/1.0200  0.9800/1.0200  0.9800/1.0200  0.9800/1.0200  0.9800/1.0200  0.9800/1.0200        -
 CMS_HWW_boosted_mu_identification_stat_2016 lnN            1.0002         1.0002         1.0002         1.0002         1.0001         1.0001         1.0002         1.0002         1.0002         1.0002         1.0002        -
 CMS_HWW_boosted_mu_identification_stat_2016APV lnN         1.0002         1.0002         1.0002         1.0002         1.0001         1.0001         1.0002         1.0002         1.0002         1.0002         1.0002        -
@@ -107,7 +107,7 @@ PDF_ggH_ACCEPT_CMS_HWW_boosted shape                       1.0000              -
 PDF_qqH_ACCEPT_CMS_HWW_boosted shape                            -         1.0000              -              -              -              -              -              -              -              -              -        -
 PDF_ttH_ACCEPT_CMS_HWW_boosted shape                            -              -              -              -         1.0000              -              -              -              -              -              -        -
 PDF_ttbar_ACCEPT_CMS_HWW_boosted shape                          -              -              -              -              -         1.0000              -              -              -              -              -        -
-PDF_wjets_ACCEPT_CMS_HWW_boosted shape                          -              -              -              -              -              -         1.0000              -              -              -              -        -
+PDF_wjets_ACCEPT_CMS_HWW_boosted lnN                            -              -              -              -              -              -         1.0500              -              -              -              -        -
 QCDscale_WH lnN                                                 -              -  0.9930/1.0050              -              -              -              -              -              -              -              -        -
 QCDscale_WH_ACCEPT_CMS_HWW_boosted shape                        -              -         1.0000              -              -              -              -              -              -              -              -        -
 QCDscale_ZH lnN                                                 -              -              -  0.9700/1.0380              -              -              -              -              -              -              -        -
@@ -119,7 +119,7 @@ QCDscale_qqH_ACCEPT_CMS_HWW_boosted shape                       -         1.0000
 QCDscale_singletop_ACCEPT_CMS_HWW_boosted shape                 -              -              -              -              -              -              -         1.0000              -              -              -        -
 QCDscale_ttH lnN                                                -              -              -              -  0.9080/1.0580              -              -              -              -              -              -        -
 QCDscale_ttH_ACCEPT_CMS_HWW_boosted shape                       -              -              -              -         1.0000              -              -              -              -              -              -        -
-QCDscale_wjets_ACCEPT_CMS_HWW_boosted shape                     -              -              -              -              -              -         1.0000              -              -              -              -        -
+QCDscale_wjets_ACCEPT_CMS_HWW_boosted lnN                       -              -              -              -              -              -         1.0500              -              -              -              -        -
 alpha_s lnN                                                1.0260         1.0050         1.0090         1.0090         1.0200              -              -              -              -              -              -        -
 lumi_13TeV_1718 lnN                                        1.0027         1.0027         1.0027         1.0027         1.0027         1.0027         1.0027         1.0027         1.0027         1.0027         1.0027        -
 lumi_13TeV_2016 lnN                                        1.0026         1.0026         1.0026         1.0026         1.0026         1.0026         1.0026         1.0026         1.0026         1.0026         1.0026        -
