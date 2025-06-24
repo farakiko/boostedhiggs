@@ -123,19 +123,29 @@ def create_datacard(
                         syst_do = np.where(msk_must_symetrize, nominal - max_variation, syst_do_redefined)
 
                     if sys_value.combinePrior == "lnN":
+
                         eff_up = shape_to_num(syst_up, nominal)
                         eff_do = shape_to_num(syst_do, nominal)
 
                         if math.isclose(eff_up, eff_do, rel_tol=1e-2):  # if up and down are the same
                             sample.setParamEffect(sys_value, max(eff_up, eff_do))
+                        elif eff_up == 1:  # if up is the same as nominal
+                            sample.setParamEffect(sys_value, eff_do)
+                        elif eff_do == 1:  # if down is the same as nominal
+                            sample.setParamEffect(sys_value, eff_up)
                         else:
                             sample.setParamEffect(sys_value, max(eff_up, eff_do), min(eff_up, eff_do))
 
                     else:
 
-                        nominal[nominal == 0] = 1  # to avoid invalid value encountered in true_divide in "syst_up/nominal"
+                        up_temp = syst_up / np.where(nominal == 0, 1.0, nominal) # to avoid divide by 0
+                        do_temp = syst_do / np.where(nominal == 0, 1.0, nominal) # to avoid divide by 0
 
-                        sample.setParamEffect(sys_value, (syst_up / nominal), (syst_do / nominal))
+                        if ("JMR_2016" in sys_name) or ("JMS_2016" in sys_name):   # do is same as nominal so must manually symmetrize
+                            if syst_do.sum() == nominal.sum():
+                                do_temp = nominal / np.where(syst_up == 0, 1.0, syst_up)
+                        
+                        sample.setParamEffect(sys_value, up_temp, do_temp)
 
             if sName in sigs:
                 # THWW unc.

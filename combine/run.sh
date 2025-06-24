@@ -388,29 +388,21 @@ if [ $impactsi = 1 ]; then
         # plotImpacts.py -i impacts.json -o impacts --blind
         plotImpacts.py -i impacts.json -o impacts
 
-
-        # combineTool.py -M Impacts -d $ws --rMin -10 --rMax 10 -m 125 --robustFit 1 --doInitialFit --expectSignal 1 --named CMS_pileup_2018
-        # combineTool.py -M Impacts -d $ws --rMin -10 --rMax 10 -m 125 --robustFit 1 --doFits --expectSignal 1 --parallel 50 --named CMS_pileup_2018
-        # combineTool.py -M Impacts -d $ws --rMin -10 --rMax 10 -m 125 --robustFit 1 --output impacts.json --expectSignal 1 --named CMS_pileup_2018
-        # plotImpacts.py -i impacts.json -o impacts --blind
-
-        #  --setParameters mask_SR1=1
-
-        # combineTool.py -M Impacts -d $ws -m 125 --robustFit 1 --doInitialFit --named CMS_HWW_boosted_taggereff --setParameters r=0 --freezeParameters r
-        # combineTool.py -M Impacts -d $ws -m 125 --robustFit 1 --doFits --parallel 50 --named CMS_HWW_boosted_taggereff --setParameters r=0 --freezeParameters r
-        # combineTool.py -M Impacts -d $ws -m 125 --robustFit 1 --output impacts.json --named CMS_HWW_boosted_taggereff --setParameters r=0 --freezeParameters r
-        # plotImpacts.py -i impacts.json -o impacts --blind        
-
-        # combineTool.py -M Impacts -d $ws --rMin -10 --rMax 10 -m 125 --robustFit 1 --doInitialFit --expectSignal 1 --named ps_fsr_wjets_2018,ps_fsr_wjets_2017,ps_fsr_wjets_2016,ps_fsr_wjets_2016APV
-        # combineTool.py -M Impacts -d $ws --rMin -10 --rMax 10 -m 125 --robustFit 1 --doFits --expectSignal 1 --parallel 50 --named ps_fsr_wjets_2018,ps_fsr_wjets_2017,ps_fsr_wjets_2016,ps_fsr_wjets_2016APV
-        # combineTool.py -M Impacts -d $ws --rMin -10 --rMax 10 -m 125 --robustFit 1 --output impacts.json --expectSignal 1 --named ps_fsr_wjets_2018,ps_fsr_wjets_2017,ps_fsr_wjets_2016,ps_fsr_wjets_2016APV
-        # plotImpacts.py -i impacts.json -o impacts --blind
+        # combineTool.py -M Impacts -d $ws --rMin -10 --rMax 10 -m 125 --robustFit 1 --doInitialFit --expectSignal 1 --named PDF_wjets_ACCEPT_CMS_HWW_boosted
+        # combineTool.py -M Impacts -d $ws --rMin -10 --rMax 10 -m 125 --robustFit 1 --doFits --expectSignal 1 --parallel 50 --named PDF_wjets_ACCEPT_CMS_HWW_boosted
+        # combineTool.py -M Impacts -d $ws --rMin -10 --rMax 10 -m 125 --robustFit 1 --output impacts.json --expectSignal 1 --named PDF_wjets_ACCEPT_CMS_HWW_boosted
+        # plotImpacts.py -i impacts.json -o impacts
     else
         echo Impacts blinded
         combineTool.py -M Impacts -d $ws -t -1 --rMin -1 --rMax 2 -m 125 --robustFit 1 --doInitialFit --expectSignal 1
         combineTool.py -M Impacts -d $ws -t -1 --rMin -1 --rMax 2 -m 125 --robustFit 1 --doFits --expectSignal 1 --parallel 50
         combineTool.py -M Impacts -d $ws -t -1 --rMin -1 --rMax 2 -m 125 --robustFit 1 --output impacts.json --expectSignal 1
-        plotImpacts.py -i impacts.json -o impacts      
+        plotImpacts.py -i impacts.json -o impacts    
+
+        # combineTool.py -M Impacts -d $ws -t -1 --rMin -1 --rMax 2 -m 125 --robustFit 1 --doInitialFit --expectSignal 1 --named PDF_wjets_ACCEPT_CMS_HWW_boosted
+        # combineTool.py -M Impacts -d $ws -t -1 --rMin -1 --rMax 2 -m 125 --robustFit 1 --doFits --expectSignal 1 --parallel 50 --named PDF_wjets_ACCEPT_CMS_HWW_boosted
+        # combineTool.py -M Impacts -d $ws -t -1 --rMin -1 --rMax 2 -m 125 --robustFit 1 --output impacts.json --expectSignal 1 --named PDF_wjets_ACCEPT_CMS_HWW_boosted
+        # plotImpacts.py -i impacts.json -o impacts              
     fi
 
 fi

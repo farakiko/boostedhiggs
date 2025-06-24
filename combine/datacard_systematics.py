@@ -204,6 +204,15 @@ def systs_not_from_parquets(years: List[str], lep_channels: List[str], do_unfold
     systs_dict["ZH"]["alpha_s"] = n
     systs_dict_values["ZH"]["alpha_s"] = (1.009, None)
 
+    # add missing NLO corrections for wjets
+    n = rl.NuisanceParameter(f"QCDscale_wjets_ACCEPT_{CMS_PARAMS_LABEL}", "lnN")
+    systs_dict["WJetsLNu"][f"QCDscale_wjets_ACCEPT_{CMS_PARAMS_LABEL}"] = n
+    systs_dict_values["WJetsLNu"][f"QCDscale_wjets_ACCEPT_{CMS_PARAMS_LABEL}"] = (1.05, None)
+
+    n = rl.NuisanceParameter(f"PDF_wjets_ACCEPT_{CMS_PARAMS_LABEL}", "lnN")
+    systs_dict["WJetsLNu"][f"PDF_wjets_ACCEPT_{CMS_PARAMS_LABEL}"] = n
+    systs_dict_values["WJetsLNu"][f"PDF_wjets_ACCEPT_{CMS_PARAMS_LABEL}"] = (1.05, None)
+
     return systs_dict, systs_dict_values
 
 
@@ -407,30 +416,11 @@ def systs_from_parquets(years):
             SIG_regions + CONTROL_regions,
         ),
         # PDF acceptance
-        rl.NuisanceParameter(f"PDF_wjets_ACCEPT_{CMS_PARAMS_LABEL}", "shape"): (
-            "weight_pdf_acceptance",
-            ["WJetsLNu"],
-            SIG_regions + CONTROL_regions,
-        ),
         rl.NuisanceParameter(f"PDF_ttbar_ACCEPT_{CMS_PARAMS_LABEL}", "shape"): (
             "weight_pdf_acceptance",
             ["TTbar"],
             SIG_regions + CONTROL_regions,
         ),
-        # rl.NuisanceParameter(f"PDF_singletop_ACCEPT_{CMS_PARAMS_LABEL}", "shape"): (
-        #     "weight_pdf_acceptance",
-        #     ["SingleTop"],
-        # ),
-        # QCD scale acceptance
-        rl.NuisanceParameter(f"QCDscale_wjets_ACCEPT_{CMS_PARAMS_LABEL}", "shape"): (
-            "weight_qcd_scale",
-            ["WJetsLNu"],
-            SIG_regions + CONTROL_regions,
-        ),
-        # rl.NuisanceParameter(f"QCDscale_ttbar_ACCEPT_{CMS_PARAMS_LABEL}", "shape"): (
-        #     "weight_qcd_scale",
-        #     ["TTbar"],
-        # ),
         rl.NuisanceParameter(f"QCDscale_singletop_ACCEPT_{CMS_PARAMS_LABEL}", "shape"): (
             "weight_qcd_scale",
             ["SingleTop"],
@@ -577,12 +567,12 @@ def systs_from_parquets(years):
                     sigs + bkgs,
                     SIG_regions + CONTROL_regions,
                 ),
-                rl.NuisanceParameter(f"{CMS_PARAMS_LABEL}_jmr_{year}", "lnN"): (
+                rl.NuisanceParameter(f"{CMS_PARAMS_LABEL}_jmr_{year}", "shape"): (
                     f"JMR_{year}",
                     sigs + bkgs,
                     SIG_regions + CONTROL_regions,
                 ),
-                rl.NuisanceParameter(f"{CMS_PARAMS_LABEL}_jms_{year}", "lnN"): (
+                rl.NuisanceParameter(f"{CMS_PARAMS_LABEL}_jms_{year}", "shape"): (
                     f"JMS_{year}",
                     sigs + bkgs,
                     SIG_regions + CONTROL_regions,
