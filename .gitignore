@@ -62,4 +62,4 @@ combine/higgs*
 
 LP/outfiles*
 
-*.root
+# *.root
