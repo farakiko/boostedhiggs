@@ -14,31 +14,53 @@ warnings.filterwarnings("ignore", message="Found duplicate branch ")
 
 
 # PLOTTING UTILS
+# color_by_sample = {
+#     "ggF": "pink",
+#     "VBF": "aqua",
+#     "WH": "green",
+#     "ZH": "blue",
+#     "ttH": "yellow",
+#     # background
+#     "QCD": "#9c9ca1",
+#     "WJetsLNu": "#f89c20",
+#     "TTbar": "#e42536",
+#     "Diboson": "orchid",
+#     "SingleTop": "#964a8b",
+#     "EWKvjets": "tab:grey",
+#     "DYJets": "tab:purple",
+#     "WZQQ": "khaki",
+#     "Fake": "#9c9ca1",
+#     "Rest": "#5790fc",
+#     ###################################
+#     # stxs
+#     "ggH_hww_200_300": "lightsteelblue",
+#     "ggH_hww_300_450": "tab:olive",
+#     "ggH_hww_450_Inf": "tab:brown",
+#     "qqH_hww_mjj_1000_Inf": "peru",
+# }
 color_by_sample = {
-    "ggF": "pink",
-    "VBF": "aqua",
-    "WH": "green",
-    "ZH": "blue",
-    "ttH": "yellow",
+    "ggF": "lightsteelblue",
+    "VBF": "peru",
+    # signal that is background
+    "WH": "tab:brown",
+    "ZH": "yellowgreen",
+    "ttH": "tab:olive",
     # background
-    "QCD": "#9c9ca1",
-    "WJetsLNu": "#f89c20",
-    "TTbar": "#e42536",
+    "QCD": "tab:orange",
+    "Fake": "tab:orange",
+    "WJetsLNu": "tab:green",
+    "TTbar": "tab:blue",
     "Diboson": "orchid",
-    "SingleTop": "#964a8b",
+    "SingleTop": "tab:cyan",
+    # "WJetsLNu_unmatched": "tab:grey",
+    # "WJetsLNu_matched": "tab:green",
     "EWKvjets": "tab:grey",
+    # TODO: make sure it's WZQQ is NLO in next iteration
     "DYJets": "tab:purple",
     "WZQQ": "khaki",
-    "Fake": "#9c9ca1",
+    "WZQQorDYJets": "khaki",
     "Rest": "#5790fc",
-    ###################################
-    # stxs
-    "ggH_hww_200_300": "lightsteelblue",
-    "ggH_hww_300_450": "tab:olive",
-    "ggH_hww_450_Inf": "tab:brown",
-    "qqH_hww_mjj_1000_Inf": "peru",
 }
-
 
 plot_labels = {
     "ggF": "ggF",
