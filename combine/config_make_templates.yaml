@@ -19,8 +19,10 @@ regions_sel:
     "ggFpt250to350": (n_bjets_T==0) & (THWW>0.93) & ( (mjj<1000) | (deta<3.5) | (NumOtherJets<2) ) & (rec_higgs_pt>250) & (rec_higgs_pt<350) & (VH_fj_VScore<0.9)
     "ggFpt350to500": (n_bjets_T==0) & (THWW>0.93) & ( (mjj<1000) | (deta<3.5) | (NumOtherJets<2) ) & (rec_higgs_pt>350) & (rec_higgs_pt<500) & (VH_fj_VScore<0.9)
     "ggFpt500toInf": (n_bjets_T==0) & (THWW>0.93) & ( (mjj<1000) | (deta<3.5) | (NumOtherJets<2) ) & (rec_higgs_pt>500) & (VH_fj_VScore<0.9)
-    "WJetsCR": (n_bjets_T==0) & (THWW<0.905) & (rec_higgs_pt>250)
-    # "WJetsCR": (n_bjets_T==0) & (THWW<0.905) & (rec_higgs_pt>250) & (NumFatjets>=2)
+    "WJetsCR": (n_bjets_T==0) & (THWW<0.905) & (rec_higgs_pt>250) & (NumFatjets>=2)
+    "WJetsCRpt250to350": (n_bjets_T==0) & (THWW<0.905) & (rec_higgs_pt>250) & (NumFatjets>=2) & (rec_higgs_pt<350)
+    "WJetsCRpt350to500": (n_bjets_T==0) & (THWW<0.905) & (rec_higgs_pt>350) & (NumFatjets>=2) & (rec_higgs_pt<500)
+    "WJetsCRpt500toInf": (n_bjets_T==0) & (THWW<0.905) & (rec_higgs_pt>500) & (NumFatjets>=2)
     "TopCR": (n_bjets_T>0) & (rec_higgs_pt>250) & (THWW>0.90)
 
 samples_dir:
