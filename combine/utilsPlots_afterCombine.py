@@ -60,6 +60,11 @@ color_by_sample = {
     "WZQQ": "khaki",
     "WZQQorDYJets": "khaki",
     "Rest": "#5790fc",
+    # stxs
+    "ggH_hww_200_300": "lightsteelblue",
+    "ggH_hww_300_450": "tab:olive",
+    "ggH_hww_450_Inf": "tab:brown",
+    "qqH_hww_mjj_1000_Inf": "peru",
 }
 
 plot_labels = {
