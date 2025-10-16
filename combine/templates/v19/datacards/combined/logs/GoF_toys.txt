@@ -1,0 +1,1511 @@
+ <<< Combine >>> 
+ <<< v10.0.1 >>>
+>>> Random number generator seed is 1
+Will use saturated model to compute goodness of fit for a binned likelihood
+>>> Method used is GoodnessOfFit
+>>> 0 out of 6 channels masked
+
+Generate toy 1/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 48.6205
+Done in 0.03 min (cpu), 0.03 min (real)
+Generate toy 2/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 68.0215
+Done in 0.03 min (cpu), 0.03 min (real)
+Generate toy 3/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 33.5863
+Done in 0.03 min (cpu), 0.03 min (real)
+Generate toy 4/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 37.0251
+Done in 0.03 min (cpu), 0.03 min (real)
+Generate toy 5/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 32.6909
+Done in 0.03 min (cpu), 0.03 min (real)
+Generate toy 6/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 45.4842
+Done in 0.03 min (cpu), 0.03 min (real)
+Generate toy 7/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 27.5719
+Done in 0.03 min (cpu), 0.03 min (real)
+Generate toy 8/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 33.5937
+Done in 0.03 min (cpu), 0.03 min (real)
+Generate toy 9/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 41.1144
+Done in 0.03 min (cpu), 0.03 min (real)
+Generate toy 10/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 51.7941
+Done in 0.03 min (cpu), 0.03 min (real)
+Generate toy 11/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 55.7206
+Done in 0.04 min (cpu), 0.04 min (real)
+Generate toy 12/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 47.0959
+Done in 0.04 min (cpu), 0.04 min (real)
+Generate toy 13/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 37.6359
+Done in 0.04 min (cpu), 0.04 min (real)
+Generate toy 14/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 39.9695
+Done in 0.03 min (cpu), 0.03 min (real)
+Generate toy 15/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 43.6982
+Done in 0.04 min (cpu), 0.04 min (real)
+Generate toy 16/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 58.6878
+Done in 0.04 min (cpu), 0.04 min (real)
+Generate toy 17/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 56.3839
+Done in 0.04 min (cpu), 0.04 min (real)
+Generate toy 18/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 56.5076
+Done in 0.04 min (cpu), 0.04 min (real)
+Generate toy 19/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 54.5838
+Done in 0.04 min (cpu), 0.04 min (real)
+Generate toy 20/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 56.3805
+Done in 0.04 min (cpu), 0.04 min (real)
+Generate toy 21/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 34.4774
+Done in 0.04 min (cpu), 0.04 min (real)
+Generate toy 22/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 46.5093
+Done in 0.04 min (cpu), 0.04 min (real)
+Generate toy 23/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 43.8065
+Done in 0.04 min (cpu), 0.04 min (real)
+Generate toy 24/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 47.4109
+Done in 0.04 min (cpu), 0.04 min (real)
+Generate toy 25/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 43.1116
+Done in 0.05 min (cpu), 0.05 min (real)
+Generate toy 26/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 49.5248
+Done in 0.05 min (cpu), 0.05 min (real)
+Generate toy 27/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 53.2818
+Done in 0.05 min (cpu), 0.05 min (real)
+Generate toy 28/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 52.9523
+Done in 0.05 min (cpu), 0.05 min (real)
+Generate toy 29/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 43.1428
+Done in 0.05 min (cpu), 0.05 min (real)
+Generate toy 30/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 60.8039
+Done in 0.05 min (cpu), 0.05 min (real)
+Generate toy 31/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 47.255
+Done in 0.05 min (cpu), 0.05 min (real)
+Generate toy 32/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 38.7402
+Done in 0.05 min (cpu), 0.05 min (real)
+Generate toy 33/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 47.1082
+Done in 0.05 min (cpu), 0.05 min (real)
+Generate toy 34/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 50.6273
+Done in 0.05 min (cpu), 0.05 min (real)
+Generate toy 35/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 54.2554
+Done in 0.05 min (cpu), 0.05 min (real)
+Generate toy 36/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 43.7192
+Done in 0.05 min (cpu), 0.05 min (real)
+Generate toy 37/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 40.7663
+Done in 0.05 min (cpu), 0.05 min (real)
+Generate toy 38/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 20.2849
+Done in 0.05 min (cpu), 0.05 min (real)
+Generate toy 39/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 37.705
+Done in 0.05 min (cpu), 0.05 min (real)
+Generate toy 40/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 37.4517
+Done in 0.06 min (cpu), 0.06 min (real)
+Generate toy 41/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 50.7261
+Done in 0.05 min (cpu), 0.05 min (real)
+Generate toy 42/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 25.5356
+Done in 0.05 min (cpu), 0.05 min (real)
+Generate toy 43/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 40.6493
+Done in 0.06 min (cpu), 0.06 min (real)
+Generate toy 44/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 41.0955
+Done in 0.06 min (cpu), 0.06 min (real)
+Generate toy 45/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 49.1813
+Done in 0.06 min (cpu), 0.06 min (real)
+Generate toy 46/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 42.9918
+Done in 0.06 min (cpu), 0.06 min (real)
+Generate toy 47/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 43.6793
+Done in 0.06 min (cpu), 0.06 min (real)
+Generate toy 48/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 41.9376
+Done in 0.06 min (cpu), 0.06 min (real)
+Generate toy 49/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 45.0001
+Done in 0.06 min (cpu), 0.06 min (real)
+Generate toy 50/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 38.1971
+Done in 0.06 min (cpu), 0.06 min (real)
+Generate toy 51/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 58.6983
+Done in 0.06 min (cpu), 0.06 min (real)
+Generate toy 52/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 38.7188
+Done in 0.06 min (cpu), 0.06 min (real)
+Generate toy 53/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 51.0828
+Done in 0.06 min (cpu), 0.06 min (real)
+Generate toy 54/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 55.1365
+Done in 0.07 min (cpu), 0.07 min (real)
+Generate toy 55/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 41.9007
+Done in 0.06 min (cpu), 0.06 min (real)
+Generate toy 56/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 41.3636
+Done in 0.06 min (cpu), 0.06 min (real)
+Generate toy 57/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 53.7752
+Done in 0.07 min (cpu), 0.07 min (real)
+Generate toy 58/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 42.4467
+Done in 0.06 min (cpu), 0.06 min (real)
+Generate toy 59/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 50.9048
+Done in 0.06 min (cpu), 0.06 min (real)
+Generate toy 60/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 52.4336
+Done in 0.06 min (cpu), 0.06 min (real)
+Generate toy 61/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 51.8259
+Done in 0.05 min (cpu), 0.05 min (real)
+Generate toy 62/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 53.7202
+Done in 0.06 min (cpu), 0.06 min (real)
+Generate toy 63/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 46.2411
+Done in 0.08 min (cpu), 0.08 min (real)
+Generate toy 64/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 45.2928
+Done in 0.05 min (cpu), 0.05 min (real)
+Generate toy 65/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 30.8728
+Done in 0.05 min (cpu), 0.05 min (real)
+Generate toy 66/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 56.5837
+Done in 0.05 min (cpu), 0.05 min (real)
+Generate toy 67/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 53.4964
+Done in 0.07 min (cpu), 0.07 min (real)
+Generate toy 68/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 52.4251
+Done in 0.05 min (cpu), 0.05 min (real)
+Generate toy 69/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 45.7588
+Done in 0.05 min (cpu), 0.05 min (real)
+Generate toy 70/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 61.2841
+Done in 0.05 min (cpu), 0.05 min (real)
+Generate toy 71/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 55.5442
+Done in 0.05 min (cpu), 0.05 min (real)
+Generate toy 72/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 50.9105
+Done in 0.05 min (cpu), 0.05 min (real)
+Generate toy 73/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 42.8302
+Done in 0.05 min (cpu), 0.05 min (real)
+Generate toy 74/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 55.8809
+Done in 0.05 min (cpu), 0.05 min (real)
+Generate toy 75/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 45.7411
+Done in 0.05 min (cpu), 0.05 min (real)
+Generate toy 76/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 40.272
+Done in 0.05 min (cpu), 0.05 min (real)
+Generate toy 77/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 32.3941
+Done in 0.05 min (cpu), 0.05 min (real)
+Generate toy 78/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 32.2435
+Done in 0.05 min (cpu), 0.05 min (real)
+Generate toy 79/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 32.9669
+Done in 0.06 min (cpu), 0.06 min (real)
+Generate toy 80/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 26.8034
+Done in 0.06 min (cpu), 0.06 min (real)
+Generate toy 81/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 35.5718
+Done in 0.06 min (cpu), 0.06 min (real)
+Generate toy 82/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 66.4424
+Done in 0.06 min (cpu), 0.06 min (real)
+Generate toy 83/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 38.8576
+Done in 0.06 min (cpu), 0.06 min (real)
+Generate toy 84/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 44.9371
+Done in 0.06 min (cpu), 0.06 min (real)
+Generate toy 85/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 42.1471
+Done in 0.06 min (cpu), 0.06 min (real)
+Generate toy 86/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 34.6696
+Done in 0.06 min (cpu), 0.06 min (real)
+Generate toy 87/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 49.8457
+Done in 0.06 min (cpu), 0.06 min (real)
+Generate toy 88/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 49.28
+Done in 0.06 min (cpu), 0.06 min (real)
+Generate toy 89/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 40.8855
+Done in 0.06 min (cpu), 0.06 min (real)
+Generate toy 90/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 58.3597
+Done in 0.06 min (cpu), 0.06 min (real)
+Generate toy 91/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 36.5827
+Done in 0.06 min (cpu), 0.06 min (real)
+Generate toy 92/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 46.6662
+Done in 0.06 min (cpu), 0.06 min (real)
+Generate toy 93/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 41.9713
+Done in 0.06 min (cpu), 0.06 min (real)
+Generate toy 94/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 55.5872
+Done in 0.06 min (cpu), 0.06 min (real)
+Generate toy 95/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 38.4858
+Done in 0.07 min (cpu), 0.07 min (real)
+Generate toy 96/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 41.4674
+Done in 0.07 min (cpu), 0.07 min (real)
+Generate toy 97/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 48.4964
+Done in 0.07 min (cpu), 0.07 min (real)
+Generate toy 98/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 39.1698
+Done in 0.07 min (cpu), 0.07 min (real)
+Generate toy 99/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 35.7215
+Done in 0.07 min (cpu), 0.07 min (real)
+Generate toy 100/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 63.669
+Done in 0.07 min (cpu), 0.07 min (real)
+Generate toy 101/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 41.2175
+Done in 0.07 min (cpu), 0.07 min (real)
+Generate toy 102/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 50.0147
+Done in 0.07 min (cpu), 0.07 min (real)
+Generate toy 103/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 42.5087
+Done in 0.07 min (cpu), 0.07 min (real)
+Generate toy 104/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 69.4536
+Done in 0.08 min (cpu), 0.08 min (real)
+Generate toy 105/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 60.5325
+Done in 0.08 min (cpu), 0.08 min (real)
+Generate toy 106/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 31.2799
+Done in 0.07 min (cpu), 0.07 min (real)
+Generate toy 107/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 35.0515
+Done in 0.07 min (cpu), 0.07 min (real)
+Generate toy 108/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 37.797
+Done in 0.08 min (cpu), 0.08 min (real)
+Generate toy 109/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 55.0735
+Done in 0.08 min (cpu), 0.08 min (real)
+Generate toy 110/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 48.5043
+Done in 0.08 min (cpu), 0.08 min (real)
+Generate toy 111/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 53.7931
+Done in 0.08 min (cpu), 0.08 min (real)
+Generate toy 112/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 46.1155
+Done in 0.08 min (cpu), 0.08 min (real)
+Generate toy 113/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 48.2247
+Done in 0.08 min (cpu), 0.08 min (real)
+Generate toy 114/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 53.4961
+Done in 0.08 min (cpu), 0.08 min (real)
+Generate toy 115/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 44.2348
+Done in 0.08 min (cpu), 0.08 min (real)
+Generate toy 116/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 36.4835
+Done in 0.08 min (cpu), 0.08 min (real)
+Generate toy 117/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 28.1081
+Done in 0.08 min (cpu), 0.08 min (real)
+Generate toy 118/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 51.4644
+Done in 0.09 min (cpu), 0.09 min (real)
+Generate toy 119/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 43.0769
+Done in 0.08 min (cpu), 0.08 min (real)
+Generate toy 120/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 30.7814
+Done in 0.09 min (cpu), 0.09 min (real)
+Generate toy 121/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 38.224
+Done in 0.09 min (cpu), 0.09 min (real)
+Generate toy 122/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 58.6879
+Done in 0.09 min (cpu), 0.09 min (real)
+Generate toy 123/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 37.6244
+Done in 0.09 min (cpu), 0.09 min (real)
+Generate toy 124/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 52.1673
+Done in 0.09 min (cpu), 0.09 min (real)
+Generate toy 125/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 45.3256
+Done in 0.09 min (cpu), 0.09 min (real)
+Generate toy 126/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 53.3656
+Done in 0.09 min (cpu), 0.09 min (real)
+Generate toy 127/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 41.8449
+Done in 0.09 min (cpu), 0.09 min (real)
+Generate toy 128/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 53.0428
+Done in 0.09 min (cpu), 0.09 min (real)
+Generate toy 129/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 41.8132
+Done in 0.10 min (cpu), 0.10 min (real)
+Generate toy 130/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 40.7622
+Done in 0.09 min (cpu), 0.09 min (real)
+Generate toy 131/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 65.8565
+Done in 0.09 min (cpu), 0.09 min (real)
+Generate toy 132/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 42.1232
+Done in 0.09 min (cpu), 0.10 min (real)
+Generate toy 133/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 37.2449
+Done in 0.09 min (cpu), 0.09 min (real)
+Generate toy 134/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 44.5166
+Done in 0.10 min (cpu), 0.10 min (real)
+Generate toy 135/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 40.9267
+Done in 0.10 min (cpu), 0.10 min (real)
+Generate toy 136/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 47.2519
+Done in 0.09 min (cpu), 0.09 min (real)
+Generate toy 137/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 52.6394
+Done in 0.10 min (cpu), 0.10 min (real)
+Generate toy 138/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 70.5619
+Done in 0.18 min (cpu), 0.18 min (real)
+Generate toy 139/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 52.9314
+Done in 0.10 min (cpu), 0.10 min (real)
+Generate toy 140/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 51.3647
+Done in 0.10 min (cpu), 0.10 min (real)
+Generate toy 141/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 36.3992
+Done in 0.10 min (cpu), 0.10 min (real)
+Generate toy 142/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 60.2129
+Done in 0.10 min (cpu), 0.10 min (real)
+Generate toy 143/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 40.5775
+Done in 0.11 min (cpu), 0.11 min (real)
+Generate toy 144/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 51.9752
+Done in 0.11 min (cpu), 0.11 min (real)
+Generate toy 145/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 45.6605
+Done in 0.11 min (cpu), 0.11 min (real)
+Generate toy 146/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 52.7101
+Done in 0.10 min (cpu), 0.10 min (real)
+Generate toy 147/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 43.578
+Done in 0.10 min (cpu), 0.10 min (real)
+Generate toy 148/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 49.9378
+Done in 0.10 min (cpu), 0.10 min (real)
+Generate toy 149/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 70.9312
+Done in 0.11 min (cpu), 0.11 min (real)
+Generate toy 150/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 58.2637
+Done in 0.11 min (cpu), 0.11 min (real)
+Generate toy 151/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 64.4448
+Done in 0.11 min (cpu), 0.11 min (real)
+Generate toy 152/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 66.2396
+Done in 0.11 min (cpu), 0.11 min (real)
+Generate toy 153/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 39.3762
+Done in 0.10 min (cpu), 0.11 min (real)
+Generate toy 154/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 48.3794
+Done in 0.11 min (cpu), 0.11 min (real)
+Generate toy 155/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 38.7775
+Done in 0.11 min (cpu), 0.11 min (real)
+Generate toy 156/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 55.3471
+Done in 0.11 min (cpu), 0.11 min (real)
+Generate toy 157/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 45.985
+Done in 0.11 min (cpu), 0.11 min (real)
+Generate toy 158/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 59.4168
+Done in 0.11 min (cpu), 0.11 min (real)
+Generate toy 159/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 58.117
+Done in 0.12 min (cpu), 0.12 min (real)
+Generate toy 160/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 42.2262
+Done in 0.12 min (cpu), 0.12 min (real)
+Generate toy 161/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 58.9156
+Done in 0.12 min (cpu), 0.12 min (real)
+Generate toy 162/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 35.4427
+Done in 0.12 min (cpu), 0.12 min (real)
+Generate toy 163/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 45.7321
+Done in 0.12 min (cpu), 0.12 min (real)
+Generate toy 164/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 35.7643
+Done in 0.12 min (cpu), 0.12 min (real)
+Generate toy 165/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 31.6861
+Done in 0.12 min (cpu), 0.12 min (real)
+Generate toy 166/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 49.0462
+Done in 0.12 min (cpu), 0.12 min (real)
+Generate toy 167/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 43.6142
+Done in 0.11 min (cpu), 0.11 min (real)
+Generate toy 168/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 52.153
+Done in 0.13 min (cpu), 0.13 min (real)
+Generate toy 169/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 27.907
+Done in 0.12 min (cpu), 0.12 min (real)
+Generate toy 170/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 37.413
+Done in 0.12 min (cpu), 0.12 min (real)
+Generate toy 171/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 39.6303
+Done in 0.12 min (cpu), 0.12 min (real)
+Generate toy 172/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 41.2515
+Done in 0.13 min (cpu), 0.13 min (real)
+Generate toy 173/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 41.5171
+Done in 0.13 min (cpu), 0.13 min (real)
+Generate toy 174/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 32.151
+Done in 0.24 min (cpu), 0.24 min (real)
+Generate toy 175/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 57.1326
+Done in 0.13 min (cpu), 0.13 min (real)
+Generate toy 176/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 34.7026
+Done in 0.13 min (cpu), 0.13 min (real)
+Generate toy 177/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 53.2409
+Done in 0.14 min (cpu), 0.13 min (real)
+Generate toy 178/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 63.7134
+Done in 0.13 min (cpu), 0.13 min (real)
+Generate toy 179/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 58.4425
+Done in 0.14 min (cpu), 0.14 min (real)
+Generate toy 180/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 42.6707
+Done in 0.12 min (cpu), 0.12 min (real)
+Generate toy 181/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 45.2862
+Done in 0.12 min (cpu), 0.12 min (real)
+Generate toy 182/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 42.7993
+Done in 0.12 min (cpu), 0.12 min (real)
+Generate toy 183/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 42.8685
+Done in 0.13 min (cpu), 0.13 min (real)
+Generate toy 184/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 22.4515
+Done in 0.14 min (cpu), 0.14 min (real)
+Generate toy 185/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 52.0268
+Done in 0.12 min (cpu), 0.12 min (real)
+Generate toy 186/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 33.2306
+Done in 0.13 min (cpu), 0.13 min (real)
+Generate toy 187/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 38.7456
+Done in 0.14 min (cpu), 0.14 min (real)
+Generate toy 188/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 42.506
+Done in 0.14 min (cpu), 0.14 min (real)
+Generate toy 189/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 42.8086
+Done in 0.14 min (cpu), 0.14 min (real)
+Generate toy 190/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 38.6518
+Done in 0.14 min (cpu), 0.14 min (real)
+Generate toy 191/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 64.2586
+Done in 0.14 min (cpu), 0.14 min (real)
+Generate toy 192/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 46.3872
+Done in 0.13 min (cpu), 0.13 min (real)
+Generate toy 193/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 42.0973
+Done in 0.14 min (cpu), 0.14 min (real)
+Generate toy 194/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 42.128
+Done in 0.14 min (cpu), 0.14 min (real)
+Generate toy 195/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 37.2391
+Done in 0.14 min (cpu), 0.14 min (real)
+Generate toy 196/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 53.9613
+Done in 0.14 min (cpu), 0.14 min (real)
+Generate toy 197/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 47.1706
+Done in 0.15 min (cpu), 0.15 min (real)
+Generate toy 198/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 34.2126
+Done in 0.14 min (cpu), 0.14 min (real)
+Generate toy 199/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 61.0581
+Done in 0.15 min (cpu), 0.15 min (real)
+Generate toy 200/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 36.997
+Done in 0.15 min (cpu), 0.15 min (real)
+Generate toy 201/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 40.5246
+Done in 0.15 min (cpu), 0.15 min (real)
+Generate toy 202/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 48.7082
+Done in 0.15 min (cpu), 0.15 min (real)
+Generate toy 203/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 56.2701
+Done in 0.15 min (cpu), 0.15 min (real)
+Generate toy 204/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 48.2849
+Done in 0.15 min (cpu), 0.15 min (real)
+Generate toy 205/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 53.8113
+Done in 0.15 min (cpu), 0.15 min (real)
+Generate toy 206/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 44.1974
+Done in 0.14 min (cpu), 0.14 min (real)
+Generate toy 207/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 60.2181
+Done in 0.16 min (cpu), 0.15 min (real)
+Generate toy 208/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 71.3369
+Done in 0.24 min (cpu), 0.24 min (real)
+Generate toy 209/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 49.4311
+Done in 0.15 min (cpu), 0.15 min (real)
+Generate toy 210/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 48.6821
+Done in 0.16 min (cpu), 0.16 min (real)
+Generate toy 211/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 56.3477
+Done in 0.18 min (cpu), 0.18 min (real)
+Generate toy 212/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 49.0772
+Done in 0.16 min (cpu), 0.15 min (real)
+Generate toy 213/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 47.5949
+Done in 0.16 min (cpu), 0.16 min (real)
+Generate toy 214/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 39.9831
+Done in 0.17 min (cpu), 0.17 min (real)
+Generate toy 215/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 44.4898
+Done in 0.15 min (cpu), 0.15 min (real)
+Generate toy 216/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 64.7914
+Done in 0.16 min (cpu), 0.16 min (real)
+Generate toy 217/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 53.5344
+Done in 0.16 min (cpu), 0.16 min (real)
+Generate toy 218/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 33.967
+Done in 0.16 min (cpu), 0.16 min (real)
+Generate toy 219/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 52.9418
+Done in 0.17 min (cpu), 0.17 min (real)
+Generate toy 220/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 48.4725
+Done in 0.17 min (cpu), 0.17 min (real)
+Generate toy 221/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 37.7943
+Done in 0.17 min (cpu), 0.17 min (real)
+Generate toy 222/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 59.9607
+Done in 0.16 min (cpu), 0.16 min (real)
+Generate toy 223/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 38.567
+Done in 0.17 min (cpu), 0.17 min (real)
+Generate toy 224/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 33.4026
+Done in 0.20 min (cpu), 0.20 min (real)
+Generate toy 225/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 27.3005
+Done in 0.16 min (cpu), 0.16 min (real)
+Generate toy 226/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 45.6643
+Done in 0.17 min (cpu), 0.17 min (real)
+Generate toy 227/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 48.3595
+Done in 0.17 min (cpu), 0.17 min (real)
+Generate toy 228/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 41.031
+Done in 0.17 min (cpu), 0.17 min (real)
+Generate toy 229/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 56.3937
+Done in 0.18 min (cpu), 0.18 min (real)
+Generate toy 230/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 45.7286
+Done in 0.18 min (cpu), 0.18 min (real)
+Generate toy 231/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 41.2007
+Done in 0.18 min (cpu), 0.18 min (real)
+Generate toy 232/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 41.0542
+Done in 0.17 min (cpu), 0.17 min (real)
+Generate toy 233/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 48.1878
+Done in 0.18 min (cpu), 0.18 min (real)
+Generate toy 234/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 67.1215
+Done in 0.18 min (cpu), 0.18 min (real)
+Generate toy 235/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 42.63
+Done in 0.18 min (cpu), 0.18 min (real)
+Generate toy 236/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 43.9842
+Done in 0.18 min (cpu), 0.18 min (real)
+Generate toy 237/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 45.3776
+Done in 0.18 min (cpu), 0.18 min (real)
+Generate toy 238/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 59.1993
+Done in 0.17 min (cpu), 0.17 min (real)
+Generate toy 239/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 51.8436
+Done in 0.19 min (cpu), 0.19 min (real)
+Generate toy 240/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 35.0005
+Done in 0.18 min (cpu), 0.18 min (real)
+Generate toy 241/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 47.44
+Done in 0.19 min (cpu), 0.19 min (real)
+Generate toy 242/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 45.5645
+Done in 0.19 min (cpu), 0.19 min (real)
+Generate toy 243/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 37.1085
+Done in 0.19 min (cpu), 0.19 min (real)
+Generate toy 244/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 50.4138
+Done in 0.19 min (cpu), 0.19 min (real)
+Generate toy 245/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 44.1991
+Done in 0.28 min (cpu), 0.28 min (real)
+Generate toy 246/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 46.4232
+Done in 0.19 min (cpu), 0.19 min (real)
+Generate toy 247/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 64.0314
+Done in 0.20 min (cpu), 0.20 min (real)
+Generate toy 248/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 57.0908
+Done in 0.20 min (cpu), 0.20 min (real)
+Generate toy 249/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 33.9507
+Done in 0.19 min (cpu), 0.19 min (real)
+Generate toy 250/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 43.1629
+Done in 0.19 min (cpu), 0.19 min (real)
+Generate toy 251/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 45.8419
+Done in 0.19 min (cpu), 0.19 min (real)
+Generate toy 252/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 44.9844
+Done in 0.20 min (cpu), 0.20 min (real)
+Generate toy 253/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 46.8174
+Done in 0.20 min (cpu), 0.20 min (real)
+Generate toy 254/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 32.864
+Done in 0.20 min (cpu), 0.20 min (real)
+Generate toy 255/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 33.8906
+Done in 0.21 min (cpu), 0.21 min (real)
+Generate toy 256/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 39.4124
+Done in 0.21 min (cpu), 0.21 min (real)
+Generate toy 257/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 39.8727
+Done in 0.21 min (cpu), 0.21 min (real)
+Generate toy 258/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 39.2708
+Done in 0.20 min (cpu), 0.20 min (real)
+Generate toy 259/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 39.7008
+Done in 0.21 min (cpu), 0.21 min (real)
+Generate toy 260/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 42.6367
+Done in 0.20 min (cpu), 0.20 min (real)
+Generate toy 261/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 46.838
+Done in 0.21 min (cpu), 0.21 min (real)
+Generate toy 262/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 40.7665
+Done in 0.21 min (cpu), 0.21 min (real)
+Generate toy 263/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 46.5756
+Done in 0.21 min (cpu), 0.21 min (real)
+Generate toy 264/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 41.9322
+Done in 0.40 min (cpu), 0.40 min (real)
+Generate toy 265/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 53.8241
+Done in 0.20 min (cpu), 0.20 min (real)
+Generate toy 266/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 54.0243
+Done in 0.21 min (cpu), 0.21 min (real)
+Generate toy 267/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 43.9867
+Done in 0.22 min (cpu), 0.22 min (real)
+Generate toy 268/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 41.455
+Done in 0.22 min (cpu), 0.22 min (real)
+Generate toy 269/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 47.2537
+Done in 0.22 min (cpu), 0.22 min (real)
+Generate toy 270/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 34.5706
+Done in 0.32 min (cpu), 0.32 min (real)
+Generate toy 271/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 50.4082
+Done in 0.22 min (cpu), 0.22 min (real)
+Generate toy 272/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 40.6277
+Done in 0.22 min (cpu), 0.22 min (real)
+Generate toy 273/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 45.3073
+Done in 0.22 min (cpu), 0.22 min (real)
+Generate toy 274/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 55.2628
+Done in 0.22 min (cpu), 0.22 min (real)
+Generate toy 275/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 51.3958
+Done in 0.22 min (cpu), 0.22 min (real)
+Generate toy 276/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 60.1701
+Done in 0.24 min (cpu), 0.24 min (real)
+Generate toy 277/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 47.8958
+Done in 0.23 min (cpu), 0.23 min (real)
+Generate toy 278/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 34.7909
+Done in 0.23 min (cpu), 0.23 min (real)
+Generate toy 279/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 47.1182
+Done in 0.22 min (cpu), 0.22 min (real)
+Generate toy 280/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 44.587
+Done in 0.24 min (cpu), 0.24 min (real)
+Generate toy 281/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 53.5326
+Done in 0.22 min (cpu), 0.22 min (real)
+Generate toy 282/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 31.9454
+Done in 0.24 min (cpu), 0.24 min (real)
+Generate toy 283/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 37.0702
+Done in 0.22 min (cpu), 0.22 min (real)
+Generate toy 284/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 47.3381
+Done in 0.23 min (cpu), 0.23 min (real)
+Generate toy 285/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 55.8348
+Done in 0.23 min (cpu), 0.23 min (real)
+Generate toy 286/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 47.3392
+Done in 0.23 min (cpu), 0.23 min (real)
+Generate toy 287/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 56.7913
+Done in 0.23 min (cpu), 0.23 min (real)
+Generate toy 288/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 44.8556
+Done in 0.22 min (cpu), 0.22 min (real)
+Generate toy 289/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 58.0517
+Done in 0.23 min (cpu), 0.23 min (real)
+Generate toy 290/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 45.0222
+Done in 0.23 min (cpu), 0.23 min (real)
+Generate toy 291/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 42.2864
+Done in 0.23 min (cpu), 0.23 min (real)
+Generate toy 292/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 37.8492
+Done in 0.23 min (cpu), 0.23 min (real)
+Generate toy 293/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 33.2725
+Done in 0.23 min (cpu), 0.23 min (real)
+Generate toy 294/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 48.1697
+Done in 0.23 min (cpu), 0.23 min (real)
+Generate toy 295/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 53.9948
+Done in 0.25 min (cpu), 0.25 min (real)
+Generate toy 296/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 42.0203
+Done in 0.25 min (cpu), 0.25 min (real)
+Generate toy 297/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 44.6487
+Done in 0.23 min (cpu), 0.23 min (real)
+Generate toy 298/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 45.9888
+Done in 0.33 min (cpu), 0.33 min (real)
+Generate toy 299/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 41.6928
+Done in 0.25 min (cpu), 0.25 min (real)
+Generate toy 300/300
+
+ --- GoodnessOfFit --- 
+Best fit test statistic: 54.5588
+Done in 0.23 min (cpu), 0.23 min (real)
+mean   expected limit: r < 46.159 +/- 0.532817 @ 95%CL (300 toyMC)
+median expected limit: r < 45.4309 @ 95%CL (300 toyMC)
+   68% expected band : 37.413 < r < 55.5872
+   95% expected band : 28.1081 < r < 66.4424

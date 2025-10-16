@@ -19,12 +19,7 @@ import warnings
 import numpy as np
 import pandas as pd
 import rhalphalib as rl
-from datacard_systematics import (
-    CONTROL_regions,
-    SIG_regions,
-    systs_from_parquets,
-    systs_not_from_parquets,
-)
+
 from systematics import bkgs, sigs
 from utils import get_template, labels, load_templates, shape_to_num
 
@@ -40,6 +35,22 @@ CMS_PARAMS_LABEL = "CMS_HWW_boosted"
 def create_datacard(
     hists_templates, years, lep_channels, add_ttbar_constraint=True, add_wjets_constraint=True, do_unfolding=False
 ):
+
+    if do_unfolding:
+        from datacard_systematics_unfoldinglnN import (
+            CONTROL_regions,
+            SIG_regions,
+            systs_from_parquets,
+            systs_not_from_parquets,
+        )        
+    else:
+        from datacard_systematics import (
+            CONTROL_regions,
+            SIG_regions,
+            systs_from_parquets,
+            systs_not_from_parquets,
+        )        
+
     # define the systematics
     systs_dict, systs_dict_values = systs_not_from_parquets(years, lep_channels, do_unfolding)
     sys_from_parquets = systs_from_parquets(years)
@@ -51,7 +62,12 @@ def create_datacard(
         ttbarnormSF = rl.IndependentParameter("ttbarnormSF", 1.0, 0, 10)
 
     if add_wjets_constraint:
-        wjetsnormSF = rl.IndependentParameter("wjetsnormSF", 1.0, 0, 10)
+        # wjetsnormSF = rl.IndependentParameter("wjetsnormSF", 1.0, 0, 10)
+        wjetsnormSF = {}
+        wjetsnormSF["VBF"] = rl.IndependentParameter("wjetsnormSFVBF", 1.0, 0, 10)
+        wjetsnormSF["WJetsCRpt250to350"] = rl.IndependentParameter("wjetsnormSFpt250to350", 1.0, 0, 10)
+        wjetsnormSF["WJetsCRpt350to500"] = rl.IndependentParameter("wjetsnormSFpt350to500", 1.0, 0, 10)
+        wjetsnormSF["WJetsCRpt500toInf"] = rl.IndependentParameter("wjetsnormSFpt500toInf", 1.0, 0, 10)
 
     samples = sigs + bkgs
     if do_unfolding:
@@ -134,17 +150,25 @@ def create_datacard(
                         elif eff_do == 1:  # if down is the same as nominal
                             sample.setParamEffect(sys_value, eff_up)
                         else:
-                            sample.setParamEffect(sys_value, max(eff_up, eff_do), min(eff_up, eff_do))
+                            # symetrize if up/do are in same direction
+                            if (eff_up > 1) & (eff_do > 1):
+                                sample.setParamEffect(sys_value, max(eff_up, eff_do), 2 - max(eff_up, eff_do))
+                            elif (eff_up < 1) & (eff_do < 1):
+                                sample.setParamEffect(sys_value, 2 - min(eff_up, eff_do), min(eff_up, eff_do))
+                            else:
+                                sample.setParamEffect(sys_value, max(eff_up, eff_do), min(eff_up, eff_do))
 
                     else:
 
-                        up_temp = syst_up / np.where(nominal == 0, 1.0, nominal) # to avoid divide by 0
-                        do_temp = syst_do / np.where(nominal == 0, 1.0, nominal) # to avoid divide by 0
+                        up_temp = syst_up / np.where(nominal == 0, 1.0, nominal)  # to avoid divide by 0
+                        do_temp = syst_do / np.where(nominal == 0, 1.0, nominal)  # to avoid divide by 0
 
-                        if ("JMR_2016" in sys_name) or ("JMS_2016" in sys_name):   # do is same as nominal so must manually symmetrize
+                        if ("JMR_2016" in sys_name) or (
+                            "JMS_2016" in sys_name
+                        ):  # do is same as nominal so must manually symmetrize
                             if syst_do.sum() == nominal.sum():
                                 do_temp = nominal / np.where(syst_up == 0, 1.0, syst_up)
-                        
+
                         sample.setParamEffect(sys_value, up_temp, do_temp)
 
             if sName in sigs:
@@ -212,16 +236,54 @@ def create_datacard(
             ttbarpass.setParamEffect(ttbarnormSF, 1 * ttbarnormSF)
 
     if add_wjets_constraint:
-        failCh = model["WJetsCR"]
+        # failCh = model["WJetsCR"]
 
-        wjetsfail = failCh["wjets"]
-        wjetsfail.setParamEffect(wjetsnormSF, 1 * wjetsnormSF)
+        # wjetsfail = failCh["wjets"]
+        # wjetsfail.setParamEffect(wjetsnormSF, 1 * wjetsnormSF)
+
+        # for sig_region in SIG_regions:
+        #     passCh = model[sig_region]
+
+        #     wjetspass = passCh["wjets"]
+        #     wjetspass.setParamEffect(wjetsnormSF, 1 * wjetsnormSF)
+
+        relations = {
+        "ggFpt250to350": "WJetsCRpt250to350", 
+        "ggFpt350to500": "WJetsCRpt350to500",
+        "ggFpt500toInf": "WJetsCRpt500toInf",
+        }
 
         for sig_region in SIG_regions:
+            if sig_region == "VBF":
+                continue  # special treatment
+
+            failCh = model[relations[sig_region]]
+
+            wjetsfail = failCh["wjets"]
+            wjetsfail.setParamEffect(wjetsnormSF[relations[sig_region]], 1 * wjetsnormSF[relations[sig_region]])
+
             passCh = model[sig_region]
 
             wjetspass = passCh["wjets"]
-            wjetspass.setParamEffect(wjetsnormSF, 1 * wjetsnormSF)
+            wjetspass.setParamEffect(wjetsnormSF[relations[sig_region]], 1 * wjetsnormSF[relations[sig_region]])
+
+        # VBF
+        fractions = []
+        for cr_region in ["WJetsCRpt250to350", "WJetsCRpt350to500", "WJetsCRpt500toInf"]:
+            failCh = model[cr_region]
+
+            wjetsfail = failCh["wjets"]
+            wjetsfail.setParamEffect(wjetsnormSF[cr_region], 1 * wjetsnormSF[cr_region])
+
+            fractions += [sum(wjetsfail.getExpectation(nominal=True))]
+
+        normalized_fractions = [v / sum(fractions) for v in fractions]
+        print("normalized_fractions", normalized_fractions)
+
+        passCh = model["VBF"]
+
+        wjetspass = passCh["wjets"]
+        wjetspass.setParamEffect(wjetsnormSF["VBF"], normalized_fractions[0] * wjetsnormSF["WJetsCRpt250to350"] + normalized_fractions[1] * wjetsnormSF["WJetsCRpt350to500"] + normalized_fractions[2] * wjetsnormSF["WJetsCRpt500toInf"])
 
     return model
 

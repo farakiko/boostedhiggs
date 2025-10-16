@@ -153,7 +153,8 @@ seed=$seed numtoys=$numtoys"
 ####################################################################################################
 
 dataset=data_obs
-cards_dir="templates/v17/"
+cards_dir="templates/v19/"
+# cards_dir="templates/v19_wjetscrbinned/"
 
 if [ $unfolding = 1 ]; then
     cards_dir+="/datacards_unfolding"
@@ -192,13 +193,12 @@ ccargs="SR1=${cards_dir}/${sr1}.txt SR2=${cards_dir}/${sr2}.txt SR3=${cards_dir}
 
 cr1="TopCR"
 cr2="WJetsCR"
+# cr2="WJetsCRpt250to350"
+# cr3="WJetsCRpt350to500"
+# cr4="WJetsCRpt500toInf"
 ccargs+=" CR1=${cards_dir}/${cr1}.txt CR2=${cards_dir}/${cr2}.txt"
-
-# cr1="TopCR"
-# cr2="WJetsCR1"
-# cr3="WJetsCR2"
-# cr4="WJetsCR3"
 # ccargs+=" CR1=${cards_dir}/${cr1}.txt CR2=${cards_dir}/${cr2}.txt CR3=${cards_dir}/${cr3}.txt CR4=${cards_dir}/${cr4}.txt"
+
 ######################################################################
 
 if [ $workspace = 1 ]; then
@@ -385,6 +385,7 @@ if [ $impactsi = 1 ]; then
         combineTool.py -M Impacts -d $ws --rMin -10 --rMax 10 -m 125 --robustFit 1 --doInitialFit --expectSignal 1
         combineTool.py -M Impacts -d $ws --rMin -10 --rMax 10 -m 125 --robustFit 1 --doFits --expectSignal 1 --parallel 50
         combineTool.py -M Impacts -d $ws --rMin -10 --rMax 10 -m 125 --robustFit 1 --output impacts.json --expectSignal 1
+
         # plotImpacts.py -i impacts.json -o impacts --blind
         plotImpacts.py -i impacts.json -o impacts
 
@@ -409,7 +410,7 @@ fi
 
 if [ $goftoys = 1 ]; then
     echo "GoF on toys"
-    combine -M GoodnessOfFit -d $ws --algo=saturated -t 100 -s 1 -m 125 --toysFrequentist -n Toys | tee $logsdir/GoF_toys.txt
+    combine -M GoodnessOfFit -d $ws --algo=saturated -t 300 -s 1 -m 125 --toysFrequentist -n Toys | tee $logsdir/GoF_toys.txt
     # combine -M GoodnessOfFit -d $ws --algo=saturated -t 100 -s 1 -m 125 --toysFrequentist -n Toys_test --setParameters ttbarnormSF=1.0,wjetsnormSF=1.0 --freezeParameters ttbarnormSF,wjetsnormSF
 
     # combine -M GoodnessOfFit -d $ws --algo=saturated -t 100 -s 1 -m 125 --toysFrequentist -n Toys_SR --setParameters ttbarnormSF=1.0,wjetsnormSF=1.0,mask_CR1=1,mask_CR2=1 --freezeParameters ttbarnormSF,wjetsnormSF | tee $logsdir/GoF_toys.txt

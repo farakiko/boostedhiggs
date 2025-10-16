@@ -18,8 +18,7 @@ pd.set_option("mode.chained_assignment", None)
 CMS_PARAMS_LABEL = "CMS_HWW_boosted"
 
 SIG_regions = ["VBF", "ggFpt250to350", "ggFpt350to500", "ggFpt500toInf"]
-# CONTROL_regions = ["TopCR", "WJetsCR"]
-CONTROL_regions = ["TopCR", "WJetsCRpt250to350", "WJetsCRpt350to500", "WJetsCRpt500toInf"]
+CONTROL_regions = ["TopCR", "WJetsCR"]
 
 
 def systs_not_from_parquets(years: List[str], lep_channels: List[str], do_unfolding: bool):
@@ -236,103 +235,103 @@ def systs_from_parquets(years):
 
     SYSTEMATICS_correlated = {
         # signal systematics
-        rl.NuisanceParameter("ps_isr_ggH", "shape"): (
+        rl.NuisanceParameter("ps_isr_ggH", "lnN"): (
             "weight_PSISR",
             ["ggF", "ggFpt200to300", "ggFpt300to450", "ggFpt450toInf"],
             SIG_regions + CONTROL_regions,
         ),
-        rl.NuisanceParameter("ps_isr_qqH", "shape"): (
+        rl.NuisanceParameter("ps_isr_qqH", "lnN"): (
             "weight_PSISR",
             ["VBF", "mjj1000toInf"],
             SIG_regions + CONTROL_regions,
         ),
-        rl.NuisanceParameter("ps_fsr_ggH", "shape"): (
+        rl.NuisanceParameter("ps_fsr_ggH", "lnN"): (
             "weight_PSFSR",
             ["ggF", "ggFpt200to300", "ggFpt300to450", "ggFpt450toInf"],
             SIG_regions + CONTROL_regions,
         ),
-        rl.NuisanceParameter("ps_fsr_qqH", "shape"): (
+        rl.NuisanceParameter("ps_fsr_qqH", "lnN"): (
             "weight_PSFSR",
             ["VBF", "mjj1000toInf"],
             SIG_regions + CONTROL_regions,
         ),
-        rl.NuisanceParameter(f"PDF_ggH_ACCEPT_{CMS_PARAMS_LABEL}", "shape"): (
+        rl.NuisanceParameter(f"PDF_ggH_ACCEPT_{CMS_PARAMS_LABEL}", "lnN"): (
             "weight_pdf_acceptance",
             ["ggF", "ggFpt200to300", "ggFpt300to450", "ggFpt450toInf"],
             SIG_regions + CONTROL_regions,
         ),
-        rl.NuisanceParameter(f"PDF_qqH_ACCEPT_{CMS_PARAMS_LABEL}", "shape"): (
+        rl.NuisanceParameter(f"PDF_qqH_ACCEPT_{CMS_PARAMS_LABEL}", "lnN"): (
             "weight_pdf_acceptance",
             ["VBF", "mjj1000toInf"],
             SIG_regions + CONTROL_regions,
         ),
-        rl.NuisanceParameter(f"QCDscale_ggH_ACCEPT_{CMS_PARAMS_LABEL}", "shape"): (
+        rl.NuisanceParameter(f"QCDscale_ggH_ACCEPT_{CMS_PARAMS_LABEL}", "lnN"): (
             "weight_qcd_scale",
             ["ggF", "ggFpt200to300", "ggFpt300to450", "ggFpt450toInf"],
             SIG_regions + CONTROL_regions,
         ),
-        rl.NuisanceParameter(f"QCDscale_qqH_ACCEPT_{CMS_PARAMS_LABEL}", "shape"): (
+        rl.NuisanceParameter(f"QCDscale_qqH_ACCEPT_{CMS_PARAMS_LABEL}", "lnN"): (
             "weight_qcd_scale",
             ["VBF", "mjj1000toInf"],
             SIG_regions + CONTROL_regions,
         ),
         # other samples
-        rl.NuisanceParameter("ps_isr_WH", "shape"): (
+        rl.NuisanceParameter("ps_isr_WH", "lnN"): (
             "weight_PSISR",
             ["WH"],
             SIG_regions + CONTROL_regions,
         ),
-        rl.NuisanceParameter("ps_isr_ZH", "shape"): (
+        rl.NuisanceParameter("ps_isr_ZH", "lnN"): (
             "weight_PSISR",
             ["ZH"],
             SIG_regions + CONTROL_regions,
         ),
-        rl.NuisanceParameter("ps_isr_ttH", "shape"): (
+        rl.NuisanceParameter("ps_isr_ttH", "lnN"): (
             "weight_PSISR",
             ["ttH"],
             SIG_regions + CONTROL_regions,
         ),
-        rl.NuisanceParameter("ps_fsr_WH", "shape"): (
+        rl.NuisanceParameter("ps_fsr_WH", "lnN"): (
             "weight_PSFSR",
             ["WH"],
             SIG_regions + CONTROL_regions,
         ),
-        rl.NuisanceParameter("ps_fsr_ZH", "shape"): (
+        rl.NuisanceParameter("ps_fsr_ZH", "lnN"): (
             "weight_PSFSR",
             ["ZH"],
             SIG_regions + CONTROL_regions,
         ),
-        rl.NuisanceParameter("ps_fsr_ttH", "shape"): (
+        rl.NuisanceParameter("ps_fsr_ttH", "lnN"): (
             "weight_PSFSR",
             ["ttH"],
             SIG_regions + CONTROL_regions,
         ),
-        rl.NuisanceParameter(f"PDF_ttH_ACCEPT_{CMS_PARAMS_LABEL}", "shape"): (
+        rl.NuisanceParameter(f"PDF_ttH_ACCEPT_{CMS_PARAMS_LABEL}", "lnN"): (
             "weight_pdf_acceptance",
             ["ttH"],
             SIG_regions + CONTROL_regions,
         ),
-        rl.NuisanceParameter(f"PDF_WH_ACCEPT_{CMS_PARAMS_LABEL}", "shape"): (
+        rl.NuisanceParameter(f"PDF_WH_ACCEPT_{CMS_PARAMS_LABEL}", "lnN"): (
             "weight_pdf_acceptance",
             ["WH"],
             SIG_regions + CONTROL_regions,
         ),
-        rl.NuisanceParameter(f"PDF_ZH_ACCEPT_{CMS_PARAMS_LABEL}", "shape"): (
+        rl.NuisanceParameter(f"PDF_ZH_ACCEPT_{CMS_PARAMS_LABEL}", "lnN"): (
             "weight_pdf_acceptance",
             ["ZH"],
             SIG_regions + CONTROL_regions,
         ),
-        rl.NuisanceParameter(f"QCDscale_ttH_ACCEPT_{CMS_PARAMS_LABEL}", "shape"): (
+        rl.NuisanceParameter(f"QCDscale_ttH_ACCEPT_{CMS_PARAMS_LABEL}", "lnN"): (
             "weight_qcd_scale",
             ["ttH"],
             SIG_regions + CONTROL_regions,
         ),
-        rl.NuisanceParameter(f"QCDscale_WH_ACCEPT_{CMS_PARAMS_LABEL}", "shape"): (
+        rl.NuisanceParameter(f"QCDscale_WH_ACCEPT_{CMS_PARAMS_LABEL}", "lnN"): (
             "weight_qcd_scale",
             ["WH"],
             SIG_regions + CONTROL_regions,
         ),
-        rl.NuisanceParameter(f"QCDscale_ZH_ACCEPT_{CMS_PARAMS_LABEL}", "shape"): (
+        rl.NuisanceParameter(f"QCDscale_ZH_ACCEPT_{CMS_PARAMS_LABEL}", "lnN"): (
             "weight_qcd_scale",
             ["ZH"],
             SIG_regions + CONTROL_regions,
@@ -348,17 +347,17 @@ def systs_from_parquets(years):
             SIG_regions + CONTROL_regions,
         ),
         # ISR systematics
-        rl.NuisanceParameter("ps_isr_wjets", "shape"): (
+        rl.NuisanceParameter("ps_isr_wjets", "lnN"): (
             "weight_PSISR",
             ["WJetsLNu"],
             SIG_regions + CONTROL_regions,
         ),
-        rl.NuisanceParameter("ps_isr_ttbar", "shape"): (
+        rl.NuisanceParameter("ps_isr_ttbar", "lnN"): (
             "weight_PSISR",
             ["TTbar"],
             SIG_regions + CONTROL_regions,
         ),
-        rl.NuisanceParameter("ps_isr_singletop", "shape"): (
+        rl.NuisanceParameter("ps_isr_singletop", "lnN"): (
             "weight_PSISR",
             ["SingleTop"],
             SIG_regions + CONTROL_regions,
@@ -417,12 +416,12 @@ def systs_from_parquets(years):
             SIG_regions + CONTROL_regions,
         ),
         # PDF acceptance
-        rl.NuisanceParameter(f"PDF_ttbar_ACCEPT_{CMS_PARAMS_LABEL}", "shape"): (
+        rl.NuisanceParameter(f"PDF_ttbar_ACCEPT_{CMS_PARAMS_LABEL}", "lnN"): (
             "weight_pdf_acceptance",
             ["TTbar"],
             SIG_regions + CONTROL_regions,
         ),
-        rl.NuisanceParameter(f"QCDscale_singletop_ACCEPT_{CMS_PARAMS_LABEL}", "shape"): (
+        rl.NuisanceParameter(f"QCDscale_singletop_ACCEPT_{CMS_PARAMS_LABEL}", "lnN"): (
             "weight_qcd_scale",
             ["SingleTop"],
             SIG_regions + CONTROL_regions,

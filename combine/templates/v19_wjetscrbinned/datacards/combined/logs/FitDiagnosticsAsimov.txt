@@ -2,9 +2,9 @@
  <<< v10.0.1 >>>
 >>> Random number generator seed is 123456
 >>> Method used is FitDiagnostics
->>> 0 out of 6 channels masked
+>>> 0 out of 8 channels masked
 
 
  --- FitDiagnostics ---
-Best fit r: 1  -0.622195/+0.800776  (68% CL)
-Done in 0.27 min (cpu), 0.27 min (real)
+Best fit r: 1  -0.612711/+0.790505  (68% CL)
+Done in 0.43 min (cpu), 0.43 min (real)

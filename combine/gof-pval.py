@@ -10,16 +10,7 @@ fig, ax = plt.subplots(1, 1)
 
 if __name__ == "__main__":
 
-    year = "All years"
     thisdir = os.getcwd()
-    if "2016APV" in thisdir:
-        year = "2016APV"
-    elif "2016" in thisdir:
-        year = "2016"
-    elif "2017" in thisdir:
-        year = "2017"
-    elif "2018" in thisdir:
-        year = "2018"
 
     gof_toys = []
 
@@ -57,9 +48,8 @@ if __name__ == "__main__":
 
     plt.ylim(0, ymax)
     plt.plot([gof_obs, gof_obs], [0, ymax], color="red", label=mylabel)
-    plt.legend(loc="upper right", frameon=False, title=year)
+    plt.legend(loc="upper right", frameon=False)
     plt.xlabel("Goodness of fit (saturated)")
 
-    plt.savefig(thisdir + "/plots/gof_" + year + ".png", bbox_inches="tight")
-    plt.savefig(thisdir + "/plots/gof_" + year + ".pdf", bbox_inches="tight")
+    plt.savefig(thisdir + "/gof.pdf", bbox_inches="tight")
     plt.show()
