@@ -143,6 +143,57 @@ def get_finetuned_score(data, model_path):
 # ---------------------------------------------------------
 
 # PLOTTING UTILS
+# color_by_sample = {
+#     "ggF": "lightsteelblue",
+#     "VBF": "peru",
+#     # signal that is background
+#     "WH": "tab:brown",
+#     "ZH": "yellowgreen",
+#     "ttH": "tab:olive",
+#     # background
+#     "QCD": "tab:orange",
+#     "Fake": "orange",
+#     "Fake_EWK_SF_Up": "orange",
+#     "Fake_EWK_SF_Down": "orange",
+#     "Fake_FR_stat_Up": "orange",
+#     "Fake_FR_stat_Down": "orange",
+#     # "Fake": "navajowhite",
+#     "WJetsLNu": "tab:green",
+#     "WJetsLNu_LO": "springgreen",
+#     "TTbar": "tab:blue",
+#     "Diboson": "orchid",
+#     "SingleTop": "tab:cyan",
+#     "EWKvjets": "tab:grey",
+#     "DYJets": "tab:purple",
+#     "WZQQ": "khaki",
+#     # "WZQQorDYJets": "khaki",
+#     # wjets matched and unmatched
+#     "WJetsLNu_unmatched": "lightgreen",
+#     "WJetsLNu_matched": "tab:green",
+#     # ttbar matched and unmatched
+#     "TTbar_allmatched": "tab:blue",
+#     "TTbar_unmatched": "lightskyblue",
+#     # ttbar LP
+#     "TTbar_is_top_lq": "lightskyblue",
+#     "TTbar_is_top_lqq": "tab:blue",
+#     "TTbar_others": "darkblue",
+#     "TTbar_LP_is_top_lq": "lightskyblue",
+#     "TTbar_LP_is_top_lqq": "tab:blue",
+#     "TTbar_LP_others": "darkblue",
+#     "TTbar_LP": "tab:blue",
+#     # split WJets by b/c hads
+#     "WJetsLNu_nB0": "tab:green",
+#     "WJetsLNu_nB1": "springgreen",
+#     "WJetsLNu_nB2": "greenyellow",
+#     "WJetsLNu_nBother": "lime",
+#     "WJetsLNu_nC0": "tab:green",
+#     "WJetsLNu_nC1": "springgreen",
+#     "WJetsLNu_nC2": "greenyellow",
+#     "WJetsLNu_nCother": "lime",
+#     "WJetsLNu NLO LHEFilterPtW": "greenyellow",
+#     "WJetsLNu NLO MatchEWPDG20": "springgreen",
+#     "WJetsToLNu_012JetsNLO_34JetsLO_EWNLOcorr": "lime",
+# }
 color_by_sample = {
     "ggF": "lightsteelblue",
     "VBF": "peru",
@@ -151,48 +202,15 @@ color_by_sample = {
     "ZH": "yellowgreen",
     "ttH": "tab:olive",
     # background
-    "QCD": "tab:orange",
-    "Fake": "orange",
-    "Fake_EWK_SF_Up": "orange",
-    "Fake_EWK_SF_Down": "orange",
-    "Fake_FR_stat_Up": "orange",
-    "Fake_FR_stat_Down": "orange",
+    "Fake": "#9c9ca1",
     # "Fake": "navajowhite",
-    "WJetsLNu": "tab:green",
-    "WJetsLNu_LO": "springgreen",
-    "TTbar": "tab:blue",
+    "WJetsLNu": "#f89c20",
+    "TTbar": "#e42536",
     "Diboson": "orchid",
-    "SingleTop": "tab:cyan",
+    "SingleTop": "#964a8b",
     "EWKvjets": "tab:grey",
     "DYJets": "tab:purple",
     "WZQQ": "khaki",
-    # "WZQQorDYJets": "khaki",
-    # wjets matched and unmatched
-    "WJetsLNu_unmatched": "lightgreen",
-    "WJetsLNu_matched": "tab:green",
-    # ttbar matched and unmatched
-    "TTbar_allmatched": "tab:blue",
-    "TTbar_unmatched": "lightskyblue",
-    # ttbar LP
-    "TTbar_is_top_lq": "lightskyblue",
-    "TTbar_is_top_lqq": "tab:blue",
-    "TTbar_others": "darkblue",
-    "TTbar_LP_is_top_lq": "lightskyblue",
-    "TTbar_LP_is_top_lqq": "tab:blue",
-    "TTbar_LP_others": "darkblue",
-    "TTbar_LP": "tab:blue",
-    # split WJets by b/c hads
-    "WJetsLNu_nB0": "tab:green",
-    "WJetsLNu_nB1": "springgreen",
-    "WJetsLNu_nB2": "greenyellow",
-    "WJetsLNu_nBother": "lime",
-    "WJetsLNu_nC0": "tab:green",
-    "WJetsLNu_nC1": "springgreen",
-    "WJetsLNu_nC2": "greenyellow",
-    "WJetsLNu_nCother": "lime",
-    "WJetsLNu NLO LHEFilterPtW": "greenyellow",
-    "WJetsLNu NLO MatchEWPDG20": "springgreen",
-    "WJetsToLNu_012JetsNLO_34JetsLO_EWNLOcorr": "lime",
 }
 
 plot_labels = {
@@ -713,9 +731,11 @@ def plot_hists(
             tot_signal *= mult_factor
 
             if mult_factor == 1:
-                siglabel = r"ggF+VBF+WH+ZH+ttH"
+                # siglabel = r"ggF+VBF+WH+ZH+ttH"
+                siglabel = r"ggF+VBF+VH+ttH"
             else:
-                siglabel = r"ggF+VBF+WH+ZH+ttH $\times$" + f"{mult_factor}"
+                # siglabel = r"ggF+VBF+WH+ZH+ttH $\times$" + f"{mult_factor}"
+                siglabel = r"ggF+VBF+VH+ttH $\times$" + f"{mult_factor}"
 
             if plot_totsig:
                 hep.histplot(
@@ -723,7 +743,8 @@ def plot_hists(
                     ax=ax,
                     label=siglabel,
                     linewidth=2,
-                    color="tab:red",
+                    # color="tab:red",
+                    color="black",
                     flow="none",
                 )
             # # add MC stat errors
@@ -847,7 +868,8 @@ def plot_hists(
         if logy or ("isolation" in var) or ("lsf3" in var) or ("THWW" in var):
             ax.set_yscale("log")
             # ax.set_ylim(1e-1, a * 15.7)
-            ax.set_ylim(1e-1, a * 105.7)
+            # ax.set_ylim(1e-1, a * 105.7)
+            ax.set_ylim(1e-1, a * 7005.7)
         else:
             ax.set_ylim(0, a * 1.7)
 
